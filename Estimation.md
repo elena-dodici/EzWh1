@@ -1,43 +1,63 @@
 # Project Estimation  
-Date:
+Date: 04/11/2022
 
-Version:
+Version: 1
 
 
 # Estimation approach
-Consider the EZWH  project as described in YOUR requirement document, assume that you are going to develop the project INDEPENDENT of the deadlines of the course
+
 # Estimate by size
 ### 
 |             | Estimate                        |             
 | ----------- | ------------------------------- |  
-| NC =  Estimated number of classes to be developed   |                             |             
-|  A = Estimated average size per class, in LOC       |                            | 
-| S = Estimated size of project, in LOC (= NC * A) | |
-| E = Estimated effort, in person hours (here use productivity 10 LOC per person hour)  |                                      |   
-| C = Estimated cost, in euro (here use 1 person hour cost = 30 euro) | | 
-| Estimated calendar time, in calendar weeks (Assume team of 4 people, 8 hours per day, 5 days per week ) |                    |               
+| NC =  Estimated number of classes to be developed   |  30                           |             
+|  A = Estimated average size per class, in LOC       |             400               | 
+| S = Estimated size of project, in LOC (= NC * A) | 12000 |
+| E = Estimated effort, in person hours (here use productivity 10 LOC per person hour)  |             1200                   |   
+| C = Estimated cost, in euro (here use 1 person hour cost = 30 euro) | 36000 | 
+| Estimated calendar time, in calendar weeks (Assume team of 4 people, 8 hours per day, 5 days per week ) |       8 weeks        |               
 
 # Estimate by product decomposition
 ### 
 |         component name    | Estimated effort (person hours)   |             
 | ----------- | ------------------------------- | 
-|requirement document    | |
-| GUI prototype ||
-|design document ||
-|code ||
-| unit tests ||
-| api tests ||
-| management documents  ||
+|requirement document  | 60 |
+| GUI prototype | 32  |
+|design document | 40  |
+|code | 400 |
+| unit tests | 300 |
+| api tests | 200 |
+| management documents  | 80 |
 
 
 
 # Estimate by activity decomposition
 ### 
+Jiaqi, [9 apr 2022, 14:33:11]:
 |         Activity name    | Estimated effort (person hours)   |             
 | ----------- | ------------------------------- | 
-| | |
+| Discussion with stakeholders|32 |
+| Identify user requirements|90 |
+| Identify performance requirements|32 |
+| Identify possible interactions|32 |
+| Identify the user's goals|240 |
+|Choose the equipment for deployment (deployment diagram)|8 |
+| Model system|8 |
+|Design GUI|96 |
+| Create Design specification|96|
+| Design database|64 |
+| Software Design|100 |
+| Implement System classes|400 |
+| Combine System classes|80 |
+| Perform debugging|16 |
+|Perform Testing|48 |
+|Write the manual|16 |
+| Deliver to App administrator|8 |
+| Write the Maintenance plan|16 |
+
+
 ###
-Insert here Gantt chart with above activities
+![gantt_diagram](./Images/Gantt.png)
 
 # Summary
 
@@ -45,9 +65,9 @@ Report here the results of the three estimation approaches. The  estimates may d
 
 |             | Estimated effort                        |   Estimated duration |          
 | ----------- | ------------------------------- | ---------------|
-| estimate by size ||
-| estimate by product decomposition ||
-| estimate by activity decomposition ||
+| estimate by size | 1200 | 8 weeks | 
+| estimate by product decomposition | 1112 | 7 weeks |
+| estimate by activity decomposition | 1382 | 8 weeks |
 
 
 
