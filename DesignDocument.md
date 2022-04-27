@@ -24,9 +24,9 @@ The design must satisfy the Official Requirements document, notably functional a
 EzWarehouse is a single threaded layered application. It uses the MVC architectural pattern because we have a view that changes based on the data we have.
 We have a 3 tier architecture since we have the View, The application logic and a database.
 The choice was also made to obtain a lower cohesion and to increase mantainability.
-Since the frontend (View) is given we built the backend architecure with:
-- Controller: Connects with the entities to manage them and their data. Has function to connect with the database too
-- Entity: Incapsulates all the domain classes of our applicationm
+Since the frontend (View) is given, we built the backend architecure with:
+- Controller: Connects with the entities to manage them and their data. Has functions to connect with the database too
+- Model: Incapsulates all the domain classes of our applicationm
 
 
 
@@ -40,12 +40,12 @@ Since the frontend (View) is given we built the backend architecure with:
 # Low level design
 
 From top to bottom in the diagram we have:
-- Controller layer (The classes marked as *Manager* plus the PersistencyManager)
+- Controller layer (The classes marked as *Manager* plus the PersistentManager)
 - Model layer (The classes under the Controller layer)
 
 Each layer can be seen in the class diagram. Each model class has an attribute called *tablename* that is used by the PersistentManager to modify the correct table in the database. A generic class to manage the database with generic methods was used to keep the connections simplier. The persistentManager uses the ***Singleton creational pattern*** because we only need one instance of the PersistentManager at the time.
 
-The Controller classes are marked as *Manager* and they communicate with the entities to manage their data and call the persistent manager to load/store/delete/modify them to fulfill the requests that come from the frontend.
+The Controller classes are marked as *Manager* and they communicate with the entities to manage their data and call the PersistentManager to load/store/delete/modify them to fulfill the requests that come from the frontend.
 
 To better visualize the diagram we split it in 2 parts
 
