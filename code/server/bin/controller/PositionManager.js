@@ -12,8 +12,14 @@ class PositionManager {
         let p = new Position(positionID, aisleID, row, col, maxWeight, maxVolume, 0, 0, null);
         p.sku_id = null;
         delete p.relativeSKU;
-        PersistentManager.store('Position', p);
+        return PersistentManager.store(Position.tableName, p);
 
+    }
+
+    listAllPositions() {
+        let positions = PersistentManager.loadAllRows(Position.tableName);
+        //For each position delete the sku_id because it's not needed in the API response
+        return positions;
     }
 
 }

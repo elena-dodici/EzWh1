@@ -1,6 +1,8 @@
 'use strict'
 
 class Position {
+    static tableName = 'Position';
+    
     constructor (id, aisle, row, col, max_weight, max_volume, occupied_weight, occupied_volume, relativeSKU) {
         this.id = id;
         this.aisle = aisle;
