@@ -67,6 +67,62 @@ class PersistentManager {
 			db.close();
 		});
 	}
+
+    async delete(attribute_name ,id, tableName) {
+        return new Promise ((resolve, reject) => {
+            const sql = "DELETE FROM " + tableName + " WHERE "+ attribute_name + "= ?";
+            const db = new sqlite.Database(this.dbName, (err) => {if (err) reject(err) });
+            db.run(sql, id, (err) => {if (err) reject(err); resolve(); } )
+            db.close();
+        })
+    }
+
+    async loadOneByAttribute(parameter_name, tableName, value ){
+        return new Promise ((resolve, reject) => {
+            const sql = "SELECT * FROM " + tableName + " WHERE " + parameter_name + "= ?";
+            const db = new sqlite.Database(this.dbName, (err) => {if (err) reject(err) });
+            db.get(sql, value, (err, row) => {if (err) reject(err); resolve(row); } )
+            db.close();
+        })
+    }
+
+    async update(tableName, object, attribute_name, id) {
+        return new Promise ((resolve, reject) => {
+            //names of the attributes of the objects
+			let attributesName = [];
+			//Values of the attributes
+			let attributesValue = [];
+
+			//Loop through all the object attributes and push them into the arrays
+			for (var prop in object) {
+				if (Object.prototype.hasOwnProperty.call(object, prop)) {
+					attributesName.push(prop + "= ?");
+					attributesValue.push(object[prop]);
+				}
+			}
+
+
+            const sql = "UPDATE " + tableName +
+                        " SET " + attributesName.join(",") + 
+                        " WHERE " + attribute_name + " = ?";
+
+            const db = new sqlite.Database(this.dbName, (err) => {if (err) reject(err) });
+            db.run(sql, [...attributesValue, id], (err) => {
+                if (err) reject(err);
+                resolve();
+            });
+            
+        }) 
+    }
+
+    async loadFilterByAttribute(tableName, parameterName, value) {
+        return new Promise ((resolve, reject) => {
+            const sql = "SELECT * FROM " + tableName + "WHERE " + parameterName + "= ?";
+            const db = new sqlite.Database(this.dbName, (err) => {if (err) reject(err) });
+            db.all(sql, value, (err) => {if (err, rows) reject(err); resolve(rows); } )
+            db.close();
+        })
+    }
 }
 
 //Taking advantage of nodeJS caching mechanism returning an instance of the class to implement easily the Singleton pattern
