@@ -1,6 +1,7 @@
 'use strict'
 
 class TestDescriptor {
+    static tableName = 'TestDescriptor';
     constructor (id, name, procedureDescription, sku_id) {
         this.id = id;
         this.name = name;
@@ -8,3 +9,5 @@ class TestDescriptor {
         this.sku = sku;
     }
 }
+
+module.exports = TestDescriptor;

@@ -118,9 +118,9 @@ class PersistentManager {
 
     async loadFilterByAttribute(tableName, parameterName, value) {
         return new Promise ((resolve, reject) => {
-            const sql = "SELECT * FROM " + tableName + "WHERE " + parameterName + "= ?";
+            const sql = "SELECT * FROM " + tableName + " WHERE " + parameterName + "= ?";
             const db = new sqlite.Database(this.dbName, (err) => {if (err) reject(err) });
-            db.all(sql, value, (err) => {if (err, rows) reject(err); resolve(rows); } )
+            db.all(sql, value, (err,rows) => {if (err) reject(err); resolve(rows); } )
             db.close();
         })
     }

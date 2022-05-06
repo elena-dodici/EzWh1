@@ -1,7 +1,10 @@
 'use strict'
 
 class SKU {
-    constructor (id, description, weight, volume, price, notes, quantity, position) {
+
+    static tableName = 'SKU';
+
+    constructor (id, description, weight, volume, price, notes, quantity, position, testDescriptors = []) {
         this.id = id;
         this.description = description; 
         this.weight = weight; 
@@ -10,5 +13,8 @@ class SKU {
         this.notes = notes;
         this.quantity = quantity;
         this.position = position;
+        this.testDescriptors = testDescriptors;
     }
 }
+
+module.exports = SKU;

@@ -1,6 +1,7 @@
 'use strict';
 const express = require('express');
 const position = require('./api/positionAPI');
+const sku = require('./api/skuAPI')
 const PersistentManager = require('./bin/DB/PersistentManager');
 // init express
 const app = new express();
@@ -25,14 +26,11 @@ app.put('/api/position/:positionID/changeID', position.changePositionID);
 //DELETE /api/position/:positionID
 app.delete('/api/position/:positionID', position.deletePosition);
 
-app.post('api/managerSessions', (req,res) => {
-  m = {
-    id: 1,
-    username: "manager1@ezwh.com",
-    password: "testpassword"
-  }
-  return res.status(200).json(m);
-})
+//POST /api/sku
+app.post('/api/sku', sku.postSKU);
+
+//GET /api/skus
+app.get('/api/skus', sku.getSKUS);
 /*
 Activate the server
 */
