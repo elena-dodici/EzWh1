@@ -51,16 +51,14 @@ class PositionManager {
 
         return PersistentManager.update(Position.tableName, p, 'id', oldID);
     }
-    /*
-
-    async loadPosition(id) {
-        return PersistentManager.loadOneByAttribute('id', Position.tableName, id);
-
-        //PersistentManager.loadOneByAttribute('id', SKU.tableName, id);
-
-        
+    
+    async deletePosition(id) {
+        return PersistentManager.delete('id', id, Position.tableName);
     }
-    */
+
+    async existsPosition(id) {
+        return PersistentManager.exists(Position.tableName, 'id', id);
+    }
 
 }
 

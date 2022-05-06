@@ -115,6 +115,7 @@ class PersistentManager {
         }) 
     }
 
+
     async loadFilterByAttribute(tableName, parameterName, value) {
         return new Promise ((resolve, reject) => {
             const sql = "SELECT * FROM " + tableName + "WHERE " + parameterName + "= ?";
@@ -123,6 +124,21 @@ class PersistentManager {
             db.close();
         })
     }
+
+	async exists(tableName, parameter_name, value) {
+		try {
+			let row = await this.loadOneByAttribute(parameter_name, tableName, value);
+			if (row) {
+				return true;
+			}
+			else {
+				return false;
+			}
+		}
+		catch (err) {
+			return Promise.reject(err);
+		}
+	}
 }
 
 //Taking advantage of nodeJS caching mechanism returning an instance of the class to implement easily the Singleton pattern

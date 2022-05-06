@@ -22,6 +22,17 @@ app.put('/api/position/:positionID', position.updatePosition);
 //PUT /api/position/:positionID/changeID
 app.put('/api/position/:positionID/changeID', position.changePositionID);
 
+//DELETE /api/position/:positionID
+app.delete('/api/position/:positionID', position.deletePosition);
+
+app.post('api/managerSessions', (req,res) => {
+  m = {
+    id: 1,
+    username: "manager1@ezwh.com",
+    password: "testpassword"
+  }
+  return res.status(200).json(m);
+})
 /*
 Activate the server
 */
