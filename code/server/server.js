@@ -31,6 +31,19 @@ app.post('/api/sku', sku.postSKU);
 
 //GET /api/skus
 app.get('/api/skus', sku.getSKUS);
+
+//GET /api/skus/:id
+app.get('/api/skus/:id', sku.getSKUByID);
+
+//PUT /api/sku/:id
+app.put('/api/sku/:id', sku.modifySKUById);
+
+//PUT /api/sku/:id/position
+app.put('/api/sku/:id/position', sku.putPositionToSku)
+
+//DELETE /api/skus/:id
+app.delete('/api/skus/:id', sku.deleteSKU);
+
 /*
 Activate the server
 */

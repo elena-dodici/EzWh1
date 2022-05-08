@@ -60,6 +60,10 @@ class PositionManager {
         return PersistentManager.exists(Position.tableName, 'id', id);
     }
 
+    async loadPositionById(id) {
+        return PersistentManager.loadOneByAttribute('id',Position.tableName, id);
+    }
+
 }
 
 

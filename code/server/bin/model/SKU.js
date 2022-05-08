@@ -11,7 +11,7 @@ class SKU {
         this.volume = volume;
         this.price = price;
         this.notes = notes;
-        this.quantity = quantity;
+        this.availableQuantity = quantity;
         this.position = position;
         this.testDescriptors = testDescriptors;
     }

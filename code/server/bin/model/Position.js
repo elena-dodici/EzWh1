@@ -1,5 +1,7 @@
 'use strict'
 
+const res = require("express/lib/response");
+
 class Position {
     static tableName = 'Position';
     
@@ -71,6 +73,14 @@ class Position {
         } 
 
         return isCorrect;
+    }
+
+    canItStore(tot_weight, tot_volume) {
+        let res = true;
+        if (tot_weight > this.max_weight || tot_volume > this.max_volume) {
+            res = false;
+        }
+        return res;
     }
 }
 
