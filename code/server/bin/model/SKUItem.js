@@ -1,10 +1,11 @@
 'use strict'
 
 class SKUItem {
-    constructor (rfid, available, date_of_stock, relativeSKU, internalOrder, restockOrder, returnOrder, testResult) {
-        this.rfid = rfid;
-        this.available = available;
-        this.date_of_stock = date_of_stock;
+    static tableName = 'SKUItem';
+    constructor (rfid, available, dateOfStock, relativeSKU, internalOrder, restockOrder, returnOrder, testResult) {
+        this.RFID = rfid;
+        this.Available = available;
+        this.dateOfStock = dateOfStock;
         this.relativeSKU = relativeSKU;
         this.internalOrder = internalOrder; 
         this.restockOrder = restockOrder;
@@ -13,3 +14,5 @@ class SKUItem {
 
     }
 }
+
+module.exports = SKUItem;

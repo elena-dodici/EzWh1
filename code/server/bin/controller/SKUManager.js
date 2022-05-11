@@ -13,9 +13,7 @@ class SKUManager{
         //Delete sku.id because it is autoincremented
         const sku = new SKU(null, description, weight, volume, price, notes, availableQuantity, null);
         delete sku.id;
-        delete sku.position;
         delete sku.testDescriptors;
-        sku.position_id = null;
         return PersistentManager.store(SKU.tableName, sku);
     }
 
@@ -52,7 +50,7 @@ class SKUManager{
                     loadedPosition.sku_id);
                 const canItStore = p.canItStore(newQuantity * newWeight, newQuantity * newVolume);
                 if (!canItStore) {
-                    return Promise.reject(" newAvailableQuantity position is not capable enough in weight or in volume");
+                    return Promise.reject("422 position not capable");
                 }
                 //Update the position with the new occupied volume and weight
                 PositionManager.modifyPosition(loadedPosition.id, loadedPosition.aisle, loadedPosition.row, loadedPosition.col,
@@ -69,7 +67,7 @@ class SKUManager{
             return PersistentManager.update(SKU.tableName, skuToUpdate, 'id', id);
         }
         else {
-            return Promise.reject("not found")
+            return Promise.reject("404")
         }
     }
 
@@ -77,11 +75,11 @@ class SKUManager{
        
         let loadedPosition = await PositionManager.loadPositionById(positionID);
         if (!loadedPosition) {
-            return Promise.reject("Position not existing");
+            return Promise.reject("404 position");
         }
         let loadedSKU = await this.getSKUByID(SKUId);
         if (!loadedSKU) {
-            return Promise.reject("SKU not existing");
+            return Promise.reject("404 SKU");
         }
         const sku_weight = loadedSKU.weight;
         const sku_volume = loadedSKU.volume;
@@ -92,7 +90,7 @@ class SKUManager{
         const canItStore = p.canItStore(sku_quantity * sku_volume, sku_quantity * sku_weight);
         if (!canItStore) {
             
-            return Promise.reject("newAvailableQuantity position is not capable enough in weight or in volume");
+            return Promise.reject("422 position not capable");
         }
         loadedSKU.position = loadedPosition.id;
         loadedPosition.occupied_volume = sku_quantity * sku_volume;
@@ -114,10 +112,10 @@ class SKUManager{
     async deleteSKU(SKUId) {
         let loadedSKU = await this.getSKUByID(SKUId);
         if (!loadedSKU){
-            return Promise.reject("SKU not existing");
+            return Promise.reject("404 SKU");
         }
         if (loadedSKU.availableQuantity) {
-            return Promise.reject("SKU availability not 0");
+            return Promise.reject("422 availabiliy not 0");
         }
 
         //if there is an associated position

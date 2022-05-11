@@ -2,7 +2,9 @@
 const express = require('express');
 const position = require('./api/positionAPI');
 const sku = require('./api/skuAPI')
+const skuItem = require('./api/skuItemAPI')
 const PersistentManager = require('./bin/DB/PersistentManager');
+const { checkSchema } = require('express-validator');
 // init express
 const app = new express();
 const port = 3001;
@@ -10,6 +12,7 @@ const port = 3001;
 
 app.use(express.json());
 
+//POSITION
 
 //POST /api/position
 app.post('/api/position', position.postPosition);
@@ -26,8 +29,10 @@ app.put('/api/position/:positionID/changeID', position.changePositionID);
 //DELETE /api/position/:positionID
 app.delete('/api/position/:positionID', position.deletePosition);
 
+//SKU
+
 //POST /api/sku
-app.post('/api/sku', sku.postSKU);
+app.post('/api/sku', checkSchema(sku.postSchema), sku.postSKU);
 
 //GET /api/skus
 app.get('/api/skus', sku.getSKUS);
@@ -36,13 +41,34 @@ app.get('/api/skus', sku.getSKUS);
 app.get('/api/skus/:id', sku.getSKUByID);
 
 //PUT /api/sku/:id
-app.put('/api/sku/:id', sku.modifySKUById);
+app.put('/api/sku/:id', checkSchema(sku.modifySKUByIdSchema), sku.modifySKUById);
 
 //PUT /api/sku/:id/position
-app.put('/api/sku/:id/position', sku.putPositionToSku)
+app.put('/api/sku/:id/position', checkSchema(sku.putPositionToSkuSchema), sku.putPositionToSku)
 
 //DELETE /api/skus/:id
 app.delete('/api/skus/:id', sku.deleteSKU);
+
+//SKUItem
+
+//GET /api/skuitems
+app.get('/api/skuitems', skuItem.getSKuItems);
+
+//GET /api/skuitems/sku/:id
+app.get('/api/skuitems/sku/:id', skuItem.getSkuItemsBySKU);
+
+//GET /api/skutiems/:rfid
+app.get('/api/skuitems/:rfid', skuItem.getSKUItemByRfid);
+
+//POST /api/skuitem
+app.post('/api/skuitem', checkSchema(skuItem.postSkuItemSchema) , skuItem.postSkuItem);
+
+//PUT /api/skuitems/:rfid
+app.put('/api/skuitems/:rfid', checkSchema(skuItem.putSkuItemSchema), skuItem.putSkuItem);
+
+//DELETE /api/skuitems/:rfid
+app.delete('/api/skuitems/:rfid', skuItem.deleteSkuItem);
+ 
 
 /*
 Activate the server

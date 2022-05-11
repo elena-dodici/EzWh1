@@ -1,10 +1,60 @@
-const SKU = require('../bin/model/SKU')
-const SKUManager = require('../bin/controller/SKUManager')
+const SKU = require('../bin/model/SKU');
+const SKUManager = require('../bin/controller/SKUManager');
+const {validationResult} = require('express-validator');
+
+
+
+exports.postSchema = {
+    description: {
+        notEmpty: true,
+        errorMessage: "Description cannot be empty"
+    },
+    
+    weight: {
+        notEmpty: true,
+        isFloat: {
+            options: { min: 0}
+        },
+        errorMessage: "weight value incorrect"
+    },
+    volume: {
+        notEmpty: true,
+        isFloat: {
+            options: { min: 0}
+        },
+        errorMessage: "volume value incorrect"
+    },
+    price: {
+        notEmpty: true,
+        isFloat: {
+            options: { min: 0}
+        },
+        errorMessage: "price value incorrect"
+    },
+    notes: {
+        notEmpty: true,
+        errorMessage: "notes value incorrect"
+    },
+    availableQuantity: {
+        notEmpty: true,
+        isInt: {
+            options: { min: 0}
+        },
+        errorMessage: "available quantity value incorrect"
+    }
+}
 
 exports.postSKU = function(req,res) {
+    const errors = validationResult(req);
     
     if (Object.keys(req.body).length === 0) {
         return res.status(422).json({error: 'Empty body request'});
+    }
+
+    if (!errors.isEmpty()) {
+        return res.status(422).json({
+            errors: errors.array()
+        });
     }
 
     let description = req.body.description;
@@ -21,7 +71,7 @@ exports.postSKU = function(req,res) {
             return res.status(201).json();
         },
         error => {
-            console.log(error);
+            return res.status(503).json({error: "generic error"});
         }
     );
 }
@@ -33,26 +83,85 @@ exports.getSKUS = function(req,res) {
             return res.status(200).json(result);
         },
         error => {
-            console.log(error);
+            return res.status(500).json({error: "generic error"});
         }
     )
 }
 
 exports.getSKUByID = function(req,res) {
     let id = req.params.id;
-    
+
+    if (id<0) {
+        return res.status(422).json({error: "Validation of id failed"});
+    }
     
     SKUManager.getSKUByID(id).then(
         result => {
-            return res.status(200).json(result);
+            if (result) {
+                return res.status(200).json(result);
+            }
+            else {
+                return res.status(404).json({error: "no SKU associated to id"});
+            }
         },
         error => {
-            console.log(error);
+            return res.status(500).json({error: "generic error"});
         }
     )
 }
 
+
+exports.modifySKUByIdSchema = {
+    newDescription: {
+        notEmpty: true,
+        errorMessage: "Description cannot be empty"
+    },
+    
+    newWeight: {
+        notEmpty: true,
+        isFloat: {
+            options: { min: 0}
+        },
+        errorMessage: "weight value incorrect"
+    },
+    newVolume: {
+        notEmpty: true,
+        isFloat: {
+            options: { min: 0}
+        },
+        errorMessage: "volume value incorrect"
+    },
+    newPrice: {
+        notEmpty: true,
+        isFloat: {
+            options: { min: 0}
+        },
+        errorMessage: "price value incorrect"
+    },
+    newNotes: {
+        notEmpty: true,
+        errorMessage: "notes value incorrect"
+    },
+    newAvailableQuantity: {
+        notEmpty: true,
+        isInt: {
+            options: { min: 0}
+        },
+        errorMessage: "available quantity value incorrect"
+    }
+}
+
 exports.modifySKUById = function(req,res) {
+    
+    const errors = validationResult(req);
+
+    if (!errors.isEmpty()) {
+        return res.status(422).json({
+            errors: errors.array()
+        });
+    }
+
+    
     const id = req.params.id;
     const newDescription = req.body.newDescription;
     const newWeight = req.body.newWeight;
@@ -64,17 +173,44 @@ exports.modifySKUById = function(req,res) {
     SKUManager.modifySKU(id, newDescription, newWeight, newVolume, newPrice, newNotes, newQuantity).then(
         result => {
             return res.status(200).json();
+            
         },
         error => {
-            //to handle
-            console.log(error);
+            switch (error) {
+                case "404":
+                    return res.status(404).json({error: "SKU not existing"});
+                    break;
+                case "422 position not capable":
+                    return res.status(422).json({error: "newAvailableQuantity position is not capable enough in weight or in volume"});
+                    break;
+                default:
+                    return res.status(503).json({error: "generic error"});
+                    break;
+            }
         }
     )
+}
+
+exports.putPositionToSkuSchema = {
+    position: {
+        isNumeric: true,
+        isLength: {
+            options: {min: 12, max: 12}
+        }
+    }
 }
 
 exports.putPositionToSku = function(req,res) {
     const id = req.params.id;
     const position = req.body.position;
+
+    const errors = validationResult(req);
+
+    if (!errors.isEmpty()) {
+        return res.status(422).json({
+            error: "incorrect position format"
+        });
+    }
 
     
     SKUManager.setPosition(id, position).then(
@@ -82,8 +218,20 @@ exports.putPositionToSku = function(req,res) {
             return res.status(200).json();
         },
         error => { 
-            //to handle
-            console.log(error);
+            switch (error) {
+                case "404 position":
+                    return res.status(404).json({error: "Position not existing"});
+                    break;
+                case "404 SKU":
+                    return res.status(404).json({error: "SKU not existing"});
+                    break;
+                case "422 position not capable":
+                    return res.status(422).json({error: "newAvailableQuantity position is not capable enough in weight or in volume"});
+                    break;
+                default:
+                    return res.status(503).json({error: "generic error"});
+                    break;
+            }
         }
     )
 }
@@ -91,12 +239,24 @@ exports.putPositionToSku = function(req,res) {
 exports.deleteSKU = function (req,res) {
     const id = req.params.id;
 
+    if(id<0) {
+        return res.status(422).json({error: "Validation of id failed"});
+    }
+
     SKUManager.deleteSKU(id).then(
         result => {
             return res.status(204).json();
         },
         error => {
-            console.log(error);
+            switch (error) {
+                case "404 SKU":
+                    return res.status(404).json({error: "SKU not existing"})
+                case "422 availabiliy not 0":
+                    return res.status(422).json({error: "SKU availability is not 0"})
+                default: 
+                    return res.status(503).json({error: "generic error"})
+                
+            }
         }
     )
 }

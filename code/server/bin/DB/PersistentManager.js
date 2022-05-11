@@ -68,6 +68,16 @@ class PersistentManager {
 		});
 	}
 
+	async loadAllRowsSelected(tableName, selectedAttributes) {
+		return new Promise((resolve, reject) => {
+			selected = selectedAttributes.join(',');
+			const sql = "SELECT " + selected + " FROM " + tableName;
+			const db = new sqlite.Database(this.dbName, (err) => {if (err) reject(err) });
+            db.run(sql, id, (err,rows) => {if (err) reject(err); resolve(rows); } )
+            db.close();
+		})
+	}
+
     async delete(attribute_name ,id, tableName) {
         return new Promise ((resolve, reject) => {
             const sql = "DELETE FROM " + tableName + " WHERE "+ attribute_name + "= ?";
@@ -85,6 +95,7 @@ class PersistentManager {
             db.close();
         })
     }
+
 
     async update(tableName, object, attribute_name, id) {
         return new Promise ((resolve, reject) => {
@@ -124,6 +135,29 @@ class PersistentManager {
             db.close();
         })
     }
+
+	async loadByMoreAttributes(tableName, parametersName, values) {
+		return new Promise ((resolve, reject) => {
+			const placeHolders = parametersName.map( v => {
+				return v + " = ?"
+			})
+			const sql = "SELECT * FROM " + tableName + " WHERE " + placeHolders.join(' AND ');
+			const db = new sqlite.Database(this.dbName, (err) => {if (err) reject(err) });
+			db.all(sql, values, (err,rows) => {if (err) reject(err); resolve(rows); } );
+			db.close();
+		})
+	}
+
+	
+	async loadOneByAttributeSelected(tableName, parameter_name, value, selectedNames) {
+		return new Promise ((resolve, reject) => {
+			const selectedAttributes = selectedNames.join(',');
+			const sql = "SELECT " + selectedAttributes + " FROM " + tableName + " WHERE " + parameter_name + "= ?";
+            const db = new sqlite.Database(this.dbName, (err) => {if (err) reject(err) });
+            db.get(sql, value, (err, row) => {if (err) reject(err); resolve(row); } )
+            db.close();
+		})
+	}
 
 	async exists(tableName, parameter_name, value) {
 		try {
