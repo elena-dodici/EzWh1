@@ -1,12 +1,61 @@
 'use strict';
 const PositionManager = require('../bin/controller/PositionManager');
 const Position = require('../bin/model/Position');
+const {validationResult} = require('express-validator');
+
+
+exports.postPositionSchema = {
+    positionID: {
+        notEmpty: true,
+        isNumeric: true,
+        isLength: {
+            options: {min: 12, max: 12}
+        }
+    },
+    aisleID: {
+        notEmpty: true,
+        isNumeric: true,
+        isLength: {
+            options: {min: 4, max: 4}
+        }
+    },
+    row: {
+        notEmpty: true,
+        isNumeric: true,
+        isLength: {
+            options: {min: 4, max: 4}
+        }
+    },
+    col: {
+        notEmpty: true,
+        isNumeric: true,
+        isLength: {
+            options: {min: 4, max: 4}
+        }
+    },
+    maxWeight: {
+        notEmpty: true,
+        isFloat: {
+            options: {min: 0}
+        }
+    },
+    maxVolume: {
+        notEmpty: true,
+        isFloat: {
+            options: {min: 0}
+        }
+    },
+}
 
 //POST /api/position
 exports.postPosition = function(req,res) {
-    //validation to do
-    if (Object.keys(req.body).length === 0) {
-        return res.status(422).json({error: 'Empty body request'});
+    
+    const errors = validationResult(req);
+
+    if (!errors.isEmpty()) {
+        return res.status(422).json({
+            error: "Validation of request body failed"
+        });
     }
 
     let positionID = req.body.positionID;
@@ -17,12 +66,8 @@ exports.postPosition = function(req,res) {
     let maxVolume = req.body.maxVolume;
 
     let p = new Position(positionID, aisleID, row, col, maxWeight, maxVolume);
-    const isFormatCorrect = p.isFormCorrect();
     const isIdValid = p.isIdValid()
 
-    if (!isFormatCorrect) {
-        return res.status(422).json({error: 'Incorrect Request format'});
-    }
     if (!isIdValid) {
         return res.status(422).json({error: 'Position ID  is not in the correct form or doesn\'t respect the aisle+row+col constraint.'});
     }
@@ -34,6 +79,7 @@ exports.postPosition = function(req,res) {
             return res.status(201).json();
         },
         error => {
+            console.log(error);
             return res.status(503).json({error: 'generic error'})
         }
     )
@@ -43,8 +89,7 @@ exports.postPosition = function(req,res) {
 
 
 exports.getPositions = function(req,res) {
-    let result = PositionManager.listAllPositions();
-    result.then(
+    PositionManager.listAllPositions().then(
         result => {
             result.forEach((p) => {
                 delete p.sku_id
@@ -52,15 +97,73 @@ exports.getPositions = function(req,res) {
             return res.status(200).json(result);
         },
         error => {
-            //return res.status(500).json({error: 'generic error'})
-            console.log(error);
+            return res.status(500).json({error: 'generic error'})
+            
         }
     )
     
 }
 
 
-exports.updatePosition = function(req,res) {
+exports.updatePositionSchema = {
+    newAisleID: {
+        notEmpty: true,
+        isNumeric: true,
+        isLength: {
+            options: {min: 4, max: 4}
+        }
+    },
+    newRow: {
+        notEmpty: true,
+        isNumeric: true,
+        isLength: {
+            options: {min: 4, max: 4}
+        }
+    },
+    newCol: {
+        notEmpty: true,
+        isNumeric: true,
+        isLength: {
+            options: {min: 4, max: 4}
+        }
+    },
+    newMaxWeight: {
+        notEmpty: true,
+        isFloat: {
+            options: {min: 0}
+        }
+    },
+    newMaxVolume: {
+        notEmpty: true,
+        isFloat: {
+            options: {min: 0}
+        }
+    },
+    newOccupiedWeight: {
+        notEmpty: true,
+        isFloat: {
+            options: {min: 0}
+        }
+    },
+    newOccupiedVolume: {
+        notEmpty: true,
+        isFloat: {
+            options: {min: 0}
+        }
+    },
+
+}
+
+
+exports.updatePosition = async function(req,res) {
+
+    const errors = validationResult(req);
+
+    if (!errors.isEmpty()) {
+        return res.status(422).json({
+            error: "Validation of request body failed"
+        });
+    }
     
     let id= req.params.positionID;
     let aisle= req.body.newAisleID;
@@ -71,43 +174,66 @@ exports.updatePosition = function(req,res) {
     let occupied_weight= req.body.newOccupiedWeight;
     let occupied_volume= req.body.newOccupiedVolume;
 
+
     let p = new Position(aisle+row+col, aisle, row, col, max_weight, max_volume, occupied_weight, occupied_volume);
-    const isFormatCorrect = p.isFormCorrect();
     const isIdValid = p.isIdValid()
 
-    if (!isFormatCorrect || !isIdValid) {
+    if (!isIdValid) {
         return res.status(503).json({error: 'Invalid format'});
     }
 
-    let exists = PositionManager.existsPosition(id)
-    exists.then(
-        foundRow => {
-            if (foundRow) {
-                let result = PositionManager.modifyPosition(id, aisle, row, col, max_weight, max_volume, occupied_weight, occupied_volume);
-                    result.then( 
-                        result => {
-                            return res.status(200).json();
-                        },
-                        error => {
-                            res.status(503).json({error: 'generic error'})
-                        }
-                    )
-            }
-            else {
-                return res.status(404).json({error: 'no position associated to positionID'})
-            }
+    
+
+    let exists = await PositionManager.existsPosition(id)
+    if (!exists) {
+        return res.status(404).json({error: 'no position associated to positionID'});
+    }
+    let result = PositionManager.modifyPosition(id, aisle, row, col, max_weight, max_volume, occupied_weight, occupied_volume);
+    result.then( 
+        result => {
+            return res.status(200).json();
         },
-        reject => {
-            return res.status(503).json({error: 'generic error'})
+        error => {
+            console.log(error);
+            switch (error) {
+                case "422 cant store sku":
+                    return res.status(503).json({error: 'Position\'s new values can\'t store related sku anymore'});
+                default:
+                    return res.status(503).json({error: 'generic error'})
+            }
         }
     )
 
-    
+}
+
+exports.changePositionIDSchema = {
+    positionID: {
+        notEmpty: true,
+        isNumeric: true,
+        isLength: {
+            options: {min: 12, max: 12}
+        }
+    },
+    newPositionID: {
+        notEmpty: true,
+        isNumeric: true,
+        isLength: {
+            options: {min: 12, max: 12}
+        }
+    }
 }
 
 exports.changePositionID = function(req,res) {
     let id= req.params.positionID;
     let newID = req.body.newPositionID;
+
+    const errors = validationResult(req);
+
+    if (!errors.isEmpty()) {
+        return res.status(422).json({
+            error: "Validation of request body failed"
+        });
+    }
     
 
     let result = PositionManager.changePositionID(id, newID);
@@ -116,14 +242,37 @@ exports.changePositionID = function(req,res) {
             return res.status(200).json();
         },
         error => {
-            return res.status(503).json({error: 'generic error'})
+            switch (error) {
+                case "404 position":
+                    return res.status(404).json({error: 'no position associated to positionID'});
+                default:
+                    return res.status(503).json({error: 'generic error'})
+            }
         }
     )
 
 }
 
+exports.deletePositionSchema = {
+    positionID: {
+        notEmpty: true,
+        isNumeric: true,
+        isLength: {
+            options: {min: 12, max: 12}
+        }
+    },
+}
+
 exports.deletePosition = function(req,res) {
     let id= req.params.positionID;
+
+    const errors = validationResult(req);
+
+    if (!errors.isEmpty()) {
+        return res.status(422).json({
+            error: "Validation of request body failed"
+        });
+    }
     
 
     let result = PositionManager.deletePosition(id);

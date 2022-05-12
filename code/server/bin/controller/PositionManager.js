@@ -1,5 +1,8 @@
 const Position = require('../model/Position');
 const PersistentManager = require('../DB/PersistentManager');
+const SKU = require('../model/SKU');
+const SKUManager = require('../controller/SKUManager');
+
 
 class PositionManager {
 
@@ -9,34 +12,52 @@ class PositionManager {
 
     definePosition(positionID, aisleID, row, col, maxWeight, maxVolume) {
         
-        let p = new Position(positionID, aisleID, row, col, maxWeight, maxVolume, 0, 0, null);
-        p.sku_id = null;
-        delete p.relativeSKU;
+        let p = new Position(positionID, aisleID, row, col, maxWeight, maxVolume, 0, 0);
         return PersistentManager.store(Position.tableName, p);
 
     }
 
-    listAllPositions() {
-        let positions = PersistentManager.loadAllRows(Position.tableName);
-        //For each position delete the sku_id because it's not needed in the API response
+    async listAllPositions() {
+        let positions = await PersistentManager.loadAllRows(Position.tableName);
         return positions;
     }
 
-    modifyPosition(positionID, aisleID, row, col, max_weight, max_volume, occupied_weight, occupied_volume) {
+    async modifyPosition(positionID, aisleID, row, col, max_weight, max_volume, occupied_weight, occupied_volume) {
+
         let newPositionId = aisleID + row + col;
         let p = new Position(newPositionId, aisleID, row, col, max_weight, max_volume, occupied_weight, occupied_volume);
-        delete p.relativeSKU;
-        
+
+        //Check if there is an associated sku and it can actually be stored when the max_weight and volume change
+
+        let relativeSKU = await PersistentManager.loadOneByAttribute('position', SKU.tableName, positionID);
+        if (relativeSKU) {
+            const aq = relativeSKU.availableQuantity;
+             const v = relativeSKU.volume;
+            const w = relativeSKU.weight;
+            //Check if the new position can store the sku
+            const canItStore = p.canItStore(aq * w, aq * v);
+
+        if (!canItStore) {
+            return Promise.reject("422 cant store sku")
+            }
+        }
+
+
+        //The position attribute in SKU will be automatically updated because in the db 
+        //we put ON UPDATE CASCADE in the foreign key
         return PersistentManager.update(Position.tableName, p, 'id', positionID);
 
+
+        
     }
 
     async changePositionID(oldID, newID) {
-        //Check if old position exists, to do
-        //let oldPosition = await this.loadPosition(oldID);
-        //Validation of newID must be done
-        //SKU is missing here
-        //let oldID = oldPosition.id;
+        
+        const exists = await PersistentManager.exists(Position.tableName, 'id', oldID);
+        if (!exists) {
+            return Promise.reject("404 position");
+        }
+        
         //Divides the newID in 3 parts
         let coords = newID.match(/.{1,4}/g);
         let aisle = coords[0];
@@ -48,8 +69,12 @@ class PositionManager {
             row: row,
             col: col
         }
+        let oldPosition = await this.loadPositionById(oldID);
+        
 
         return PersistentManager.update(Position.tableName, p, 'id', oldID);
+        
+
     }
     
     async deletePosition(id) {
@@ -62,6 +87,21 @@ class PositionManager {
 
     async loadPositionById(id) {
         return PersistentManager.loadOneByAttribute('id',Position.tableName, id);
+    }
+
+
+    async _loadSkus(id) {
+        let sku
+        await PersistentManager.loadOneByAttribute('position', SKU.tableName, id).then(
+            result => {
+                sku = result;
+            },
+            error => {
+                console.log(error);
+            }  
+        );
+        return sku;
+
     }
 
 }

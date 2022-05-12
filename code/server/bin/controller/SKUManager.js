@@ -73,7 +73,7 @@ class SKUManager{
 
     async setPosition(SKUId, positionID) {
        
-        let loadedPosition = await PositionManager.loadPositionById(positionID);
+        let loadedPosition = await PersistentManager.loadOneByAttribute('id',Position.tableName, positionID);
         if (!loadedPosition) {
             return Promise.reject("404 position");
         }
@@ -95,7 +95,7 @@ class SKUManager{
         loadedSKU.position = loadedPosition.id;
         loadedPosition.occupied_volume = sku_quantity * sku_volume;
         loadedPosition.occupied_weight = sku_quantity * sku_weight;
-        loadedPosition.sku_id = SKUId;
+
         delete loadedPosition.id;
         try {
             await PersistentManager.update(SKU.tableName, {position: positionID}, 'id', SKUId);
@@ -118,18 +118,7 @@ class SKUManager{
             return Promise.reject("422 availabiliy not 0");
         }
 
-        //if there is an associated position
-        if (loadedSKU.position) {
-            try {
-                //remove the sku_id from position
-                await PersistentManager.update(Position.tableName, {sku_id: null}, 'id', loadedSKU.position);
-            }
-            catch {
-                return Promise.reject("generic error");
-            }
-        }
-
-        PersistentManager.delete('id', SKUId, SKU.tableName);
+        return PersistentManager.delete('id', SKUId, SKU.tableName);
 
     }
 

@@ -17,19 +17,19 @@ app.use(express.json());
 //POSITION
 
 //POST /api/position
-app.post('/api/position', position.postPosition);
+app.post('/api/position', checkSchema(position.postPositionSchema) ,position.postPosition);
 
 //GET /api/positions
 app.get('/api/positions', position.getPositions);
 
 //PUT /api/positions/:positionID
-app.put('/api/position/:positionID', position.updatePosition);
+app.put('/api/position/:positionID', checkSchema(position.updatePositionSchema), position.updatePosition);
 
 //PUT /api/position/:positionID/changeID
-app.put('/api/position/:positionID/changeID', position.changePositionID);
+app.put('/api/position/:positionID/changeID', checkSchema(position.changePositionIDSchema),position.changePositionID);
 
 //DELETE /api/position/:positionID
-app.delete('/api/position/:positionID', position.deletePosition);
+app.delete('/api/position/:positionID', checkSchema(position.deletePositionSchema),position.deletePosition);
 
 //SKU
 
