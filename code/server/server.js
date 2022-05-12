@@ -1,8 +1,10 @@
 'use strict';
 const express = require('express');
 const position = require('./api/positionAPI');
-const sku = require('./api/skuAPI')
-const skuItem = require('./api/skuItemAPI')
+const sku = require('./api/skuAPI');
+const skuItem = require('./api/skuItemAPI');
+const testDescriptor = require('./api/testDescriptorAPI');
+const testResult = require('./api/testResultAPI');
 const PersistentManager = require('./bin/DB/PersistentManager');
 const { checkSchema } = require('express-validator');
 // init express
@@ -68,6 +70,40 @@ app.put('/api/skuitems/:rfid', checkSchema(skuItem.putSkuItemSchema), skuItem.pu
 
 //DELETE /api/skuitems/:rfid
 app.delete('/api/skuitems/:rfid', skuItem.deleteSkuItem);
+
+//TEST DESCRIPTOR
+
+//POST /api/testDescriptor
+app.post('/api/testDescriptor', testDescriptor.postTestDescriptor);
+
+//GET /api/testDescriptors
+app.get('/api/testDescriptors',  testDescriptor.getTestDescriptors);
+
+//GET /api/testDescriptors/:id
+app.get('/api/testDescriptors/:id',  testDescriptor.getTestDescriptorByID);
+
+//PUT /api/testDescriptor/:id
+app.put('/api/testDescriptor/:id',  testDescriptor.modifyTestDescriptorById);
+
+//DELETE /api/testDescriptor/:id
+app.delete('/api/testDescriptor/:id',  testDescriptor.deleteTestDescriptor);
+
+//TEST RESULT
+
+//POST /api/skuitems/testResult
+app.post('/api/skuitems/testResult', testResult.postTestResult);
+
+//GET /api/skuitems/:rfid/testResults
+app.get('/api/skuitems/:rfid/testResults',  testResult.getTestResults);
+
+//GET /api/skuitems/:rfid/testResults/:id
+app.get('/api/skuitems/:rfid/testResults/:id',  testResult.getTestResultByID);
+
+//PUT /api/skuitems/:rfid/testResult/:id
+app.put('/api/skuitems/:rfid/testResult/:id',  testResult.modifyTestResultById);
+
+//DELETE /api/skuitems/:rfid/testResult/:id
+app.delete('/api/skuitems/:rfid/testResult/:id',  testResult.deleteTestResult);
  
 
 /*

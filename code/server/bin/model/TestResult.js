@@ -1,10 +1,14 @@
 'use strict'
 
 class TestResult {
-    constructor (id, date, result, testDescriptor) {
+    static tableName = 'TestResult';
+    constructor (id, rfid,  date, result, idTestDescriptor) {
         this.id = id;
+        this.rfid = rfid;
         this.date = date;
         this.result = result;
-        this.testDescriptor = testDescriptor;
+        this.idTestDescriptor = idTestDescriptor;
     }
 }
+
+module.exports = TestResult;
