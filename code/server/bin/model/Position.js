@@ -5,7 +5,7 @@ const res = require("express/lib/response");
 class Position {
     static tableName = 'Position';
     
-    constructor (id, aisle, row, col, max_weight, max_volume, occupied_weight, occupied_volume, relativeSKU) {
+    constructor (id, aisle, row, col, max_weight, max_volume, occupied_weight, occupied_volume) {
         this.id = id;
         this.aisle = aisle;
         this.row = row;
@@ -14,7 +14,6 @@ class Position {
         this.max_volume = max_volume;
         this.occupied_weight = occupied_weight;
         this.occupied_volume = occupied_volume;
-        this.relativeSKU = relativeSKU;
     }
 
     //Checks if position ID is in a valid format
@@ -37,42 +36,6 @@ class Position {
         else {
             return false;
         }
-    }
-
-    isFormCorrect() {
-        let isCorrect = true;
-        const fourDigits = new RegExp('^([0-9]{4})$');
-        const twelveDigits = new RegExp('^([0-9]{12})$');
-        if (!this.id.match(twelveDigits) || !this.aisle.match(fourDigits) || !this.row.match(fourDigits) || !this.col.match(fourDigits)) {
-            
-            isCorrect = false;
-        }
-        if (isNaN(this.max_weight) || isNaN(this.max_volume)) {
-            
-            isCorrect = false;
-        }
-        else if (!Math.sign(this.max_weight) || !Math.sign(this.max_volume)) {
-            isCorrect = false;
-        }
-        
-        if (this.occupied_volume) {
-            if (isNaN(this.occupied_volume)) {
-                isCorrect = false;
-            }
-            else if (!Math.sign(this.occupied_volume)) {
-                isCorrect = false;
-            }
-        } 
-        if (this.occupied_weight) {
-            if (isNaN(this.occupied_weight)) {
-                isCorrect = false;
-            }
-            else if (!Math.sign(this.occupied_weight)) {
-                isCorrect = false;
-            }
-        } 
-
-        return isCorrect;
     }
 
     canItStore(tot_weight, tot_volume) {

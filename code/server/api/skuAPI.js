@@ -63,7 +63,6 @@ exports.postSKU = function(req,res) {
     let price = req.body.price;
     let notes = req.body.notes;
     let availableQuantity = req.body.availableQuantity;
-    //validation to do
 
 
     SKUManager.defineSKU(description, weight, volume, price, notes, availableQuantity).then( 
