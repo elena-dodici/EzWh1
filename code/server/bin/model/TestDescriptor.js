@@ -2,11 +2,11 @@
 
 class TestDescriptor {
     static tableName = 'TestDescriptor';
-    constructor (id, name, procedureDescription, sku_id) {
+    constructor (id, name, procedureDescription, idSKU) {
         this.id = id;
         this.name = name;
         this.procedureDescription = procedureDescription;
-        this.sku = sku;
+        this.idSKU = idSKU;
     }
 }
 
