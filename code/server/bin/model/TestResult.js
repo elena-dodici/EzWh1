@@ -2,12 +2,12 @@
 
 class TestResult {
     static tableName = 'TestResult';
-    constructor (id, rfid,  date, result, idTestDescriptor) {
+    constructor (id, rfid,  Date, Result, idTestDescriptor) {
         this.id = id;
         this.rfid = rfid;
-        this.date = date;
-        this.result = result;
         this.idTestDescriptor = idTestDescriptor;
+        this.Date = Date;
+        this.Result = Result;
     }
 }
 

@@ -74,7 +74,7 @@ app.delete('/api/skuitems/:rfid', skuItem.deleteSkuItem);
 //TEST DESCRIPTOR
 
 //POST /api/testDescriptor
-app.post('/api/testDescriptor', testDescriptor.postTestDescriptor);
+app.post('/api/testDescriptor',checkSchema(testDescriptor.postTestDescriptorSchema) ,testDescriptor.postTestDescriptor);
 
 //GET /api/testDescriptors
 app.get('/api/testDescriptors',  testDescriptor.getTestDescriptors);
@@ -83,7 +83,7 @@ app.get('/api/testDescriptors',  testDescriptor.getTestDescriptors);
 app.get('/api/testDescriptors/:id',  testDescriptor.getTestDescriptorByID);
 
 //PUT /api/testDescriptor/:id
-app.put('/api/testDescriptor/:id',  testDescriptor.modifyTestDescriptorById);
+app.put('/api/testDescriptor/:id', checkSchema(testDescriptor.modifyTestDescriptorByIdSchema),  testDescriptor.modifyTestDescriptorById);
 
 //DELETE /api/testDescriptor/:id
 app.delete('/api/testDescriptor/:id',  testDescriptor.deleteTestDescriptor);
@@ -91,7 +91,7 @@ app.delete('/api/testDescriptor/:id',  testDescriptor.deleteTestDescriptor);
 //TEST RESULT
 
 //POST /api/skuitems/testResult
-app.post('/api/skuitems/testResult', testResult.postTestResult);
+app.post('/api/skuitems/testResult',checkSchema(testResult.postTestResultSchema), testResult.postTestResult);
 
 //GET /api/skuitems/:rfid/testResults
 app.get('/api/skuitems/:rfid/testResults',  testResult.getTestResults);
@@ -100,7 +100,7 @@ app.get('/api/skuitems/:rfid/testResults',  testResult.getTestResults);
 app.get('/api/skuitems/:rfid/testResults/:id',  testResult.getTestResultByID);
 
 //PUT /api/skuitems/:rfid/testResult/:id
-app.put('/api/skuitems/:rfid/testResult/:id',  testResult.modifyTestResultById);
+app.put('/api/skuitems/:rfid/testResult/:id',checkSchema(testResult.modifyTestResultByIdSchema),  testResult.modifyTestResultById);
 
 //DELETE /api/skuitems/:rfid/testResult/:id
 app.delete('/api/skuitems/:rfid/testResult/:id',  testResult.deleteTestResult);
