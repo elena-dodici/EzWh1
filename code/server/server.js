@@ -1,8 +1,10 @@
 'use strict';
 const express = require('express');
 const position = require('./api/positionAPI');
-const sku = require('./api/skuAPI')
-const skuItem = require('./api/skuItemAPI')
+const sku = require('./api/skuAPI');
+const skuItem = require('./api/skuItemAPI');
+const testDescriptor = require('./api/testDescriptorAPI');
+const testResult = require('./api/testResultAPI');
 const PersistentManager = require('./bin/DB/PersistentManager');
 const { checkSchema } = require('express-validator');
 // init express
@@ -67,7 +69,45 @@ app.post('/api/skuitem', checkSchema(skuItem.postSkuItemSchema) , skuItem.postSk
 app.put('/api/skuitems/:rfid', checkSchema(skuItem.putSkuItemSchema), skuItem.putSkuItem);
 
 //DELETE /api/skuitems/:rfid
+<<<<<<< HEAD
 app.delete('/api/skuitems/:rfid', checkSchema(skuItem.deleteSKUItemSchema),skuItem.deleteSkuItem);
+=======
+app.delete('/api/skuitems/:rfid', skuItem.deleteSkuItem);
+
+//TEST DESCRIPTOR
+
+//POST /api/testDescriptor
+app.post('/api/testDescriptor',checkSchema(testDescriptor.postTestDescriptorSchema) ,testDescriptor.postTestDescriptor);
+
+//GET /api/testDescriptors
+app.get('/api/testDescriptors',  testDescriptor.getTestDescriptors);
+
+//GET /api/testDescriptors/:id
+app.get('/api/testDescriptors/:id',  testDescriptor.getTestDescriptorByID);
+
+//PUT /api/testDescriptor/:id
+app.put('/api/testDescriptor/:id', checkSchema(testDescriptor.modifyTestDescriptorByIdSchema),  testDescriptor.modifyTestDescriptorById);
+
+//DELETE /api/testDescriptor/:id
+app.delete('/api/testDescriptor/:id',  testDescriptor.deleteTestDescriptor);
+
+//TEST RESULT
+
+//POST /api/skuitems/testResult
+app.post('/api/skuitems/testResult',checkSchema(testResult.postTestResultSchema), testResult.postTestResult);
+
+//GET /api/skuitems/:rfid/testResults
+app.get('/api/skuitems/:rfid/testResults',  testResult.getTestResults);
+
+//GET /api/skuitems/:rfid/testResults/:id
+app.get('/api/skuitems/:rfid/testResults/:id',  testResult.getTestResultByID);
+
+//PUT /api/skuitems/:rfid/testResult/:id
+app.put('/api/skuitems/:rfid/testResult/:id',checkSchema(testResult.modifyTestResultByIdSchema),  testResult.modifyTestResultById);
+
+//DELETE /api/skuitems/:rfid/testResult/:id
+app.delete('/api/skuitems/:rfid/testResult/:id',  testResult.deleteTestResult);
+>>>>>>> 965b30da11e1244342017944cd3bd0a1516d5754
  
 
 /*
