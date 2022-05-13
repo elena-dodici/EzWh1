@@ -162,6 +162,7 @@ class PersistentManager {
 		return new Promise ((resolve, reject) => {
 			const selectedAttributes = selectedNames.join(',');
 			const sql = "SELECT " + selectedAttributes + " FROM " + tableName + " WHERE " + parameter_name + "= ?";
+			console.log(sql);
             const db = new sqlite.Database(this.dbName, (err) => {if (err) reject(err) });
 			db.get("PRAGMA foreign_keys = ON");
             db.get(sql, value, (err, row) => {if (err) reject(err); resolve(row); } )

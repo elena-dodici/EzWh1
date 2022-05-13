@@ -87,6 +87,8 @@ exports.getSKUS = function(req,res) {
     )
 }
 
+
+
 exports.getSKUByID = function(req,res) {
     let id = req.params.id;
 
@@ -248,8 +250,6 @@ exports.deleteSKU = function (req,res) {
         },
         error => {
             switch (error) {
-                case "404 SKU":
-                    return res.status(404).json({error: "SKU not existing"})
                 case "422 availabiliy not 0":
                     return res.status(422).json({error: "SKU availability is not 0"})
                 default: 

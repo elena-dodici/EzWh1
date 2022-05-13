@@ -111,9 +111,7 @@ class SKUManager{
 
     async deleteSKU(SKUId) {
         let loadedSKU = await this.getSKUByID(SKUId);
-        if (!loadedSKU){
-            return Promise.reject("404 SKU");
-        }
+        
         if (loadedSKU.availableQuantity) {
             return Promise.reject("422 availabiliy not 0");
         }

@@ -55,10 +55,10 @@ app.delete('/api/skus/:id', sku.deleteSKU);
 app.get('/api/skuitems', skuItem.getSKuItems);
 
 //GET /api/skuitems/sku/:id
-app.get('/api/skuitems/sku/:id', skuItem.getSkuItemsBySKU);
+app.get('/api/skuitems/sku/:id', checkSchema(skuItem.getSKUItemBySKUSchema), skuItem.getSkuItemsBySKU);
 
 //GET /api/skutiems/:rfid
-app.get('/api/skuitems/:rfid', skuItem.getSKUItemByRfid);
+app.get('/api/skuitems/:rfid', checkSchema(skuItem.getSKUItemByRfidSchema), skuItem.getSKUItemByRfid);
 
 //POST /api/skuitem
 app.post('/api/skuitem', checkSchema(skuItem.postSkuItemSchema) , skuItem.postSkuItem);
@@ -67,7 +67,7 @@ app.post('/api/skuitem', checkSchema(skuItem.postSkuItemSchema) , skuItem.postSk
 app.put('/api/skuitems/:rfid', checkSchema(skuItem.putSkuItemSchema), skuItem.putSkuItem);
 
 //DELETE /api/skuitems/:rfid
-app.delete('/api/skuitems/:rfid', skuItem.deleteSkuItem);
+app.delete('/api/skuitems/:rfid', checkSchema(skuItem.deleteSKUItemSchema),skuItem.deleteSkuItem);
  
 
 /*

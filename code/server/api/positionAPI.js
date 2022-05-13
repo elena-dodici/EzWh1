@@ -79,7 +79,6 @@ exports.postPosition = function(req,res) {
             return res.status(201).json();
         },
         error => {
-            console.log(error);
             return res.status(503).json({error: 'generic error'})
         }
     )
@@ -182,22 +181,17 @@ exports.updatePosition = async function(req,res) {
         return res.status(503).json({error: 'Invalid format'});
     }
 
-    
-
-    let exists = await PositionManager.existsPosition(id)
-    if (!exists) {
-        return res.status(404).json({error: 'no position associated to positionID'});
-    }
     let result = PositionManager.modifyPosition(id, aisle, row, col, max_weight, max_volume, occupied_weight, occupied_volume);
     result.then( 
         result => {
             return res.status(200).json();
         },
         error => {
-            console.log(error);
             switch (error) {
                 case "422 cant store sku":
                     return res.status(503).json({error: 'Position\'s new values can\'t store related sku anymore'});
+                case "404 position":
+                    return res.status(404).json({error: 'no position associated to positionID'});
                 default:
                     return res.status(503).json({error: 'generic error'})
             }

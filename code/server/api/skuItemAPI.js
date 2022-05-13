@@ -59,10 +59,10 @@ exports.postSkuItem = function(req,res) {
             switch (error) {
                 case "404 SKU":
                     return res.status(404).json({error: "No SKU associated to SKUId"});
-                case "503 duplicate":
-                    return res.status(503).json({error: "Duplicated rfid"})
+                case "422 duplicate":
+                    return res.status(422).json({error: "Duplicated rfid"})
                 default: 
-                    return res.status(500).json({error: "generic error"});
+                    return res.status(503).json({error: "generic error"});
             }
         }
     );
@@ -85,14 +85,30 @@ exports.getSKuItems = function (req,res) {
             return res.status(200).json(result);
         },
         error => {
-            console.log(error);
+            return res.status(500).json({error: "generic error"});
         }
     );
 }
 
-
+exports.getSKUItemBySKUSchema = {
+    id: {
+        notEmpty: true,
+        isInt: {
+            options: {min: 0}
+        }
+    }
+}
 
 exports.getSkuItemsBySKU = function (req,res) {
+
+    const errors = validationResult(req);
+
+    if (!errors.isEmpty()) {
+        return res.status(422).json({
+            error: "Validation of id failed"
+        });
+    }
+
     let skuId = req.params.id;
     SKUItemManager.listForSKU(skuId).then(
         result => {
@@ -107,26 +123,61 @@ exports.getSkuItemsBySKU = function (req,res) {
             return res.status(200).json(result);
         },
         error => {
-            console.log(error);
+            switch (error) {
+                case "404 sku":
+                    return res.status(404).json({error: "No SKU associated to SKUId"});
+                default:
+                    return res.status(503).json({error: "generic error"});
+            }
         }
     )
 }
 
+exports.getSKUItemByRfidSchema = {
+    rfid: {
+        notEmpty: true,
+        isNumeric: true,
+        isLength: {
+            options: {min: 32, max: 32}
+        }
+    }
+}
+
 exports.getSKUItemByRfid = function (req,res) {
     let rfid = req.params.rfid;
+
+    const errors = validationResult(req);
+
+    if (!errors.isEmpty()) {
+        return res.status(422).json({
+            error: "Validation of rfid failed"
+        });
+    }
 
     SKUItemManager.searchByRFID(rfid).then(
         result => {
             return res.status(200).json(result);
         },
         error => {
-            console.log(error);
+            switch (error) {
+                case "404 rfid":
+                    return res.status(404).json({error: "No SKU Item associated to rfid"})
+                default:
+                    return res.status(500).json({error: "generic error"});
+            }
         }
     );
 
 }
 
 exports.putSkuItemSchema = {
+    rfid: {
+        notEmpty: true,
+        isNumeric: true,
+        isLength: {
+            options: {min: 32, max: 32}
+        }
+    },
     newRFID: {
         notEmpty: true,
         isNumeric: true,
@@ -153,7 +204,7 @@ exports.putSkuItem = function (req,res) {
 
     if (!errors.isEmpty()) {
         return res.status(422).json({
-            error: "Validation of request body failed"
+            error: "Validation of request body or rfid failed"
         });
     }
 
@@ -166,7 +217,6 @@ exports.putSkuItem = function (req,res) {
     if (!dateValidation(newDateOfStock)) {
         return res.status(422).json({error: "date validation failed"});
     }
-
 
 
     SKUItemManager.modifySKUItem(rfid, newRFID, newAvailable, newDateOfStock).then(
