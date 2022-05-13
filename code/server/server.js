@@ -69,10 +69,8 @@ app.post('/api/skuitem', checkSchema(skuItem.postSkuItemSchema) , skuItem.postSk
 app.put('/api/skuitems/:rfid', checkSchema(skuItem.putSkuItemSchema), skuItem.putSkuItem);
 
 //DELETE /api/skuitems/:rfid
-<<<<<<< HEAD
+
 app.delete('/api/skuitems/:rfid', checkSchema(skuItem.deleteSKUItemSchema),skuItem.deleteSkuItem);
-=======
-app.delete('/api/skuitems/:rfid', skuItem.deleteSkuItem);
 
 //TEST DESCRIPTOR
 
@@ -107,7 +105,7 @@ app.put('/api/skuitems/:rfid/testResult/:id',checkSchema(testResult.modifyTestRe
 
 //DELETE /api/skuitems/:rfid/testResult/:id
 app.delete('/api/skuitems/:rfid/testResult/:id',  testResult.deleteTestResult);
->>>>>>> 965b30da11e1244342017944cd3bd0a1516d5754
+
  
 
 /*

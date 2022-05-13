@@ -98,7 +98,7 @@ class QualityTestManager {
     async modifyTestResultByID(TestId,rfid, newIdTestDescriptor, newDate, newResult) {
         const exists = await PersistentManager.exists(TestResult.tableName, 'id', TestId);
         if (exists) {
-            let loadedTestResult = await PersistentManager.loadOneByAttribute(TestResult.tableName,"id",TestId);
+            let loadedTestResult = await PersistentManager.loadOneByAttribute("id",TestResult.tableName,TestId);
             if (loadedTestResult.rfid == rfid) {
                 const existsTestDescriptor = await PersistentManager.exists(TestDescriptor.tableName, 'id', newIdTestDescriptor);
                 if(existsTestDescriptor) {

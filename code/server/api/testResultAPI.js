@@ -160,7 +160,7 @@ exports.modifyTestResultByIdSchema = {
 
         const id = req.params.id;
         const rfid = req.params.rfid;
-        const newIdTestDescriptor = req.body.newidTestDescriptor;
+        const newIdTestDescriptor = req.body.newIdTestDescriptor;
         const newDate = req.body.newDate;
         const newResult = req.body.newResult;
 
