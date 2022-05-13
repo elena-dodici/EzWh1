@@ -1,10 +1,13 @@
 'use strict'
 
 class InternalOrder {
-    constructor (id, date, state, customer ) {
+    static tableName = 'InternalOrder';
+    constructor ( id,date, state, customerId ) {
         this.id = id;
         this.date = date;
         this.state = state; 
-        this.customer = customer;
+        this.customerId = customerId;
     }
 }
+
+module.exports = InternalOrder;

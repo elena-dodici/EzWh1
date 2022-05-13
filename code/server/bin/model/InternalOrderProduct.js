@@ -1,12 +1,15 @@
 'use strict'
 
 class InternalOrderProduct {
-    constructor (id, description, price, quantity, sku, internalOrder) {
+    static tableName = 'InternalOrderProduct';
+    constructor (id, description, price, quantity, sku_id, internalOrder_id) {
         this.id = id;
         this.description = description;
         this.price = price;
         this.quantity = quantity;
-        this.sku = sku;
-        this.internalOrder = internalOrder;
+        this.sku_id = sku_id;
+        this.internalOrder_id = internalOrder_id;
     }
 }
+
+module.exports = InternalOrderProduct;

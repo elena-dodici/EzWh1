@@ -1,11 +1,14 @@
 'use strict'
 
-class restockOrder {
-    constructor (id, issue_date, state, supplier, transportNote) {
+class RestockOrder {
+    static tableName = 'RestockOrder';
+    constructor (id, issue_date, state, supplier_id, transportNote) {
         this.id = id;
         this.issue_date = issue_date;
         this.state = state;
-        this.supplier = supplier;
+        this.supplier_id = supplier_id;
         this.transportNote = transportNote;
     }
 }
+
+module.exports = RestockOrder;
