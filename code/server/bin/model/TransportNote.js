@@ -1,7 +1,7 @@
 'use strict'
 
 class TransportNote {
-    tableName = 'TransportNote'
+    static tableName = 'TransportNote'
     constructor (id, deliveryDate) {
         this.id = id;
         this.deliveryDate = deliveryDate;
