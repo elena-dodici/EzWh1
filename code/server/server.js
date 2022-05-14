@@ -149,17 +149,20 @@ app.get('/api/restockOrdersIssued', restockOrders.getRestockIssuedOrder);
 //GET /api/restockOrders/:id
 app.get('/api/restockOrders/:id', restockOrders.getRestockOrderById);
 
-//PUT /api/restockOrder/:id just update state no new table needed
+//GET /api/restockOrders/:id/returnItems
+app.get('/api/restockOrders/:id/returnItems', restockOrders.getItemsById);
+
+//PUT /api/restockOrder/:id 
 app.put('/api/restockOrder/:id',restockOrders.updateState );
 
-//PUT /api/restockOrder/:id/skuItems update restock and sku-item as well a lot to do(relationship?)
-app.put('/api/restockOrder/:id/skuItems', );
+//PUT /api/restockOrder/:id/skuItems
+app.put('/api/restockOrder/:id/skuItems',restockOrders.updateSKUItems );
 
 //PUT /api/restockOrder/:id/transportNote  update and use transport id to update transport node(1 to 1)
-app.put('/api/restockOrder/:id/transportNote', );
+app.put('/api/restockOrder/:id/transportNote', restockOrders.addTransportNode);
 
-//GET api/restockOrders/:id/returnItems   use restock_id to find rfid+sku_id and return that list
-app.get('/api/restockOrders/:id',);
+//GET api/restockOrders/:id/returnItems   
+app.get('/api/restockOrders/:id',restockOrders.getRestockOrder);
 
 //ReturnOrder
 //GET /api/returnOrders  products list need to be finished

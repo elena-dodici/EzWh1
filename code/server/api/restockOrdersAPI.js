@@ -69,7 +69,7 @@ exports.getRestockIssuedOrder = function(req,res) {
 }
 
 exports.getRestockOrderById = function(req,res) {
-    let id = req.params.rowID;
+    let id = req.params.id;
     let result = RestockOrderManager.getRestockOrderByID(id);
     result.then(
         result => {
@@ -82,11 +82,24 @@ exports.getRestockOrderById = function(req,res) {
     
 }
 
+exports.getItemsById = function(req,res) {
+    let id = req.params.id;
+    let result = RestockOrderManager.getItemsById(id);
+    result.then(
+        result => {
+            return res.status(200).json(result);
+        },
+        error => {
+            console.log(error)
+        }
+    )
+    
+}
 
 exports.updateState = function(req,res) {   
-    let rowID= req.params.roID;
+    let rowID= req.params.id;
     let newState = req.body.newState;
-    let result = PositionManager.modifyState(rowID, newState);
+    let result = RestockOrderManager.modifyState(rowID, newState);
     result.then( 
         result => {
             return res.status(200).json();
@@ -96,13 +109,14 @@ exports.updateState = function(req,res) {
         }
     )
 }
-////// not finish yet
+
+
 exports.addTransportNode = function(req,res) {
-    let id= req.params.positionID;
-    let newID = req.body.newPositionID;
+    let id= req.params.id;
+    let newTN = req.body.transportNote;
     
 
-    let result = PositionManager.changePositionID(id, newID);
+    let result = RestockOrderManager.updateTransportNote(id, newTN);
     result.then(
         result => {
             return res.status(200).json();
@@ -113,13 +127,12 @@ exports.addTransportNode = function(req,res) {
     )
 
 }
-////// not finish yet 
-exports.addSKUItems = function(req,res) {
-    let id= req.params.positionID;
-    let newID = req.body.newPositionID;
-    
 
-    let result = PositionManager.changePositionID(id, newID);
+exports.updateSKUItems = function(req,res) {
+    let id= req.params.id;
+    let newSkuitemsinfo = req.body.skuItems;
+
+    let result = RestockOrderManager.putSKUItems(id, newSkuitemsinfo);
     result.then(
         result => {
             return res.status(200).json();
