@@ -2,6 +2,7 @@
 
 class Item {
     static tableName='Item';
+    
     constructor (id, description, price, SKUId, supplierId) {
         
         this.id = id;
