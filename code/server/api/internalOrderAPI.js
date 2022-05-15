@@ -1,21 +1,41 @@
 'use strict'
 const InternalOrderManager = require('../bin/controller/InternalOrderManager.js');
+const { validationResult } = require('express-validator');
 
-
+const dateValidation = function(date) {
+    const yyyymmddRegex = new RegExp(/^\d{4}\/(0[1-9]|1[0-2])\/(0[1-9]|[12][0-9]|3[01])$/);
+    const withHours = new RegExp(/^\d{4}\/[0-1][0-2]\/[0-3]\d\s([0-1][0-9]|2[0-3]):[0-5]\d$/);
+    if(yyyymmddRegex.exec(date) || withHours.exec(date)) {
+        return true;
+    }
+    return false;
+}
 
 //post
 exports.postInternalOrder = function(req,res){
 
-    if (Object.keys(req.body).length === 0) {
-        return res.status(422).json({error: 'Empty body request'});
+    const errors = validationResult(req);
+
+    if (!errors.isEmpty()) {
+        return res.status(422).json({
+            error: "Validation of request body failed"
+        });
     }
 
     let issue_date = req.body.issueDate;
     let customerId = req.body.customerId;
     let productlist = req.body.products;
-    let result =  InternalOrderManager.defineInternalOrder(issue_date,productlist,customerId);
+    
 
-   // let products
+
+    //Date validation
+    if (!dateValidation(issue_date)) {
+        return res.status(422).json({error: "date validation failed"});
+    }
+    
+    let result =  InternalOrderManager.defineInternalOrder(issue_date,productlist,customerId);
+   
+    // let products
     result.then(
         result=>{
             return res.status(200).json();
@@ -48,7 +68,7 @@ exports.getAllInternalOrder = function(req,res) {
     let result = InternalOrderManager.listAllInternalOrder();
     result.then(
         result => {
-            return res.status(200).json(result);
+             res.status(200).json(result);
         },
         error => {
             console.log(error)
@@ -62,7 +82,7 @@ exports.getInternalOrderIssued = function(req,res) {
     let result = InternalOrderManager.listIssuedIO();
     result.then(
         result => {
-            return res.status(200).json(result);
+             res.status(200).json(result);
         },
         error => {
             console.log(error)
@@ -100,7 +120,15 @@ exports.getinternalOrderById = function(req,res) {
 }
 
 
-exports.changeInternalOrder = function(req,res) {   
+exports.changeInternalOrder = function(req,res) {  
+    
+    const errors = validationResult(req);
+
+    if (!errors.isEmpty()) {
+        return res.status(422).json({
+            error: "Validation of request body failed"
+        });
+    }
     let rowID= req.params.id;
     let newState = req.body.newState;
     let ProductList = undefined;

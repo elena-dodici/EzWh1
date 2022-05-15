@@ -12,6 +12,11 @@ class ReturnOrderManager {
 
     async defineReturnOrder(date, productsList, roId) {
 
+        const exists = await PersistentManager.exists(RestockOrder.tableName, 'id', roId);
+        if (!exists) {
+            return Promise.reject("404 not found restockOrderId");
+        }
+
         let newReO = new ReturnOrder(null, date, null);
         let newReturnOID = await PersistentManager.store(ReturnOrder.tableName, newReO);
         //iterate in productlist of one order and insert this orderid in skuitem table as well

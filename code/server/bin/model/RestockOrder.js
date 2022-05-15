@@ -9,6 +9,9 @@ class RestockOrder {
         this.supplier_id = supplier_id;
         this.transportNote = transportNote;
     }
+
+        //Checks if position ID is in a valid format
+   
 }
 
 module.exports = RestockOrder;

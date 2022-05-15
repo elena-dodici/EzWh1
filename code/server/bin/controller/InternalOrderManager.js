@@ -28,11 +28,10 @@ class InternalOrderManager{
 
 
     async modifyState(rowID, newState,ProductList){
-        // let IOUptodate={
-        //     state:newState,
-        //     products:ProductList
-        // }
-        //update DateOfStrock in SKUitem by using rfid and skuid
+        const exists = await PersistentManager.exists(InternalOrder.tableName, 'id', rowID);
+        if (!exists) {
+            return Promise.reject("404 not found InternalOrder");
+        }
         
         if(ProductList!=undefined&&newState==="COMPLETED"){ 
             for(let i =0;i<ProductList.length;i++){

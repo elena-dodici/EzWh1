@@ -9,7 +9,8 @@ const PersistentManager = require('./bin/DB/PersistentManager');
 const { checkSchema } = require('express-validator');
 const internalOrders = require('./api/internalOrderAPI');
 const restockOrders = require('./api/restockOrdersAPI');
-const returnOrders = require('./api/returnOrdersAPI')
+const returnOrders = require('./api/returnOrdersAPI');
+const item = require('./api/itemAPI');
 // init express
 const app = new express();
 const port = 3001;
@@ -176,6 +177,23 @@ app.post('/api/returnOrder', returnOrders.postReturnOrder);
 
 //DELETE /api/returnOrder/:id 
 app.delete('/api/returnOrder/:id', returnOrders.deleteReturnOrder);
+
+//ITEM
+
+//POST /api/item
+app.post('/api/item',checkSchema(item.postItemSchema), item.postItem);
+
+//GET /api/items
+app.get('/api/items',  item.getItems);
+
+//GET /api/items/:id
+app.get('/api/items/:id',  item.getItemByID);
+
+//PUT /api/item/:id
+app.put('/api/item/:id',checkSchema(item.modifyItemByIdSchema), item.modifyItemById);
+
+//DELETE /api/items/:id
+app.delete('/api/items/:id',  item.deleteItem);
 
 /*
 Activate the server
