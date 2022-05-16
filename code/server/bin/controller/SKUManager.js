@@ -122,7 +122,7 @@ class SKUManager{
 
     async _loadTests(id) {
         let tests;
-        await PersistentManager.loadFilterByAttribute(TestDescriptor.tableName, 'sku_id', id).then(
+        await PersistentManager.loadFilterByAttribute(TestDescriptor.tableName, 'idSKU', id).then(
             result => {
                 tests = result;
             },

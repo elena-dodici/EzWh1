@@ -73,6 +73,9 @@ exports.postUserSchema = {
 	},
 	password: {
 		notEmpty: true,
+		isLength: {
+			options: {min: 8}
+		}
 	},
 	username: {
 		notEmpty: true,
@@ -103,8 +106,8 @@ exports.postUser = function (req, res) {
 
 	if (!errors.isEmpty()) {
 		return res.status(422).json({
-			//errors: errors.array()
-			error: "Validation of request body failed or attempt to create manager or administrator accounts",
+			errors: errors.array()
+			//error: "Validation of request body failed or attempt to create manager or administrator accounts",
 		});
 	}
 
@@ -116,6 +119,7 @@ exports.postUser = function (req, res) {
 		(error) => {
 			switch (error) {
 				case "503":
+					
 					return res.status(503).json({ error: "generic error" });
 				case "409 email type":
 					return res
@@ -162,6 +166,7 @@ exports.customerSessions = function (req, res) {
 			return res.status(200).json(result);
 		},
 		(error) => {
+			console.log(error);
 			return res.status(500).json({ error: "generic error" });
 		}
 	);

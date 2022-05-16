@@ -25,7 +25,6 @@ class SKUItemManager {
 			skuId,
 			null,
 			null,
-			null,
 			null
 		);
 		//Rename the keys to store in the database properly.
@@ -34,7 +33,6 @@ class SKUItemManager {
 		utility.renameKey(s, "internalOrder", "internalOrder_id");
 		utility.renameKey(s, "restockOrder", "restockOrder_id");
 		utility.renameKey(s, "returnOrder", "returnOrder_id");
-		utility.renameKey(s, "testResult", "testResult_id");
 
 		//validation todo
 		return PersistentManager.store(SKUItem.tableName, s);
