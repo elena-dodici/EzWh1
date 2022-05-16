@@ -88,7 +88,18 @@ class QualityTestManager {
     }
 
     async getAllTestResultsByRFID(rfid) {     
-        return PersistentManager.loadByMoreAttributes(TestResult.tableName, 'rfid', rfid);
+        const testResults = await PersistentManager.loadAllRows(TestResult.tableName, 'rfid', rfid);
+        const testsAPI = testResults.map(
+            (t) => {
+                return {
+                    id: t.id,
+                    idTestDescriptor: t.idTestDescriptor,
+                    Date: t.Date,
+                    Result: t.Result
+                }
+            }
+        );
+        return testsAPI;
     }
 
     async getTestResultByID(TestId,rfid) {
