@@ -164,7 +164,9 @@ exports.changeInternalOrder = function(req,res) {
                 case "404 not found InternalOrder":
                     return res.status(404).json({error: "InternalOrderId not existing"})
             
-                
+                case "Not available qty in DB":
+                    return res.status(422).json({error: "Not available Quantity in WareHouse"})
+
                 default:     
                     console.log(error)
                     return res.status(503).json({error: "generic error"});

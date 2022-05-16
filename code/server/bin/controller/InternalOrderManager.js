@@ -41,23 +41,20 @@ class InternalOrderManager{
                 await PersistentManager.update(SKUItem.tableName,{"Available":0},"RFID",curProRFID)
                 
                     
-                   //no sku find     
-                let curSKU = await  PersistentManager.loadOneByAttribute("id",SKU.tableName,curSkuID)
-                curSKU.then(
-                    async result=>{
-                        let curSKUqty = curSKU.availableQuantity;               
-                        if (curSKUqty===1) {
-                            await PersistsentManager.delete('id',curSkuID,SKU.tableName)
-                        }
-                        else{                          
-                            let resultqty = curSKUqty-1;                     
-                            await PersistentManager.update(SKU.tableName, {"availableQuantity":resultqty},"id",curSkuID );                                        
-                            }
-                    },
-                    error=>{
-                        return Promise.reject("noSKUfind")
+                    
+                let curSKU =  await PersistentManager.loadOneByAttribute("id",SKU.tableName,curSkuID)
+                let curSKUqty = curSKU.availableQuantity;  
+                console.log(curSKUqty)             
+                if (curSKUqty===0) {
+                    return Promise.reject("Not available qty in DB")
+                }
+                else{                          
+                    let resultqty = curSKUqty-1;                     
+                    await PersistentManager.update(SKU.tableName, {"availableQuantity":resultqty},"id",curSkuID );                                        
                     }
-                )
+            
+                
+                
                 
 
                  
@@ -74,6 +71,7 @@ class InternalOrderManager{
     async listAllInternalOrder(){
         let originIo =  await PersistentManager.loadAllRows(InternalOrder.tableName);
         let result = await this.addProductsList(originIo);
+        //fenzhi
         return result;
       
     }
