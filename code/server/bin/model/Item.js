@@ -2,13 +2,14 @@
 
 class Item {
     static tableName='Item';
-    constructor (id, description, price, sku, supplier) {
+    
+    constructor (id, description, price, SKUId, supplierId) {
         
         this.id = id;
         this.description = description; 
         this.price = price;
-        this.sku = sku;
-        this.supplier = supplier;
+        this.SKUId = SKUId;
+        this.supplierId = supplierId;
     }
 }
 

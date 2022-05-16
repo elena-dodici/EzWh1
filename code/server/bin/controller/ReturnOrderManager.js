@@ -3,69 +3,94 @@
 const ReturnOrder = require('../model/ReturnOrder');
 const PersistentManager = require('../DB/PersistentManager');
 const ProductOrder = require('../model/ProductOrder');
+const SkuItem = require('../model/SKUItem')
+const Sku = require('../model/SKU')
 
-class ReturnOrderManager{
-    constructor(){}
 
-    async defineReturnOrder(date,productsList,roId){
-        //try insert without primarykey let it increase automatically       
-        let newReO = new ReturnOrder(null,date,null);
-        let ReturnOrderT= await PersistentManager.store(ReturnOrder.tableName, newReO);
-        
+class ReturnOrderManager {
+    constructor() { }
+
+    async defineReturnOrder(date, productsList, roId) {
+
+        let newReO = new ReturnOrder(null, date, null);
+        let newReturnOID = await PersistentManager.store(ReturnOrder.tableName, newReO);
+        //iterate in productlist of one order and insert this orderid in skuitem table as well
+
+        for (let i = 0; i < productsList.length; i++) {
+            let product = productsList[i];
+            let curproRFID = product.RFID;
+            PersistentManager.update(SkuItem.tableName, { returnOrder_id: newReturnOID }, "RFID", curproRFID);
+        }
+        return 0;
     }
 
-    listAllReturnOrders(){
-        
-        let ReturnOrders = PersistentManager.loadAllRows(ReturnOrder.tableName);
-        //get rdif and skuid from SKUitem table
-        
-        return ReturnOrders;
-        
-    }
-    
-    async getReturnOrderByID(reoID){
-        let ReturnOrder = PersistentManager.loadOneByAttribute(id,ReturnOrder.tableName,reoID);
-       //select rfid and skuid fromo skuitem table where resturnOrder id =reoid
-        let productsList = await PersistentManager.loadFilterByAttribute(restockOrder_id,ProductOrder.tableName,reoID)
-        
-        return ReturnOrder;
+    async listAllReturnOrders() {
+        let ReturnOrders = await PersistentManager.loadAllRows(ReturnOrder.tableName);
+        //get rdif and skuid from SKUitem table      
+        let res = [];
+        let productList = [];
+        for (const curReturnOrder of ReturnOrders) {
+            //return every product info           
+            let product = await this.addProductsList(curReturnOrder);
+            //combine into a array
+            productList.push(product);
+        }
+        return res.push(productList);
     }
 
-    async deleteReturnOrder(reoID){
+    async getReturnOrderByID(reoID) {
+        let curReturnOrder = PersistentManager.loadOneByAttribute(id, ReturnOrder.tableName, reoID);
+        //select rfid and skuid fromo skuitem table where resturnOrder id =reoid
+        let product = await this.addProductsList(curReturnOrder);
+        return product;
+    }
+
+    async addProductsList(curReturnOrder) {
+        //select skuid from skuitem where resturnorderid=val
+        //select description && price && rfid from SKU where skuid ...
+        let curReturnOrderid = curReturnOrder.id;
+
+        let skuItemList = await PersistentManager.loadFilterByAttribute(
+            SkuItem.tableName,
+            "returnOrder_id",
+            curReturnOrderid,
+        );
+
+        for (const sku of skuItemList) {
+
+            // sku.description = [];
+            // sku.price = [];
+            // let skuRow = await PersistentManager.loadFilterByAttribute(Sku.tableName,"id",sku.SKUId);
+
+            PersistentManager.loadFilterByAttribute(Sku.tableName, "id", sku.SKUId).then(
+                result => {
+                    return {
+                        "Skuid": sku.SKUId,
+                        "description": result[0].description,
+                        "price": result[0].price,
+                        "RFID": sku.RFID
+                    }
+                },
+                error => {
+                    console.log(error);
+                    return error;
+                }
+            );
+        }
+
+    }
+
+    async deleteReturnOrder(reoID) {
         let loadedReturnOrder = await this.getReturnOrderByID(reoID);
-        if(!loadedReturnOrder) {
+        if (!loadedReturnOrder) {
             return Promise.reject("404 returnOrder not found")
         }
-        return  PersistentManager.delete('id',reoID,ReturnOrder.tableName);
-        
-    }
-//need 
-    async addProductsList(result){
-        let newRow=[];
-        for(let i=0;i<result.length;i++ ){
-            let currentRO =result[i];
-            //define a new array for products
-             currentRO.prodcts=[];
-            let res = await this.loadProducts(currentRO.id);
-            for(const i of res ){
-                currentRO.prodcts.push(i)
-            }
-            newRow.push(currentRO);
-        }
-        return newRow;
-    }
-
-    loadProducts(RoId){
+        return PersistentManager.delete('id', reoID, ReturnOrder.tableName);
 
     }
 
-    async deleteReturnOrder(roID){
-        let loadedRestockOrder = await this.getReturnOrderByID(roID);
-        if(!loadedRestockOrder) {
-            return Promise.reject("404 No restockOrder Found")
-        }
-        return PersistentManager.delete('id',delroID,ReturnOrder.tableName);
-    }
+
+
 
 }
 
