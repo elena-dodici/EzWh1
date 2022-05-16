@@ -12,12 +12,22 @@ const dateValidation = function(date) {
     return false;
 }
 
-
+exports.postRestockOrderSchema = {
+    issueDate: {
+        notEmpty: true,
+    },
+    products: {
+        notEmpty: true,
+    },
+    supplierId: {
+        notEmpty: true,
+        isNumeric: true,
+    },
+}
 
 //POST /api/restockOrders
 exports.postRestockOrder = function(req,res) {
-    //validation to do
-    
+    //validation to do   
     const errors = validationResult(req);
 
     if (!errors.isEmpty()) {
@@ -26,14 +36,14 @@ exports.postRestockOrder = function(req,res) {
         });
     }
 
-    let issue_date = req.body.issue_date;
+    let issue_date = req.body.issueDate;
     let supplierId = req.body.supplierId;
     let productsList = req.body.products;
 
-    if (!dateValidation(issue_date)) {
-        return res.status(422).json({error: "date validation failed"});
-    }
-
+    // if (!dateValidation(issue_date)) {
+    //     return res.status(422).json({error: "date validation failed"});
+    // }
+  
     let result = RestockOrderManager.defineRestockOrder(issue_date, productsList,supplierId);
     
     result.then(
@@ -41,8 +51,8 @@ exports.postRestockOrder = function(req,res) {
             return res.status(201).json(result);
         },
         error => {
-            error:errors.array();
-            return res.status(501).json({error: 'generic error'})
+            console.log(error)
+            return res.status(503).json({error: 'generic error'})
         }
     )
 
@@ -104,14 +114,24 @@ exports.getRestockIssuedOrder = function(req,res) {
 
 exports.getRestockOrderById = function(req,res) {
     let id = req.params.id;
+    if(isNaN(id)){
+        res.status(422).send("id is not number.");
+    }
     let result = RestockOrderManager.getRestockOrderByID(id);
     result.then(
         result => {
             return res.status(200).json(result);
         },
         error => {
+            switch(error){
+                case "404 No RestockOrder Found":
+                        return res.status(404).json({error: "RestockOrder not existing"})
+                        
+                default:
+                        return res.status(500).json({error: "generic error"});
+                        
+            }
             
-            return res.status(500).json(error);
         }
     )
     
@@ -119,20 +139,38 @@ exports.getRestockOrderById = function(req,res) {
 
 exports.getItemsById = function(req,res) {
     let id = req.params.id;
+    if(isNaN(id)){
+        res.status(422).send("id is not number.");
+    }
+
     let result = RestockOrderManager.getItemsById(id);
     result.then(
         result => {
             return res.status(200).json(result);
         },
         error => {
+            switch(error){
+                case "404 RestockOrderid":
+                    return res.status(404).json({error: "RestockOrderId not existing"})
             
-            return res.status(500).json(error);
+                 default:
+                    return res.status(500).json({error: "generic error"});
+            }
         }
     )
     
 }
 
+exports.putStateSchema = {
+    newState: {
+        notEmpty: true,
+    },
+}
+
+
+
 exports.updateState = function(req,res) { 
+    let id=req.params.id;
     const errors = validationResult(req);
 
     if (!errors.isEmpty()) {
@@ -141,6 +179,11 @@ exports.updateState = function(req,res) {
         });
     }  
     let rowID= req.params.id;
+
+    if(isNaN(id)){
+        res.status(422).send("id is not number.");
+    }
+
     let newState = req.body.newState;
     let result = RestockOrderManager.modifyState(rowID, newState);
     result.then( 
@@ -148,16 +191,27 @@ exports.updateState = function(req,res) {
             return res.status(200).json();
         },
         error => {
+            switch(error){
+                case "404 RestockOrderid cannot found":
+                    return res.status(404).json({error: "RestockOrderId not existing"})
             
-            return res.status(500).json(error);
+                 default:
+                    return res.status(503).json({error: "generic error"});
+            }
+            
+            
         }
     )
 }
 
-
+exports.putTransportNoteSchema = {
+    transportNote: {
+        notEmpty: true,
+    },
+}
 exports.addTransportNode = function(req,res) {
-    const errors = validationResult(req);
-
+    
+    console.log(errors)
     if (!errors.isEmpty()) {
         return res.status(422).json({
             error: "Validation of request body failed"
@@ -173,7 +227,14 @@ exports.addTransportNode = function(req,res) {
             return res.status(200).json();
         },
         error => {
-            return res.status(500).json(error);
+            switch(error){
+                case "404 RestockOrderid cannot found":
+                    return res.status(404).json({error: "RestockOrderId not existing"})
+            
+                 default:
+                    return res.status(503).json({error: "generic error"});
+            }
+            
         }
     )
 
@@ -189,14 +250,25 @@ exports.updateSKUItems = function(req,res) {
     }
     let id= req.params.id;
     let newSkuitemsinfo = req.body.skuItems;
-
+    
     let result = RestockOrderManager.putSKUItems(id, newSkuitemsinfo);
     result.then(
         result => {
             return res.status(200).json();
         },
         error => {
-            return res.status(500).json(error);
+            switch(error){
+                case "404 RestockOrderid cannot found":
+                    return res.status(404).json({error: "RestockOrderId not existing"})
+            
+                
+                case "422 The state of order is not DELIVERED":
+                    return res.status(422).json({error: "422 The state of order is not DELIVERED"})
+                
+                default:     
+                    return res.status(503).json({error: "generic error"});
+            }
+            
         }
     )
 

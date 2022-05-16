@@ -18,7 +18,7 @@ class InternalOrderManager{
             let product = productlist[i];
             let des = product.description;
             let pri = product.price;
-            let qty = product.quantity;
+            let qty = product.qty;
             let sku_id=product.SKUId;
             let newProduct = new InternalOrderProduct(null,des,pri,qty,sku_id,newIOid);
             PersistentManager.store(InternalOrderProduct.tableName, newProduct);
@@ -28,37 +28,47 @@ class InternalOrderManager{
 
 
     async modifyState(rowID, newState,ProductList){
+        
         const exists = await PersistentManager.exists(InternalOrder.tableName, 'id', rowID);
         if (!exists) {
             return Promise.reject("404 not found InternalOrder");
         }
         
         if(ProductList!=undefined&&newState==="COMPLETED"){ 
-            for(let i =0;i<ProductList.length;i++){
-                let curProRFID=ProductList[i].RFID;
-                let curSkuID =ProductList[i].SkuID;
-                let curSKU = await  PersistentManager.loadOneByAttribute("id",SKU.tableName,curSkuID)
-                let curSKUqty = curSKU.availableQuantity;
-
-                if (curSKUqty===1) {
-                    await PersistentManager.delete('id',curSkuID,SKU.tableName)
-                }
-                else{
+            for(let product of ProductList){
+                let curProRFID=product.RFID;
+                let curSkuID =product.SkuID;
+                await PersistentManager.update(SKUItem.tableName,{"Available":0},"RFID",curProRFID)
+                
                     
-                        let resultqty = curSKUqty-1;                     
-                        let prom = PersistentManager.update(SKU.tableName, {"availableQuantity":resultqty},"id",curSkuID );               
-                        console.log(prom)
+                   //no sku find     
+                let curSKU = await  PersistentManager.loadOneByAttribute("id",SKU.tableName,curSkuID)
+                curSKU.then(
+                    async result=>{
+                        let curSKUqty = curSKU.availableQuantity;               
+                        if (curSKUqty===1) {
+                            await PersistsentManager.delete('id',curSkuID,SKU.tableName)
+                        }
+                        else{                          
+                            let resultqty = curSKUqty-1;                     
+                            await PersistentManager.update(SKU.tableName, {"availableQuantity":resultqty},"id",curSkuID );                                        
+                            }
+                    },
+                    error=>{
+                        return Promise.reject("noSKUfind")
                     }
-            }
-        }
+                )
+                
 
-       
+                 
+                
+                
+            }
+        }   
         return PersistentManager.update(InternalOrder.tableName,{"state":newState},"id",rowID)
     }
 
-    addProducts(){
 
-    }
 
     //need products list
     async listAllInternalOrder(){

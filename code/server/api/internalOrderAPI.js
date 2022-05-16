@@ -11,6 +11,23 @@ const dateValidation = function(date) {
     return false;
 }
 
+
+exports.postInternalOrderSchema = {
+  
+    issueDate: {
+        notEmpty: true,
+    },
+    products: {
+        notEmpty: true,
+    },
+    customerId: {
+        notEmpty: true,
+        isNumeric: {
+            options: {min: 0}
+        }
+        
+    },
+}
 //post
 exports.postInternalOrder = function(req,res){
 
@@ -136,14 +153,22 @@ exports.changeInternalOrder = function(req,res) {
         ProductList = req.body.products;
        
     }   
-   
+    
     let result = InternalOrderManager.modifyState(rowID, newState,ProductList);
     result.then( 
         result => {
             return res.status(200).json();
         },
         error => {
-            console.log(error);
+            switch(error){
+                case "404 not found InternalOrder":
+                    return res.status(404).json({error: "InternalOrderId not existing"})
+            
+                
+                default:     
+                    console.log(error)
+                    return res.status(503).json({error: "generic error"});
+            }
         }
     )
 }

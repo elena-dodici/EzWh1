@@ -61,6 +61,7 @@ content-type: application/json
 
 
 ########
+//post new returnOrder
 POST http://localhost:3001/api/returnOrder HTTP/1.1
 content-type: application/json
 
@@ -78,6 +79,7 @@ content-type: application/json
 
 
 ########
+//post new restock order
 POST http://localhost:3001/api/restockOrder HTTP/1.1
 content-type: application/json
 
@@ -104,7 +106,7 @@ content-type: application/json
 
 
 ########
-
+//change status of restockorder
 PUT http://localhost:3001/api/restockOrder/1   HTTP/1.1
 content-type: application/json
 
@@ -115,7 +117,7 @@ content-type: application/json
 
 
 ########
-
+//change transportNode
 PUT http://localhost:3001/api/restockOrder/1/transportNote   HTTP/1.1
 content-type: application/json
 
@@ -130,6 +132,7 @@ GET http://localhost:3001/api/restockOrders/1/returnItems HTTP/1.1
 content-type: application/json
 
 ########
+//update skuitems
 PUT http://localhost:3001/api/restockOrder/1/skuItems   HTTP/1.1
 content-type: application/json
 

@@ -125,7 +125,7 @@ app.get('/api/internalOrdersAccepted', internalOrders.getinternalOrdersAccepted)
 app.get('/api/internalOrders/:id', internalOrders.getinternalOrderById);
 
 //POST /api/internalOrders  
-app.post('/api/internalOrders', internalOrders.postInternalOrder);
+app.post('/api/internalOrders', checkSchema(internalOrders.postInternalOrderSchema), internalOrders.postInternalOrder);
 
 //DELETE /api/internalOrdersIssued  
 app.delete('/api/internalOrders/:id', internalOrders.deleteInternalOrder);
@@ -136,7 +136,7 @@ app.put('/api/internalOrders/:id', internalOrders.changeInternalOrder);
 
 //RestockOrder
 //POST /api/restockOrder 
-app.post('/api/restockOrder', restockOrders.postRestockOrder);
+app.post('/api/restockOrder', checkSchema(restockOrders.postRestockOrderSchema),restockOrders.postRestockOrder);
 
 //DELETE /api/restockOrder/:id imitate internalorder
 app.delete('/api/restockOrder/:id', restockOrders.deleteRestockOrder);
@@ -154,13 +154,13 @@ app.get('/api/restockOrders/:id', restockOrders.getRestockOrderById);
 app.get('/api/restockOrders/:id/returnItems', restockOrders.getItemsById);
 
 //PUT /api/restockOrder/:id 
-app.put('/api/restockOrder/:id',restockOrders.updateState );
+app.put('/api/restockOrder/:id',checkSchema(restockOrders.putStateSchema ),restockOrders.updateState );
 
 //PUT /api/restockOrder/:id/skuItems
 app.put('/api/restockOrder/:id/skuItems',restockOrders.updateSKUItems );
 
 //PUT /api/restockOrder/:id/transportNote  update and use transport id to update transport node(1 to 1)
-app.put('/api/restockOrder/:id/transportNote', restockOrders.addTransportNode);
+app.put('/api/restockOrder/:id/transportNote', checkSchema(restockOrders.putTransportNoteSchema ),restockOrders.addTransportNode);
 
 //GET api/restockOrders/:id/returnItems   
 app.get('/api/restockOrders/:id',restockOrders.getRestockOrder);

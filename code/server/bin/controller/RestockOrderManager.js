@@ -4,6 +4,7 @@ const TransportNote = require('../model/TransportNote')
 const Item = require('../model/Item')
 const ProductOrder = require('../model/ProductOrder')
 const SKUItem = require('../model/SKUItem');
+const SKU = require('../model/SKU');
 const res = require('express/lib/response');
 const User = require('../model/User');
 
@@ -11,59 +12,42 @@ class RestockOrderManager {
     constructor() { }
 
     async defineRestockOrder(issue_date, productsList, supplierId) {
-
+       
+        //validate supplierId exists
         const exists = await PersistentManager.exists(User.tableName, 'id', supplierId);
         if (!exists){
             return Promise.reject("404 no supplier Id found");
         }
         else{
-            //get item_id from ITEM by using skuid & supplier_id
-            for (const product of productsList) {
-                let curProSkuid = product.SKUId;
-                let curqty = product.qty;
+            
+            let ro = new RestockOrder(null, issue_date, "ISSUED", supplierId, null);               
+                
+            let newRestockOrderId= await PersistentManager.store(RestockOrder.tableName, ro)
 
-                PersistentManager.exists(SKU.tableName, 'id', curProSkuid).then(
-                    result =>{
-                          let itemRow= PersistentManager.loadByMoreAttributes(Item.tableName, ["sku_id", "supplier_id"], [curProSkuid, supplierId])
-                          itemRow.then(
-                               result=>{
-                                //    if(itemRow.description===product.description ||itemRow.price===product.price)
-                                    //update the qty in ProductOrder table
-                                    let originRow = await PersistentManager.loadOneByAttribute("id", ProductOrder.tableName, itemRow.id)
-                                    //no  possible to cannot find originRow as this is the pk of itemId
-                                    PersistentManager.update(
-                                        ProductOrder.tableName,
-                                        { quantity: originRow.quantity + curqty },
-                                        "id",
-                                        itemId
-                                    ).then
-                                    (
-                                        result=>{
-                                                //define a object and insert into DB
-                                                let ro = new RestockOrder(null, issue_date, "ISSUED", null, null);
-                                                PersistentManager.store(RestockOrder.tableName, ro).then(
-                                                    result=>{
-                                                        return  "save in DB successfully";
-                                                    },
-                                                    error=>{
-                                                        return Promise.reject("Store Restock Order failure")
-                                                    }
-                                                )
-                                        },
-                                        error=>{
-                                            return Promise.reject("Update qty Failure in ProductOrder Table")
-                                        }
-                                    )
-                               },
-                               error =>{
-                                   return Promise.reject("404 itemId not found");
-                               }
-                           )
+            for (const product of productsList) {
+                
+                let newSkuid = product.SKUId;
+                // let newPrice = product.price;
+                let newqty = product.qty;
+
+                let exists = await PersistentManager.exists(SKU.tableName, 'id', newSkuid);
+                if(!exists){  
+                    return Promise.reject("404 no sku Id found");
+                }
+                            
+                //define a object and insert into DB
+                              
+                let newProductOrder = new ProductOrder  (null,newqty,newRestockOrderId,null);
+                await PersistentManager.store(ProductOrder.tableName, newProductOrder).then(
+                    result=>{
+                        return result;
                     },
-                    error =>{
-                        return Promise.reject("404 skuid not found");
+                    error=>{
+                        return Promise.reject("503 Fail to store in Product Order table")
                     }
                 )
+                    
+                
             }
         }
         
@@ -124,6 +108,7 @@ class RestockOrderManager {
 
     //get all related info of ONE order
     async addOneOrderInfo(order){
+        
         let curNoteid = order.transport_note_id;
         let curOrderid = order.id;    
         
@@ -134,6 +119,7 @@ class RestockOrderManager {
 
 
         let productOrdersRows = await PersistentManager.loadFilterByAttribute(ProductOrder.tableName, "restockOrder_id", curOrderid);
+        console.log(productOrdersRows)
         let promises = productOrdersRows.map(async o =>  {
             let skuinfo = await PersistentManager.loadOneByAttribute("id", Item.tableName, o.id);
             return {
@@ -176,26 +162,49 @@ class RestockOrderManager {
     }
 
 
-    async modifyState(roID, newState) {    
-        const exists = await PersistentManager.exists(RestockOrder.tableName, 'id', id);
+    async modifyState(roID, newState) {  
+        
+        const exists = await PersistentManager.exists(RestockOrder.tableName, 'id', roID);
         if (!exists) {
             return Promise.reject("404 RestockOrderid cannot found");
-        }
-
+        }    
         return await PersistentManager.update(RestockOrder.tableName, {"state":newState}, 'id', roID);
     }
 
     async putSKUItems(id, newSkuitemsinfo) {
-        const exists = await PersistentManager.exists(RestockOrder.tableName, 'id', id);
-        if (!exists) {
-            return Promise.reject("404 RestockOrderid cannot found");
-        }
-
-       //update testockorde_id in SKUItem table
-       for(const info of newSkuitemsinfo ){       
-           await PersistentManager.update(SKUItem.tableName, {"restockOrder_id":id}, 'RFID', info.RFID);
-       }    
-       return 
+        
+        let exists = PersistentManager.loadOneByAttribute('id',RestockOrder.tableName,  id);
+        exists.then(
+            result=>{
+                if (result===undefined) {
+                    return Promise.reject("404 RestockOrderid cannot found");
+                }
+                if(result.state!=="DELIVERED"){
+                    return Promise.reject("422 The state of order is not DELIVERED")
+                }
+                //update restockorde_id in SKUItem table
+                for(const info of newSkuitemsinfo ){       
+                    PersistentManager.update(SKUItem.tableName, {"restockOrder_id":id}, 'RFID', info.RFID).then(
+                        result=>{
+                            return result;
+                        },
+                        error=>{
+                            return Promise.reject(error);
+                        }
+                    )
+                }    
+                
+            
+            
+            },
+                error=>{
+                    return Promise.reject(error)
+                }
+            
+        )
+        
+       
+       
     }
 
 

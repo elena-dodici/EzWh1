@@ -60,15 +60,20 @@ exports.postReturnOrder=function(req,res){
         return res.status(422).json({error: "date validation failed"});
     }
 
-
-
     let result = ReturnOrderManager.defineReturnOrder( date,productsList,roId);
     result.then(
         result=>{
             return res.status(201).json();
         },
         error=>{
-            console.log(error);
+            switch(error){
+                case "404 not found restockOrderId":
+                    return res.status(404).json({error: "RestockOrderId not existing"})
+            
+                
+                default:     
+                    return res.status(503).json({error: "generic error"});
+            }
         }
     )
 }
