@@ -36,13 +36,15 @@ class RestockOrderManager {
                 }
                             
                 //define a object and insert into DB
-                              
+                let item_id = parseInt(newSkuid.toString()+ supplierId.toString());
+                
                 let newProductOrder = new ProductOrder  (null,newqty,newRestockOrderId,null);
                 await PersistentManager.store(ProductOrder.tableName, newProductOrder).then(
                     result=>{
                         return result;
                     },
                     error=>{
+                        console.log(error)
                         return Promise.reject("503 Fail to store in Product Order table")
                     }
                 )
@@ -63,7 +65,13 @@ class RestockOrderManager {
             let eachOrderInfo= await this.addOneOrderInfo(order);
             finalRes.push(eachOrderInfo);
          }     
-         
+         if(restockOrders.state!=="ISSUED") {
+             finalRes.deliveryDate=[];
+             finalRes.skuItems =[];
+        }
+         if(restockOrders.state!=="DELIVERY"){
+            finalRes.skuItems =[];
+         }
          return finalRes;
      }
 
@@ -80,7 +88,8 @@ class RestockOrderManager {
         for (const order of issueOrders) {           
            let eachOrderInfo= await this.addOneOrderInfo(order);
            finalRes.push(eachOrderInfo)
-        }     
+        }    
+        finalRes.skuItems =[];
         return  finalRes
     }
 
@@ -94,15 +103,25 @@ class RestockOrderManager {
         if (!ro) {
             return Promise.reject("404 No RestockOrder Found")
         }
-
+        let result = await this.addOneOrderInfo(ro) ;
+        if(result.state!=="ISSUED") {
+            result.deliveryDate=[];
+            result.skuItems =[];
+       }
+        if(result.state!=="DELIVERY"){
+            result.skuItems =[];
+        }
         
-        return await this.addOneOrderInfo(ro) 
+        return result;
            
     }
 
     
     async getItemsById(ID) {  
         let allInfo = await this.getRestockOrderByID(ID);
+        if((allInfo.state==="COMPLETE") ||(allInfo.state=== "RETURN")){
+            return Promise.reject("422 restock order state is not COMPLETED or RETURN")
+        }
         return allInfo.skuItems
     }
 
@@ -116,10 +135,8 @@ class RestockOrderManager {
         if (!exists) {
             return Promise.reject("404 RestockOrderid");
         }
-
-
         let productOrdersRows = await PersistentManager.loadFilterByAttribute(ProductOrder.tableName, "restockOrder_id", curOrderid);
-        console.log(productOrdersRows)
+        
         let promises = productOrdersRows.map(async o =>  {
             let skuinfo = await PersistentManager.loadOneByAttribute("id", Item.tableName, o.id);
             return {
@@ -138,6 +155,7 @@ class RestockOrderManager {
         }
         let curtransportNode = await PersistentManager.loadOneByAttribute("id", TransportNote.tableName, curNoteid);
         delete curtransportNode.id
+        
 
         //get list of skuitem
         let skuItemsRow = await PersistentManager.loadFilterByAttribute(SKUItem.tableName, "restockOrder_id", curOrderid);
@@ -192,10 +210,7 @@ class RestockOrderManager {
                             return Promise.reject(error);
                         }
                     )
-                }    
-                
-            
-            
+                }              
             },
                 error=>{
                     return Promise.reject(error)
@@ -216,16 +231,22 @@ class RestockOrderManager {
 
         let restockOrderRow = await PersistentManager.loadOneByAttribute("id",RestockOrder.tableName,id);
         let curTNId = restockOrderRow.transport_note_id;
-        console.log(curTNId)
-        return await PersistentManager.update(TransportNote.tableName, {"deliveryDate":newTN.deliveryDate}, 'id', curTNId);
+        if(restockOrderRow.state!="DELIVERY "){
+            return Promise.reject("422 Order State is not delievered")
+        }
+        else {
+            return await PersistentManager.update(TransportNote.tableName, {"deliveryDate":newTN.deliveryDate}, 'id', curTNId);
+        }
+       
     }
 
     async deleteRestockOrder(roID) {
-        let loadedRestockOrder = await this.getRestockOrderByID(roID);
-        if (!loadedRestockOrder) {
-            return Promise.reject("404 RestockOrderid cannot found")
-        }
-        return PersistentManager.delete('id', delroID, RestockOrder.tableName);
+        // let loadedRestockOrder = await this.getRestockOrderByID(roID);
+        // if (!loadedRestockOrder) {
+        //     return Promise.reject("404 RestockOrderid cannot found")
+        // }
+        return PersistentManager.delete('id', roID, RestockOrder.tableName);
+        
     }
 
 

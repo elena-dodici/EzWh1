@@ -10,10 +10,10 @@ exports.getAllReturnOrders= function(req,res){
     let result = ReturnOrderManager.listAllReturnOrders();
     result.then(
         result=>{
-            return res.status(200).json();
+            return res.status(200).json(result);
         },
         error=>{
-            console.log(error)
+            return res.status(500).json({error:"generic error"})
         }
     )
 
@@ -21,14 +21,29 @@ exports.getAllReturnOrders= function(req,res){
 
 //getbyid
 exports.getAllReturnOrderById = function(req,res){
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+        return res.status(422).json({
+            error: "Validation of request body failed"
+        });
+    }
     let returnOId = req.params.id;
+    
     let result =  ReturnOrderManager.getReturnOrderByID(returnOId);
     result.then(
         result=>{
-            return res.status(200).json();
+            return res.status(200).json("Delete successfully");
         },
         error=>{
-            console.log(error);
+            switch(error){
+                case "404 ReturnOrderid cannot found":
+                    return res.status(404).json({error: "404 ReturnOrderid cannot found"})
+            
+                default:     
+                    return res.status(500).json({error: "generic error"});
+            }
+            
+            
         }
     )
 }
@@ -42,11 +57,23 @@ const dateValidation = function(date) {
     return false;
 }
 
-
+exports.postReturnOrderSchema = {
+    returnDate: {
+        notEmpty: true,
+    },
+    products: {
+        notEmpty: true,
+    },
+    restockOrderId: {
+        notEmpty: true,
+        isNumeric: {
+			options: {min: 0}
+		}
+    },
+}
 //post
 exports.postReturnOrder=function(req,res){
     const errors = validationResult(req);
-
     if (!errors.isEmpty()) {
         return res.status(422).json({
             error: "Validation of request body failed"
@@ -72,6 +99,7 @@ exports.postReturnOrder=function(req,res){
             
                 
                 default:     
+                    console.log(error)
                     return res.status(503).json({error: "generic error"});
             }
         }
@@ -80,14 +108,22 @@ exports.postReturnOrder=function(req,res){
 
 //delete
 exports.deleteReturnOrder=function(req,res){
-    let returnOID= req.params;
+    
+    let returnOID= req.params.id;
+    const errors = validationResult(req);
+
+    if (!errors.isEmpty()) {
+        return res.status(422).json({
+            error: "Validation of request body failed"
+        });
+    }  
     let result = ReturnOrderManager.deleteReturnOrder(returnOID);
     result.then(
-        result=>{
+        result=>{          
             return res.status(204).json();
         }, 
         error=>{
-            console.log(error);
+            return res.status(500).json({error:"generic error"});
         }
     )
 }
