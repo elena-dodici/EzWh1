@@ -1,6 +1,7 @@
 'use strict'
 
 class User {
+    static tableName = 'User';
     constructor (username, password,name, surname, type ){
         this.username = username;
         this.password = password;
@@ -9,3 +10,5 @@ class User {
         this.type = type;
     }
 }
+
+module.exports = User;

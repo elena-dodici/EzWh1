@@ -10,6 +10,7 @@ const { checkSchema } = require('express-validator');
 const internalOrders = require('./api/internalOrderAPI');
 const restockOrders = require('./api/restockOrdersAPI');
 const returnOrders = require('./api/returnOrdersAPI')
+const user = require('./api/userAPI');
 // init express
 const app = new express();
 const port = 3001;
@@ -175,6 +176,34 @@ app.post('/api/returnOrder', returnOrders.postReturnOrder);
 
 //DELETE /api/returnOrder/:id 
 app.delete('/api/returnOrder/:id', returnOrders.deleteReturnOrder);
+
+
+//USER
+
+app.get('/api/userinfo', user.getUserInfo);
+
+app.get('/api/suppliers', user.getSuppliers);
+
+app.get('/api/users', user.getUsers);
+
+app.post('/api/newUser', checkSchema(user.postUserSchema), user.postUser);
+
+app.post('/api/managerSessions', user.managerSessions);
+
+app.post('/api/customerSessions', user.customerSessions);
+
+app.post('/api/supplierSessions', user.supplierSessions);
+
+app.post('/api/clerkSessions', user.clerkSessions);
+
+app.post('/api/qualityEmployeeSessions', user.qualityEmployeeSessions);
+
+app.post('/api/logout', user.logout);
+
+app.put('/api/users/:username', checkSchema(user.putUserSchema), user.putUser);
+
+app.delete('/api/users/:username/:type', checkSchema(user.deleteUserSchema), user.deleteUser);
+
 
 /*
 Activate the server
