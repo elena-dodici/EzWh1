@@ -5,6 +5,7 @@ const PersistentManager = require('../DB/PersistentManager');
 const ProductOrder = require('../model/ProductOrder');
 const SkuItem = require('../model/SKUItem')
 const Sku = require('../model/SKU')
+const RestockOrder = require('../model/RestockOrder');
 
 
 class ReturnOrderManager {
@@ -12,12 +13,17 @@ class ReturnOrderManager {
 
     async defineReturnOrder(date, productsList, roId) {
 
-        let newReO = new ReturnOrder(null, date, null);
+        const exists = await PersistentManager.exists(RestockOrder.tableName, 'id', roId);
+        if (!exists) {
+            return Promise.reject("404 not found restockOrderId");
+        }
+
+        let newReO = new ReturnOrder(null, date, roId);
         let newReturnOID = await PersistentManager.store(ReturnOrder.tableName, newReO);
         //iterate in productlist of one order and insert this orderid in skuitem table as well
 
-        for (let i = 0; i < productsList.length; i++) {
-            let product = productsList[i];
+        for (const product of productsList) {
+            
             let curproRFID = product.RFID;
             PersistentManager.update(SkuItem.tableName, { returnOrder_id: newReturnOID }, "RFID", curproRFID);
         }
@@ -72,8 +78,8 @@ class ReturnOrderManager {
                     }
                 },
                 error => {
-                    console.log(error);
-                    return error;
+                    
+                    return Promise.reject(error);
                 }
             );
         }

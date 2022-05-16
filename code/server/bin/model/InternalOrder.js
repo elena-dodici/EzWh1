@@ -6,7 +6,7 @@ class InternalOrder {
         this.id = id;
         this.date = date;
         this.state = state; 
-        this.customerId = customerId;
+        this.customer_id = customerId;
     }
 }
 

@@ -149,7 +149,6 @@ class PersistentManager {
 				return v + " = ?"
 			})
 			const sql = "SELECT * FROM " + tableName + " WHERE " + placeHolders.join(' AND ');
-			
 			const db = new sqlite.Database(this.dbName, (err) => {if (err) reject(err) });
 			db.get("PRAGMA foreign_keys = ON");
 			db.all(sql, values, (err,rows) => {if (err) reject(err); resolve(rows); } );
