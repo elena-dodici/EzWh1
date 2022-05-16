@@ -74,7 +74,7 @@ class QualityTestManager {
 
         const existsTestDescriptor = await PersistentManager.exists(TestDescriptor.tableName, 'id', idTestDescriptor);
         if (existsTestDescriptor) {
-            const existsRfid = await PersistentManager.exists(SKUItem.tableName, 'rfid', rfid);
+            const existsRfid = await PersistentManager.exists(SKUItem.tableName, 'RFID', rfid);
             if (existsRfid) {
                 return PersistentManager.store(TestResult.tableName, t); 
             }

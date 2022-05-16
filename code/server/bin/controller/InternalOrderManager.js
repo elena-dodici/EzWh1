@@ -1,4 +1,4 @@
-//need object
+
 const PersistentManager = require('../DB/PersistentManager');
 const InternalOrder = require('../model/InternalOrder')
 const InternalOrderProduct = require('../model/InternalOrderProduct')
@@ -7,27 +7,30 @@ const SKU = require('../model/SKU')
 
 
 class InternalOrderManager{
-    constructor(){}
+    constructor() {}
 
-   async defineInternalOrder(date,productlist,customerId){
+   async defineInternalOrder(issueDate,products,customerId) {
         //issued once created
-        //save io , get ioid and take this with product in IOproduct table 
-        let newIo = new InternalOrder(null,date,'ISSUED',null);
+        //save io , get io_id and take this with product in IOproduct table 
+        let newIo = new InternalOrder(null,issueDate,'ISSUED',customerId);
+        delete newIo.id;
         let newIOid = await PersistentManager.store(InternalOrder.tableName, newIo);
-        for(let i=0;i<productlist.length;i++){
-            let product = productlist[i];
+        
+        for(let i=0; i<products.length; i++){
+            let product = products[i];
             let des = product.description;
             let pri = product.price;
             let qty = product.qty;
             let sku_id=product.SKUId;
             let newProduct = new InternalOrderProduct(null,des,pri,qty,sku_id,newIOid);
+            delete newProduct.id;
             PersistentManager.store(InternalOrderProduct.tableName, newProduct);
         }
          return
     }
 
 
-    async modifyState(rowID, newState,ProductList){
+    async modifyState(rowID, newState,ProductList) {
         
         const exists = await PersistentManager.exists(InternalOrder.tableName, 'id', rowID);
         if (!exists) {
@@ -68,29 +71,28 @@ class InternalOrderManager{
 
 
     //need products list
-    async listAllInternalOrder(){
+    async listAllInternalOrder() {
         let originIo =  await PersistentManager.loadAllRows(InternalOrder.tableName);
         let result = await this.addProductsList(originIo);
-        //fenzhi
         return result;
       
     }
 
-    async   listIssuedIO(){
+    async listIssuedIO() {
         let originIo = await PersistentManager.loadFilterByAttribute(InternalOrder.tableName,'state','ISSUED');
         let result = await this.addProductsList(originIo);
         
         return result;
     }
 
-    async listAcceptedIO(){
+    async listAcceptedIO() {
         let result = await PersistentManager.loadFilterByAttribute(InternalOrder.tableName,'state','ACCEPTED');    
         //add the array to each line of result
         return this.addProductsList(result);
         
     }
 
-    async listIOByID(id){
+    async listIOByID(id) {
         //only have one line so cannot read
         let result = await PersistentManager.loadOneByAttribute("id",InternalOrder.tableName,id);         
         return this.addProductsList(result);

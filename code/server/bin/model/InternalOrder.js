@@ -2,11 +2,11 @@
 
 class InternalOrder {
     static tableName = 'InternalOrder';
-    constructor ( id,date, state, customerId ) {
+    constructor ( id, issueDate, state, customerId ) {
         this.id = id;
-        this.date = date;
+        this.issueDate = issueDate;
         this.state = state; 
-        this.customer_id = customerId;
+        this.customerId = customerId;
     }
 }
 
