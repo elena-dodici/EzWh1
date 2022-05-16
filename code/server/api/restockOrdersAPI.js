@@ -1,6 +1,9 @@
 'use strict';
 const RestockOrderManager = require('../bin/controller/RestockOrderManager');
 const { validationResult } = require('express-validator');
+const PersistentManager = require('../bin/DB/PersistentManager');
+const TestResult = require('../bin/model/TestResult');
+const RestockOrder = require('../bin/model/RestockOrder');
 
 
 const dateValidation = function(date) {
@@ -68,7 +71,7 @@ exports.deleteRestockOrder = function(req,res) {
         });
     }
 
-    let roID = req.params.roID;     
+    let roID = req.params.id;     
     let result = RestockOrderManager.deleteRestockOrder(roID);  
     result.then( 
         result => {
@@ -137,13 +140,15 @@ exports.getRestockOrderById = function(req,res) {
     
 }
 
-exports.getItemsById = function(req,res) {
+exports.getItemsById = async function(req,res) {
     let id = req.params.id;
     if(isNaN(id)){
         res.status(422).send("id is not number.");
     }
+    
 
     let result = RestockOrderManager.getItemsById(id);
+    
     result.then(
         result => {
             return res.status(200).json(result);
@@ -211,7 +216,7 @@ exports.putTransportNoteSchema = {
 }
 exports.addTransportNode = function(req,res) {
     
-    console.log(errors)
+    const errors = validationResult(req);
     if (!errors.isEmpty()) {
         return res.status(422).json({
             error: "Validation of request body failed"
