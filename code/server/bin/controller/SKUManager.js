@@ -111,9 +111,7 @@ class SKUManager{
 
     async deleteSKU(SKUId) {
         let loadedSKU = await this.getSKUByID(SKUId);
-        if (!loadedSKU){
-            return Promise.reject("404 SKU");
-        }
+        
         if (loadedSKU.availableQuantity) {
             return Promise.reject("422 availabiliy not 0");
         }
@@ -124,7 +122,7 @@ class SKUManager{
 
     async _loadTests(id) {
         let tests;
-        await PersistentManager.loadFilterByAttribute(TestDescriptor.tableName, 'sku_id', id).then(
+        await PersistentManager.loadFilterByAttribute(TestDescriptor.tableName, 'idSKU', id).then(
             result => {
                 tests = result;
             },

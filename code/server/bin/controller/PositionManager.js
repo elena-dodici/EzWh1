@@ -24,6 +24,11 @@ class PositionManager {
 
     async modifyPosition(positionID, aisleID, row, col, max_weight, max_volume, occupied_weight, occupied_volume) {
 
+        let exists = await PersistentManager.exists(Position.tableName, 'id', positionID);
+        if (!exists) {
+            return Promise.reject("404 position");
+        }
+
         let newPositionId = aisleID + row + col;
         let p = new Position(newPositionId, aisleID, row, col, max_weight, max_volume, occupied_weight, occupied_volume);
 

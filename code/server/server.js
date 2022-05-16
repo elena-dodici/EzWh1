@@ -9,7 +9,8 @@ const PersistentManager = require('./bin/DB/PersistentManager');
 const { checkSchema } = require('express-validator');
 const internalOrders = require('./api/internalOrderAPI');
 const restockOrders = require('./api/restockOrdersAPI');
-const returnOrders = require('./api/returnOrdersAPI');
+const returnOrders = require('./api/returnOrdersAPI')
+const user = require('./api/userAPI');
 const item = require('./api/itemAPI');
 // init express
 const app = new express();
@@ -61,10 +62,10 @@ app.delete('/api/skus/:id', sku.deleteSKU);
 app.get('/api/skuitems', skuItem.getSKuItems);
 
 //GET /api/skuitems/sku/:id
-app.get('/api/skuitems/sku/:id', skuItem.getSkuItemsBySKU);
+app.get('/api/skuitems/sku/:id', checkSchema(skuItem.getSKUItemBySKUSchema), skuItem.getSkuItemsBySKU);
 
 //GET /api/skutiems/:rfid
-app.get('/api/skuitems/:rfid', skuItem.getSKUItemByRfid);
+app.get('/api/skuitems/:rfid', checkSchema(skuItem.getSKUItemByRfidSchema), skuItem.getSKUItemByRfid);
 
 //POST /api/skuitem
 app.post('/api/skuitem', checkSchema(skuItem.postSkuItemSchema) , skuItem.postSkuItem);
@@ -73,7 +74,8 @@ app.post('/api/skuitem', checkSchema(skuItem.postSkuItemSchema) , skuItem.postSk
 app.put('/api/skuitems/:rfid', checkSchema(skuItem.putSkuItemSchema), skuItem.putSkuItem);
 
 //DELETE /api/skuitems/:rfid
-app.delete('/api/skuitems/:rfid', skuItem.deleteSkuItem);
+
+app.delete('/api/skuitems/:rfid', checkSchema(skuItem.deleteSKUItemSchema),skuItem.deleteSkuItem);
 
 //TEST DESCRIPTOR
 
@@ -108,6 +110,7 @@ app.put('/api/skuitems/:rfid/testResult/:id',checkSchema(testResult.modifyTestRe
 
 //DELETE /api/skuitems/:rfid/testResult/:id
 app.delete('/api/skuitems/:rfid/testResult/:id',  testResult.deleteTestResult);
+
  
 
 
@@ -177,6 +180,33 @@ app.post('/api/returnOrder', returnOrders.postReturnOrder);
 
 //DELETE /api/returnOrder/:id 
 app.delete('/api/returnOrder/:id', returnOrders.deleteReturnOrder);
+
+
+//USER
+
+app.get('/api/userinfo', user.getUserInfo);
+
+app.get('/api/suppliers', user.getSuppliers);
+
+app.get('/api/users', user.getUsers);
+
+app.post('/api/newUser', checkSchema(user.postUserSchema), user.postUser);
+
+app.post('/api/managerSessions', user.managerSessions);
+
+app.post('/api/customerSessions', user.customerSessions);
+
+app.post('/api/supplierSessions', user.supplierSessions);
+
+app.post('/api/clerkSessions', user.clerkSessions);
+
+app.post('/api/qualityEmployeeSessions', user.qualityEmployeeSessions);
+
+app.post('/api/logout', user.logout);
+
+app.put('/api/users/:username', checkSchema(user.putUserSchema), user.putUser);
+
+app.delete('/api/users/:username/:type', checkSchema(user.deleteUserSchema), user.deleteUser);
 
 //ITEM
 

@@ -15,7 +15,7 @@ class SKUItemManager {
         }
         let existsRfid = await PersistentManager.exists(SKUItem.tableName, 'rfid', rfid);
         if (existsRfid) {
-            return Promise.reject("503 duplicate");
+            return Promise.reject("422 duplicate");
         }
 		//constructor (rfid, available, date_of_stock, relativeSKU, internalOrder, restockOrder, returnOrder, testResult)
 		const s = new SKUItem(
@@ -23,7 +23,6 @@ class SKUItemManager {
 			0,
 			dateOfStock,
 			skuId,
-			null,
 			null,
 			null,
 			null
@@ -34,7 +33,6 @@ class SKUItemManager {
 		utility.renameKey(s, "internalOrder", "internalOrder_id");
 		utility.renameKey(s, "restockOrder", "restockOrder_id");
 		utility.renameKey(s, "returnOrder", "returnOrder_id");
-		utility.renameKey(s, "testResult", "testResult_id");
 
 		//validation todo
 		return PersistentManager.store(SKUItem.tableName, s);
@@ -45,6 +43,10 @@ class SKUItemManager {
 	}
 
 	async listForSKU(SKUId) {
+		const exists = await PersistentManager.exists(SKU.tableName, 'id', SKUId);
+		if (!exists) {
+			return Promise.reject("404 sku");
+		}
 		return PersistentManager.loadByMoreAttributes(
 			SKUItem.tableName,
 			["SKUId", "available"],
@@ -53,6 +55,12 @@ class SKUItemManager {
 	}
 
 	async searchByRFID(rfid) {
+
+		const exists = await PersistentManager.exists(SKUItem.tableName, 'rfid', rfid);
+		if (!exists) {
+			return Promise.reject("404 rfid");
+		}
+
 		return PersistentManager.loadOneByAttributeSelected(
 			SKUItem.tableName,
 			"RFID",

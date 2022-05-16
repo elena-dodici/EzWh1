@@ -2,7 +2,7 @@
 
 class SKUItem {
     static tableName = 'SKUItem';
-    constructor (rfid, available, dateOfStock, relativeSKU, internalOrder, restockOrder, returnOrder, testResult) {
+    constructor (rfid, available, dateOfStock, relativeSKU, internalOrder, restockOrder, returnOrder) {
         this.RFID = rfid;
         this.Available = available;
         this.dateOfStock = dateOfStock;
@@ -10,7 +10,6 @@ class SKUItem {
         this.internalOrder = internalOrder; 
         this.restockOrder = restockOrder;
         this.returnOrder = returnOrder;
-        this.testResult = testResult;
 
     }
 }
