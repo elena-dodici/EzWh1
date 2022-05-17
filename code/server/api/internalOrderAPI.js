@@ -74,7 +74,7 @@ exports.deleteInternalOrder = function(req,res) {
             return res.status(204).json();
         },
         error => {
-            res.status(500).json({error:"generic error"});
+            return res.status(500).json({error:"generic error"});
         }
     )
     
@@ -85,11 +85,11 @@ exports.getAllInternalOrder = function(req,res) {
     let result = InternalOrderManager.listAllInternalOrder();
     result.then(
         result => {
-             res.status(200).json(result);
+             return res.status(200).json(result);
         },
         error => {
             console.log(error)
-            res.status(500).json({error:"generic error"});
+            return res.status(500).json({error:"generic error"});
         }
     )
     
@@ -100,10 +100,10 @@ exports.getInternalOrderIssued = function(req,res) {
     let result = InternalOrderManager.listIssuedIO();
     result.then(
         result => {
-             res.status(200).json(result);
+             return res.status(200).json(result);
         },
         error => {
-            res.status(500).json({error:"generic error"});
+            return res.status(500).json({error:"generic error"});
         }
     )
     
@@ -116,7 +116,7 @@ exports.getinternalOrdersAccepted = function(req,res) {
             return res.status(200).json(result);
         },
         error => {
-            res.status(500).json({error:"generic error"});
+            return res.status(500).json({error:"generic error"});
         }
     )
     
@@ -124,21 +124,15 @@ exports.getinternalOrdersAccepted = function(req,res) {
 
 
 exports.getinternalOrderById = function(req,res) {
-    const errors = validationResult(req);
-    if (!errors.isEmpty()) {
-        return res.status(422).json({
-            error: "Validation of request body failed"
-        });
-    }
- 
+    
     let id = req.params.id;
     let result = InternalOrderManager.listIOByID(id);
+  
     result.then(
         result => {
             return res.status(200).json(result);
         },
         error => {
-            console.log(error)
             switch(error){
                 case "404 InternalOrderId cannot found":
                     return res.status(404).json({error: "InternalOrderId cannot found"})

@@ -10,10 +10,10 @@ const User = require("../model/User");
 class InternalOrderManager{
     constructor() {}
 
-   async defineInternalOrder(issueDate,products,customerId) {
+   async defineInternalOrder(date,products,customer_id) {
         //issued once created
         //save io , get io_id and take this with product in IOproduct table 
-        let newIo = new InternalOrder(null,issueDate,'ISSUED',customerId);
+        let newIo = new InternalOrder(null,date,'ISSUED',customer_id);
         delete newIo.id;
         let newIOid = await PersistentManager.store(InternalOrder.tableName, newIo);
         
@@ -22,7 +22,7 @@ class InternalOrderManager{
             let des = product.description;
             let pri = product.price;
             let qty = product.qty;
-            let sku_id=product.SKUId;s
+            let sku_id=product.sku_d;
             let newProduct = new InternalOrderProduct(null,des,pri,qty,sku_id,newIOid);
             delete newProduct.id;
             PersistentManager.store(InternalOrderProduct.tableName, newProduct);
@@ -182,18 +182,18 @@ class InternalOrderManager{
         let ProductList =[];
         let skuinfo={};
         let products = await PersistentManager.loadFilterByAttribute(InternalOrderProduct.tableName,'internalOrder_id',order.id);
-        
         for(let p of products){
             
             skuinfo={
-            "SKUId":p.sku_id,
-            "description":p.description,
-            "price":p.price,
-            "qty":p.quantity
+                "SKUId":p.sku_id,
+                "description":p.description,
+                "price":p.price,
+                "qty":p.quantity
             }
-        }      
-        ProductList.push(skuinfo); 
-              
+            
+            ProductList.push(skuinfo); 
+        
+        }        
         return ProductList; 
     }
 
