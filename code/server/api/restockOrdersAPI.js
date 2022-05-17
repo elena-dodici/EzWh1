@@ -24,7 +24,9 @@ exports.postRestockOrderSchema = {
     },
     supplierId: {
         notEmpty: true,
-        isNumeric: true,
+        isInt: {
+            option:{min:0}
+        }
     },
 }
 
@@ -43,9 +45,9 @@ exports.postRestockOrder = function(req,res) {
     let supplierId = req.body.supplierId;
     let productsList = req.body.products;
 
-    // if (!dateValidation(issue_date)) {
-    //     return res.status(422).json({error: "date validation failed"});
-    // }
+    if (!dateValidation(issue_date)) {
+        return res.status(422).json({error: "date validation failed"});
+    }
   
     let result = RestockOrderManager.defineRestockOrder(issue_date, productsList,supplierId);
     
@@ -79,7 +81,13 @@ exports.deleteRestockOrder = function(req,res) {
         },
         error => {
             console.log(error);
-            return res.status(503).json({error: 'generic error'})
+            switch(error){
+                case "404 RestockOrderid cannot found":
+                    return res.status(503).json({error: "404 RestockOrderid cannot found"})
+                default:
+                    return res.status(503).json({error: 'generic error'})
+            }
+            
         }
     )
     
@@ -117,9 +125,12 @@ exports.getRestockIssuedOrder = function(req,res) {
 
 exports.getRestockOrderById = function(req,res) {
     let id = req.params.id;
-    if(isNaN(id)){
-        res.status(422).send("id is not number.");
-    }
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+        return res.status(422).json({
+            error: "Validation of request body failed"
+        });
+    }  
     let result = RestockOrderManager.getRestockOrderByID(id);
     result.then(
         result => {
@@ -142,11 +153,12 @@ exports.getRestockOrderById = function(req,res) {
 
 exports.getItemsById = async function(req,res) {
     let id = req.params.id;
-    if(isNaN(id)){
-        res.status(422).send("id is not number.");
-    }
-    
-
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+        return res.status(422).json({
+            error: "Validation of request body failed"
+        });
+    }  
     let result = RestockOrderManager.getItemsById(id);
 
 
@@ -177,20 +189,13 @@ exports.putStateSchema = {
 
 
 exports.updateState = function(req,res) { 
-    let id=req.params.id;
     const errors = validationResult(req);
-
     if (!errors.isEmpty()) {
         return res.status(422).json({
             error: "Validation of request body failed"
         });
     }  
     let rowID= req.params.id;
-
-    if(isNaN(id)){
-        res.status(422).send("id is not number.");
-    }
-
     let newState = req.body.newState;
     let result = RestockOrderManager.modifyState(rowID, newState);
     result.then( 
@@ -234,14 +239,20 @@ exports.addTransportNode = function(req,res) {
             return res.status(200).json();
         },
         error => {
+            console.log(error)
             switch(error){
+                
                 case "404 RestockOrderid cannot found":
                     return res.status(404).json({error: "RestockOrderId not existing"})
             
                 case "422 Order State is not delievered":
                         return res.status(404).json({error: "422 Order State is not delievered"})
                 
+                case "422 Unprocessable Entity":
+                        
+                        return res.status(422).json({error: "422 Unprocessable Entity"})
                 default:
+                    
                     return res.status(503).json({error: "generic error"});
             }
             
