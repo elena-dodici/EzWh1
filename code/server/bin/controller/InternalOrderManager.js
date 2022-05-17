@@ -182,13 +182,14 @@ class InternalOrderManager{
         for(let p of products){
             
             skuinfo={
-            "SKUId":p.sku_id,
-            "description":p.description,
-            "price":p.price,
-            "qty":p.quantity
+                "SKUId":p.sku_id,
+                "description":p.description,
+                "price":p.price,
+                "qty":p.quantity
             }
-        }      
-        ProductList.push(skuinfo); 
+            ProductList.push(skuinfo);
+
+        }       
               
         return ProductList; 
     }
