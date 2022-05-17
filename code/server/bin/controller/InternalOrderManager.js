@@ -1,9 +1,10 @@
 
 const PersistentManager = require('../DB/PersistentManager');
-const InternalOrder = require('../model/InternalOrder')
-const InternalOrderProduct = require('../model/InternalOrderProduct')
-const SKUItem = require('../model/SKUItem')
-const SKU = require('../model/SKU')
+const InternalOrder = require('../model/InternalOrder');
+const InternalOrderProduct = require('../model/InternalOrderProduct');
+const SKUItem = require('../model/SKUItem');
+const SKU = require('../model/SKU');
+const User = require("../model/User");
 
 
 class InternalOrderManager{
@@ -21,7 +22,7 @@ class InternalOrderManager{
             let des = product.description;
             let pri = product.price;
             let qty = product.qty;
-            let sku_id=product.SKUId;
+            let sku_id=product.SKUId;s
             let newProduct = new InternalOrderProduct(null,des,pri,qty,sku_id,newIOid);
             delete newProduct.id;
             PersistentManager.store(InternalOrderProduct.tableName, newProduct);
