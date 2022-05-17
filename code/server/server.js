@@ -116,25 +116,25 @@ app.delete('/api/skuitems/:rfid/testResult/:id',  testResult.deleteTestResult);
 
 //InternalOrder
 //GET /api/InternalOrders  
-app.get('/api/InternalOrders', internalOrders.getAllInternalOrder)
+app.get('/api/internalOrders', internalOrders.getAllInternalOrder)
 
 //GET /api/internalOrdersIssued 
-app.get('/api/InternalOrdersIssued', internalOrders.getInternalOrderIssued)
+app.get('/api/internalOrdersIssued', internalOrders.getInternalOrderIssued)
 
 //GET /api/internalOrdersAccepted 
-app.get('/api/InternalOrdersAccepted', internalOrders.getinternalOrdersAccepted);
+app.get('/api/internalOrdersAccepted', internalOrders.getinternalOrdersAccepted);
 
 //GET /api/internalOrders/:id 
-app.get('/api/InternalOrder/:id', internalOrders.getinternalOrderById);
+app.get('/api/internalOrders/:id', internalOrders.getinternalOrderById);
 
 //POST /api/internalOrders  
-app.post('/api/InternalOrders', checkSchema(internalOrders.postInternalOrderSchema), internalOrders.postInternalOrder);
+app.post('/api/internalOrders', checkSchema(internalOrders.postInternalOrderSchema), internalOrders.postInternalOrder);
 
 //DELETE /api/internalOrdersIssued  
-app.delete('/api/InternalOrder/:id', internalOrders.deleteInternalOrder);
+app.delete('/api/internalOrders/:id', internalOrders.deleteInternalOrder);
 
 //PUT /api/internalOrders/:id   
-app.put('/api/InternalOrders/:id', checkSchema(internalOrders.putInternalOrdersSchema),internalOrders.changeInternalOrder);
+app.put('/api/internalOrders/:id', checkSchema(internalOrders.putInternalOrdersSchema),internalOrders.changeInternalOrder);
 
 
 //RestockOrder

@@ -1,25 +1,25 @@
 //get all IO
-GET http://localhost:3001/api/InternalOrders HTTP/1.1
+GET http://localhost:3001/api/internalOrders HTTP/1.1
 content-type: application/json
 ####
-DELETE http://localhost:3001/api/InternalOrder/2 HTTP/1.1
+DELETE http://localhost:3001/api/internalOrders/2 HTTP/1.1
 content-type: application/json
 #####
        
-GET http://localhost:3001/api/InternalOrdersIssued  HTTP/1.1
+GET http://localhost:3001/api/internalOrdersIssued  HTTP/1.1
 content-type: application/json
 #####
-GET http://localhost:3001/api/InternalOrdersAccepted  HTTP/1.1
+GET http://localhost:3001/api/internalOrdersAccepted  HTTP/1.1
 content-type: application/json
 #####
 
-GET http://localhost:3001/api/InternalOrder/4  HTTP/1.1
+GET http://localhost:3001/api/internalOrders/4  HTTP/1.1
 content-type: application/json
 
 
 ####
 
-POST http://localhost:3001/api/InternalOrders HTTP/1.1
+POST http://localhost:3001/api/internalOrders HTTP/1.1
 content-type: application/json
 
 {
