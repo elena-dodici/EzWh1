@@ -109,7 +109,7 @@ exports.getRestockIssuedOrder = function(req,res) {
         },
         error => {
             
-            return res.status(500).json(error);
+            return res.status(500).json({error:"generic error"});
         }
     )
     
@@ -148,7 +148,8 @@ exports.getItemsById = async function(req,res) {
     
 
     let result = RestockOrderManager.getItemsById(id);
-    
+
+
     result.then(
         result => {
             return res.status(200).json(result);
@@ -156,8 +157,9 @@ exports.getItemsById = async function(req,res) {
         error => {
             switch(error){
                 case "404 RestockOrderid":
-                    return res.status(404).json({error: "RestockOrderId not existing"})
-            
+                    return res.status(404).json({error: "RestockOrderId not existing"});
+                case "422 restock order state is not COMPLETED or RETURN":
+                    return res.status(404).json({error: "422 restock order state is not COMPLETED or RETURN"})
                  default:
                     return res.status(500).json({error: "generic error"});
             }
@@ -236,7 +238,10 @@ exports.addTransportNode = function(req,res) {
                 case "404 RestockOrderid cannot found":
                     return res.status(404).json({error: "RestockOrderId not existing"})
             
-                 default:
+                case "422 Order State is not delievered":
+                        return res.status(404).json({error: "422 Order State is not delievered"})
+                
+                default:
                     return res.status(503).json({error: "generic error"});
             }
             
@@ -245,9 +250,13 @@ exports.addTransportNode = function(req,res) {
 
 }
 
+exports.putSKUItemsSchema = {
+    skuItems: {
+        notEmpty: true,
+    },
+}
 exports.updateSKUItems = function(req,res) {
     const errors = validationResult(req);
-
     if (!errors.isEmpty()) {
         return res.status(422).json({
             error: "Validation of request body failed"

@@ -10,7 +10,9 @@ const User = require("../model/User");
 const TestResult = require("../model/TestResult");
 
 class RestockOrderManager {
+
 	constructor() {}
+
 
 	async defineRestockOrder(issue_date, productsList, supplierId) {
 		//validate supplierId exists
@@ -23,11 +25,13 @@ class RestockOrderManager {
 			return Promise.reject("404 no supplier Id found");
 		}
 
+
 		let ro = new RestockOrder(null, issue_date, "ISSUED", supplierId, null);
 		let newRestockOrderId = await PersistentManager.store(
 			RestockOrder.tableName,
 			ro
 		);
+
 
 		let products = [];
 		for (const product of productsList) {
@@ -48,6 +52,7 @@ class RestockOrderManager {
 				);
 				return Promise.reject("404 no sku Id found");
 			}
+
 
 			const existsItem = await PersistentManager.loadByMoreAttributes(
 				Item.tableName,
@@ -159,6 +164,7 @@ class RestockOrderManager {
 		let ro = await PersistentManager.loadOneByAttribute('id', RestockOrder.tableName, id);
         let allOrderInfo = await this.addOneOrderInfo(ro);
         let allSkuItems = allOrderInfo.skuItems;
+
         
 
 		let skuItemsToReturn = [];
@@ -179,6 +185,7 @@ class RestockOrderManager {
 	}
 
 
+
 	/*
         {
             id: 28,
@@ -191,6 +198,7 @@ class RestockOrderManager {
 	//get all related info of ONE order
 	async addOneOrderInfo(order) {
 		let curOrderid = order.id;
+
 
 		//gets all the rows in ProductOrder where restockOrder_id == curOrderid
 		//{ id: 16, quantity: 30, restockOrder_id: 28, item_id: '1' }

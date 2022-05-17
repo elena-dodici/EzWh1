@@ -119,29 +119,29 @@ app.delete('/api/skuitems/:rfid/testResult/:id',  testResult.deleteTestResult);
 app.get('/api/InternalOrders', internalOrders.getAllInternalOrder)
 
 //GET /api/internalOrdersIssued 
-app.get('/api/internalOrdersIssued', internalOrders.getInternalOrderIssued)
+app.get('/api/InternalOrdersIssued', internalOrders.getInternalOrderIssued)
 
 //GET /api/internalOrdersAccepted 
-app.get('/api/internalOrdersAccepted', internalOrders.getinternalOrdersAccepted);
+app.get('/api/InternalOrdersAccepted', internalOrders.getinternalOrdersAccepted);
 
 //GET /api/internalOrders/:id 
-app.get('/api/internalOrders/:id', internalOrders.getinternalOrderById);
+app.get('/api/InternalOrder/:id', internalOrders.getinternalOrderById);
 
 //POST /api/internalOrders  
-app.post('/api/internalOrders', checkSchema(internalOrders.postInternalOrderSchema), internalOrders.postInternalOrder);
+app.post('/api/InternalOrders', checkSchema(internalOrders.postInternalOrderSchema), internalOrders.postInternalOrder);
 
 //DELETE /api/internalOrdersIssued  
-app.delete('/api/internalOrders/:id', internalOrders.deleteInternalOrder);
+app.delete('/api/InternalOrder/:id', internalOrders.deleteInternalOrder);
 
 //PUT /api/internalOrders/:id   
-app.put('/api/internalOrders/:id', internalOrders.changeInternalOrder);
+app.put('/api/InternalOrders/:id', checkSchema(internalOrders.putInternalOrdersSchema),internalOrders.changeInternalOrder);
 
 
 //RestockOrder
 //POST /api/restockOrder 
 app.post('/api/restockOrder', checkSchema(restockOrders.postRestockOrderSchema),restockOrders.postRestockOrder);
 
-//DELETE /api/restockOrder/:id imitate internalorder
+//DELETE /api/restockOrder/:id 
 app.delete('/api/restockOrder/:id', restockOrders.deleteRestockOrder);
 
 //GET /api/restockOrders 
@@ -160,7 +160,7 @@ app.get('/api/restockOrders/:id/returnItems', restockOrders.getItemsById);
 app.put('/api/restockOrder/:id',checkSchema(restockOrders.putStateSchema ),restockOrders.updateState );
 
 //PUT /api/restockOrder/:id/skuItems
-app.put('/api/restockOrder/:id/skuItems',restockOrders.updateSKUItems );
+app.put('/api/restockOrder/:id/skuItems',checkSchema(restockOrders.putSKUItemsSchema ),restockOrders.updateSKUItems );
 
 //PUT /api/restockOrder/:id/transportNote  update and use transport id to update transport node(1 to 1)
 app.put('/api/restockOrder/:id/transportNote', checkSchema(restockOrders.putTransportNoteSchema ),restockOrders.addTransportNode);
@@ -169,14 +169,14 @@ app.put('/api/restockOrder/:id/transportNote', checkSchema(restockOrders.putTran
 app.get('/api/restockOrders/:id',restockOrders.getRestockOrder);
 
 //ReturnOrder
-//GET /api/returnOrders  products list need to be finished
+//GET /api/returnOrders  
 app.get('/api/returnOrders', returnOrders.getAllReturnOrders)
 
-//GET /api/returnOrders/:id products list need to be finished
+//GET /api/returnOrders/:id 
 app.get('/api/returnOrders/:id', returnOrders.getAllReturnOrderById)
 
-//POST /api/returnOrder  products list need to be finished
-app.post('/api/returnOrder', returnOrders.postReturnOrder);
+//POST /api/returnOrder 
+app.post('/api/returnOrder', checkSchema(returnOrders.postReturnOrderSchema),returnOrders.postReturnOrder);
 
 //DELETE /api/returnOrder/:id 
 app.delete('/api/returnOrder/:id', returnOrders.deleteReturnOrder);

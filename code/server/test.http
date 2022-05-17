@@ -1,36 +1,32 @@
-
+//get all IO
 GET http://localhost:3001/api/InternalOrders HTTP/1.1
 content-type: application/json
 ####
-DELETE http://localhost:3001/api/InternalOrders/1 HTTP/1.1
+DELETE http://localhost:3001/api/InternalOrder/2 HTTP/1.1
 content-type: application/json
 #####
        
-GET http://localhost:3001/api/internalOrdersIssued  HTTP/1.1
+GET http://localhost:3001/api/InternalOrdersIssued  HTTP/1.1
 content-type: application/json
 #####
-GET http://localhost:3001/api/internalOrdersAccepted  HTTP/1.1
-content-type: application/json
-#####
-
-GET http://localhost:3001/api/internalOrders/1  HTTP/1.1
+GET http://localhost:3001/api/InternalOrdersAccepted  HTTP/1.1
 content-type: application/json
 #####
 
-
-PUT http://localhost:3001/api/internalOrders/1  HTTP/1.1
+GET http://localhost:3001/api/InternalOrder/4  HTTP/1.1
 content-type: application/json
+
 
 ####
 
-POST http://localhost:3001/api/internalOrders HTTP/1.1
+POST http://localhost:3001/api/InternalOrders HTTP/1.1
 content-type: application/json
 
 {
-    "issueDate":"2021/11/29 09:33",
+   
     "products": [
         {
-            "SKUId":12,
+            "SKUId":13,
             "description":"a product",
             "price":10.99,
             "qty":3},
@@ -46,7 +42,7 @@ content-type: application/json
 
 ########
 
-PUT http://localhost:3001/api/internalOrders/1   HTTP/1.1
+PUT http://localhost:3001/api/internalOrders/4   HTTP/1.1
 content-type: application/json
 
 
@@ -56,7 +52,7 @@ content-type: application/json
 
 {
     "newState":"COMPLETED",
-    "products":[{"SkuID":1,"RFID":"12345678901234567890123456789016"},{"SkuID":1,"RFID":"12345678901234567890123456789038"}]
+    "products":[{"SkuID":13,"RFID":"12345678901234567890123456789016"},{"SkuID":180,"RFID":"12345678901234567890123456789038"}]
 }
 
 
@@ -73,10 +69,16 @@ content-type: application/json
     }
 
 
+####
+GET http://localhost:3001/api/returnOrder/5 HTTP/1.1
+content-type: application/json
 ########
 GET http://localhost:3001/api/returnOrders  HTTP/1.1
 content-type: application/json
 
+########
+DELETE http://localhost:3001/api/returnOrder/1  HTTP/1.1
+content-type: application/json
 
 ########
 //post new restock order
@@ -85,7 +87,7 @@ content-type: application/json
 
 {
     "issueDate":"2021/11/29 09:33",
-    "products": [{"SKUId":12,"description":"a product","price":10.99,"qty":30},
+    "products": [{"SKUId":120,"description":"a product","price":10.99,"qty":6660},
                 {"SKUId":180,"description":"another product","price":11.99,"qty":20}],
     "supplierId" : 1
 }
