@@ -116,7 +116,7 @@ app.delete('/api/skuitems/:rfid/testResult/:id',  testResult.deleteTestResult);
 
 //InternalOrder
 //GET /api/InternalOrders  
-app.get('/api/InternalOrders', internalOrders.getAllInternalOrder)
+app.get('/api/internalOrders', internalOrders.getAllInternalOrder)
 
 //GET /api/internalOrdersIssued 
 app.get('/api/internalOrdersIssued', internalOrders.getInternalOrderIssued)
@@ -134,14 +134,14 @@ app.post('/api/internalOrders', checkSchema(internalOrders.postInternalOrderSche
 app.delete('/api/internalOrders/:id', internalOrders.deleteInternalOrder);
 
 //PUT /api/internalOrders/:id   
-app.put('/api/internalOrders/:id', internalOrders.changeInternalOrder);
+app.put('/api/internalOrders/:id', checkSchema(internalOrders.putInternalOrdersSchema),internalOrders.changeInternalOrder);
 
 
 //RestockOrder
 //POST /api/restockOrder 
 app.post('/api/restockOrder', checkSchema(restockOrders.postRestockOrderSchema),restockOrders.postRestockOrder);
 
-//DELETE /api/restockOrder/:id imitate internalorder
+//DELETE /api/restockOrder/:id 
 app.delete('/api/restockOrder/:id', restockOrders.deleteRestockOrder);
 
 //GET /api/restockOrders 
@@ -160,7 +160,7 @@ app.get('/api/restockOrders/:id/returnItems', restockOrders.getItemsById);
 app.put('/api/restockOrder/:id',checkSchema(restockOrders.putStateSchema ),restockOrders.updateState );
 
 //PUT /api/restockOrder/:id/skuItems
-app.put('/api/restockOrder/:id/skuItems',restockOrders.updateSKUItems );
+app.put('/api/restockOrder/:id/skuItems',checkSchema(restockOrders.putSKUItemsSchema ),restockOrders.updateSKUItems );
 
 //PUT /api/restockOrder/:id/transportNote  update and use transport id to update transport node(1 to 1)
 app.put('/api/restockOrder/:id/transportNote', checkSchema(restockOrders.putTransportNoteSchema ),restockOrders.addTransportNode);
@@ -169,14 +169,14 @@ app.put('/api/restockOrder/:id/transportNote', checkSchema(restockOrders.putTran
 app.get('/api/restockOrders/:id',restockOrders.getRestockOrder);
 
 //ReturnOrder
-//GET /api/returnOrders  products list need to be finished
+//GET /api/returnOrders  
 app.get('/api/returnOrders', returnOrders.getAllReturnOrders)
 
-//GET /api/returnOrders/:id products list need to be finished
+//GET /api/returnOrders/:id 
 app.get('/api/returnOrders/:id', returnOrders.getAllReturnOrderById)
 
-//POST /api/returnOrder  products list need to be finished
-app.post('/api/returnOrder', returnOrders.postReturnOrder);
+//POST /api/returnOrder 
+app.post('/api/returnOrder', checkSchema(returnOrders.postReturnOrderSchema),returnOrders.postReturnOrder);
 
 //DELETE /api/returnOrder/:id 
 app.delete('/api/returnOrder/:id', returnOrders.deleteReturnOrder);

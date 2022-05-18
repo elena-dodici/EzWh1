@@ -44,22 +44,14 @@ class InternalOrderManager{
                     
                 let curSKU =  await PersistentManager.loadOneByAttribute("id",SKU.tableName,curSkuID)
                 let curSKUqty = curSKU.availableQuantity;  
-                console.log(curSKUqty)             
+                           
                 if (curSKUqty===0) {
                     return Promise.reject("Not available qty in DB")
                 }
                 else{                          
                     let resultqty = curSKUqty-1;                     
                     await PersistentManager.update(SKU.tableName, {"availableQuantity":resultqty},"id",curSkuID );                                        
-                    }
-            
-                
-                
-                
-
-                 
-                
-                
+                    }              
             }
         }   
         return PersistentManager.update(InternalOrder.tableName,{"state":newState},"id",rowID)
@@ -69,90 +61,159 @@ class InternalOrderManager{
 
     //need products list
     async listAllInternalOrder(){
-        let originIo =  await PersistentManager.loadAllRows(InternalOrder.tableName);
-        let result = await this.addProductsList(originIo);
-        //fenzhi
-        return result;
+        let originIos =  await PersistentManager.loadAllRows(InternalOrder.tableName);
+       
+        //each order
+        let finalResult=[];     
+        
+        // let productInfo =[];
+        for(let order of originIos){
+            let orderInfo=[];
+            //decide which info will be inserted into productlist
+            if(order.state !=="COMPLETED"){
+                //return SKUID ,desc,price,qty from IO product directly
+                let products = await this.addProductsList(order);
+                orderInfo={
+                    "id":order.id,
+                    "issueDate":order.date,
+                    "state": order.state,
+                    "products": products,
+                    "customerId" :order.customer_id  
+                }
+            }
+            else{
+                   //find RFID SKUitem
+                let RFIDRows = await PersistentManager.loadByMoreAttributes(SKUItem.tableName,['internalOrder_id','Available'],[order.id,0]);   
+                
+                let promises= RFIDRows.map(async p=>{
+                    let iteminfo = await PersistentManager.loadByMoreAttributes(InternalOrderProduct.tableName,['sku_id','internalOrder_id'],[p.SKUId,order.id]);   
+                    let product = {       
+                        "SKUId":iteminfo[0].sku_id,
+                        "description":iteminfo[0].description,
+                        "price":iteminfo[0].price,
+                        "RFID":p.RFID
+                    };
+                    return product;
+                })   
+                let productsList=[];            
+                for(const prom of promises){
+                    let item = await prom;
+                    productsList.push(item);
+                }     
+                    
+                orderInfo={
+                    "id":order.id,
+                    "issueDate":order.date,
+                    "state": order.state,
+                    "products": productsList,
+                    "customerId" :order.customer_id    
+                 }  
+                       
+            }          
+            finalResult.push(orderInfo)
+        }        
+        return finalResult;
       
     }
 
     async   listIssuedIO(){
         let originIo = await PersistentManager.loadFilterByAttribute(InternalOrder.tableName,'state','ISSUED');
-        let result = await this.addProductsList(originIo);
-        
-        return result;
+        let finalRes = [];
+        for(let o of originIo){
+            let productList = await this.addProductsList(o);
+            let orderInfo={
+                "id":o.id,
+                "issueDate":o.date,
+                "state": o.state,
+                "products": productList,
+                "customerId" :o.customer_id    
+            }  
+             finalRes.push(orderInfo);  
+        }
+        return finalRes;
     }
 
     async listAcceptedIO(){
-        let result = await PersistentManager.loadFilterByAttribute(InternalOrder.tableName,'state','ACCEPTED');    
-        //add the array to each line of result
-        return this.addProductsList(result);
-        
+        let originIo = await PersistentManager.loadFilterByAttribute(InternalOrder.tableName,'state','ACCEPTED');
+        let finalRes = [];
+        for(let o of originIo){
+            let productList = await this.addProductsList(o);
+            let orderInfo={
+                "id":o.id,
+                "issueDate":o.date,
+                "state": o.state,
+                "products": productList,
+                "customerId" :o.customer_id    
+            }  
+             finalRes.push(orderInfo);  
+        }
+        return finalRes;
+              
     }
 
     async listIOByID(id){
-        //only have one line so cannot read
-        let result = await PersistentManager.loadOneByAttribute("id",InternalOrder.tableName,id);         
-        return this.addProductsList(result);
+        const exists = await PersistentManager.exists(InternalOrder.tableName, 'id', id);
+        if (!exists) {
+            return Promise.reject("404 InternalOrderId cannot found");
+        } 
+        
+        let io = await PersistentManager.loadOneByAttribute("id",InternalOrder.tableName,id);         
+        
+        let productList = await this.addProductsList(io);       
+        
+        let orderInfo={
+            "id":io.id,
+            "issueDate":io.date,
+            "state": io.state,
+            "products": productList,
+            "customerId" :io.customer_id    
+        }  
+            return orderInfo;
+           
 
     }
 
 
-    async addProductsList(result){     
-        let newRow =[];
-        if (Array.isArray(result)){
-              //add the array to each line of result
-            for (let i =0;i<result.length;i++){
-                let newIOrder = result[i];
-                newIOrder.products =[];
-                //give io products id             
-                let res = await this.loadProducts(newIOrder.id);               
-                newIOrder.products.push(res);      
-                newRow.push(newIOrder);
-            }    
-        }
-        else{
-            result.products =[];            
-            let res = await this.loadProducts(result.id);              
-            result.products.push(res);      
-            newRow.push(result);      
-        }  
-        return newRow;
+    async addProductsList(order){     
+        let ProductList =[];
+        let skuinfo={};
+        let products = await PersistentManager.loadFilterByAttribute(InternalOrderProduct.tableName,'internalOrder_id',order.id);
+        
+        for(let p of products){
+            
+            skuinfo={
+                "SKUId":p.sku_id,
+                "description":p.description,
+                "price":p.price,
+                "qty":p.quantity
+            }
+            ProductList.push(skuinfo);
 
+        }       
+              
+        return ProductList; 
     }
 
     async deleteIO(roId){
-        let Io = await this.listIOByID(roId);
-        //check validation
-        if(!Io){
-            return Promise.reject("InternalOrder not exists")
-        }
-        // delete info in products table
-        if (Io.products){
-            try{
-                await PersistentManager.delete(internalOrder_id,roId,InternalOrderProduct.tableName)
-            }
-            catch{
-                return Promise.reject("generic error")
-            }
-        }
+        // let Io = await this.listIOByID(roId);
+        // //check validation
+        // if(!Io){
+        //     return Promise.reject("InternalOrder not exists")
+        // }
+        // // delete info in products table
+        // if (Io.products){
+        //     try{
+        //         await PersistentManager.delete(internalOrder_id,roId,InternalOrderProduct.tableName)
+        //     }
+        //     catch{
+        //         return Promise.reject("generic error")
+        //     }
+        // }
 
         PersistentManager.delete('id',roId,InternalOrder.tableName)
     }
 
-    async loadProducts(IOId){
-        let products ;
-        await PersistentManager.loadFilterByAttribute(InternalOrderProduct.tableName,'internalOrder_id',IOId). then(
-            result =>{
-                products = result;
-            },
-            error =>{
-                console.log(error);
-            }
-        );
-        
-        return products
-    }
+
 
 }
 

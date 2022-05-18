@@ -55,10 +55,10 @@ exports.postInternalOrder = function(req,res){
     // let products
     result.then(
         result=>{
-            return res.status(200).json();
+            return res.status(200).json("create successfully");
         },
         error=>{
-            console.log(error)
+            return res.status(500).json({error:"generic error"});
         }
     )
 }
@@ -74,7 +74,7 @@ exports.deleteInternalOrder = function(req,res) {
             return res.status(204).json();
         },
         error => {
-            console.log(error);
+            return res.status(500).json({error:"generic error"});
         }
     )
     
@@ -85,10 +85,11 @@ exports.getAllInternalOrder = function(req,res) {
     let result = InternalOrderManager.listAllInternalOrder();
     result.then(
         result => {
-             res.status(200).json(result);
+             return res.status(200).json(result);
         },
         error => {
             console.log(error)
+            return res.status(500).json({error:"generic error"});
         }
     )
     
@@ -99,10 +100,10 @@ exports.getInternalOrderIssued = function(req,res) {
     let result = InternalOrderManager.listIssuedIO();
     result.then(
         result => {
-             res.status(200).json(result);
+             return res.status(200).json(result);
         },
         error => {
-            console.log(error)
+            return res.status(500).json({error:"generic error"});
         }
     )
     
@@ -115,7 +116,7 @@ exports.getinternalOrdersAccepted = function(req,res) {
             return res.status(200).json(result);
         },
         error => {
-            console.log(error)
+            return res.status(500).json({error:"generic error"});
         }
     )
     
@@ -123,6 +124,7 @@ exports.getinternalOrdersAccepted = function(req,res) {
 
 
 exports.getinternalOrderById = function(req,res) {
+ 
     let id = req.params.id;
     let result = InternalOrderManager.listIOByID(id);
     result.then(
@@ -131,11 +133,28 @@ exports.getinternalOrderById = function(req,res) {
         },
         error => {
             console.log(error)
+            switch(error){
+                case "404 InternalOrderId cannot found":
+                    return res.status(404).json({error: "InternalOrderId cannot found"})
+                default:     
+                    return res.status(503).json({error: "generic error"});
+            }
+            
+            
         }
     )
     
 }
 
+exports.putInternalOrdersSchema = {
+    newState: {
+        notEmpty: true,
+    },
+    products: {
+        notEmpty: false,
+
+    },
+}
 
 exports.changeInternalOrder = function(req,res) {  
     
@@ -157,7 +176,7 @@ exports.changeInternalOrder = function(req,res) {
     let result = InternalOrderManager.modifyState(rowID, newState,ProductList);
     result.then( 
         result => {
-            return res.status(200).json();
+            return res.status(200).json("Modify successfully");
         },
         error => {
             switch(error){
