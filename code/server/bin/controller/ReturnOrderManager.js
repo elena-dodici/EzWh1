@@ -9,11 +9,13 @@ const RestockOrder = require('../model/RestockOrder');
 // const dao = require("../bin/model/mock_persistanceManager")
 
 
+
+
 class ReturnOrderManager {
     constructor() { }
 
     async defineReturnOrder(date, productsList, roId) {
-
+        await PersistentManager.startTransaction();
         const exists = await PersistentManager.exists(RestockOrder.tableName, 'id', roId);
         if (!exists) {
             return Promise.reject("404 not found restockOrderId");
@@ -28,6 +30,7 @@ class ReturnOrderManager {
             let curproRFID = product.RFID;
             PersistentManager.update(SkuItem.tableName, { returnOrder_id: newReturnOID }, "RFID", curproRFID);
         }
+        await PersistentManager.commitTransaction();
         return 0;
     }
 
@@ -111,9 +114,6 @@ class ReturnOrderManager {
         return await PersistentManager.delete('id', reoID, ReturnOrder.tableName);
 
     }
-
-
-
 
 }
 

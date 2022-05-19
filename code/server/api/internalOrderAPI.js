@@ -55,7 +55,7 @@ exports.postInternalOrder = function(req,res){
     // let products
     result.then(
         result=>{
-            return res.status(200).json("create successfully");
+            return res.status(201).end();
         },
         error=>{
             return res.status(500).json({error:"generic error"});
@@ -176,7 +176,7 @@ exports.changeInternalOrder = function(req,res) {
     let result = InternalOrderManager.modifyState(rowID, newState,ProductList);
     result.then( 
         result => {
-            return res.status(200).json("Modify successfully");
+            return res.status(200).end();
         },
         error => {
             switch(error){

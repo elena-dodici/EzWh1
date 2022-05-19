@@ -125,7 +125,7 @@ exports.getSkuItemsBySKU = function (req,res) {
         error => {
             switch (error) {
                 case "404 sku":
-                    return res.status(404).json({error: "No SKU associated to SKUId"});
+                    return res.status(404).json({error: "No SKU associated to id"});
                 default:
                     return res.status(503).json({error: "generic error"});
             }

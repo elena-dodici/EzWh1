@@ -3,6 +3,8 @@ const ReturnOrderManager = require('../bin/controller/ReturnOrderManager');
 const ReturnOrder = require('../bin/model/ReturnOrder')
 const { validationResult } = require('express-validator');
 const RestockOrder = require('../bin/model/RestockOrder');
+const { checkSchema } = require('express-validator');
+
 
 
 //getall
@@ -63,13 +65,34 @@ exports.postReturnOrderSchema = {
     },
     products: {
         notEmpty: true,
+        isArray: true,
+    },
+    'products.*.SKUId': {
+        notEmpty: true, 
+        isNumeric: {
+            options: {min: 0}
+        }
+    },
+    'products.*.description': {
+        notEmpty: true
+    },
+    'products.*.price': {
+        notEmpty: true,
+        isNumeric: true
+    },
+    'products.*.RFID': {
+        notEmpty: true, 
+        isNumeric: true,
+        isLength: {
+            options: {min: 32, max: 32}
+        }
     },
     restockOrderId: {
         notEmpty: true,
         isNumeric: {
 			options: {min: 0}
 		}
-    },
+    }
 }
 //post
 exports.postReturnOrder=function(req,res){

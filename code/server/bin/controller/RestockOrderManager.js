@@ -19,8 +19,9 @@ class RestockOrderManager {
 		const suppExists = await PersistentManager.loadByMoreAttributes(
 			User.tableName,
 			["id", "type"],
-			[supplierId, "SUPPLIER"]
+			[supplierId, "supplier"]
 		);
+
 		
 		if (suppExists.length === 0) {
 			return Promise.reject("404 no supplier Id found");
@@ -46,6 +47,7 @@ class RestockOrderManager {
 			);
 			
 			if (!exists) {
+				
 				PersistentManager.delete(
 					"id",
 					newRestockOrderId,
@@ -62,6 +64,7 @@ class RestockOrderManager {
 			);
 			
 			if (existsItem.length === 0) {
+				
 				PersistentManager.delete(
 					"id",
 					newRestockOrderId,
@@ -339,6 +342,7 @@ class RestockOrderManager {
 	}
 
 	async updateTransportNote(id, newTN) {
+		await PersistentManager.startTransaction();
 		const exists = await PersistentManager.exists(
 			RestockOrder.tableName,
 			"id",
@@ -363,12 +367,17 @@ class RestockOrderManager {
 			return Promise.reject("422 Unprocessable Entity ")
 		}
 
-		return await PersistentManager.update(
+		
+
+		const updateResult = await PersistentManager.update(
 			RestockOrder.tableName,
 			{ transport_note_id: transportNoteId },
 			"id",
 			id
 		);
+
+		await PersistentManager.commitTransaction();
+		return updateResult;
 	}
 
 	async deleteRestockOrder(roID) {
