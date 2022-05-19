@@ -242,6 +242,17 @@ class PersistentManager {
 			return Promise.reject(err);
 		}
 	}
+
+	async deleteAll(tableName) {
+		return new Promise ((resolve, reject) => {
+			const sql = "DELETE FROM " + tableName;
+            const db = this.db;
+            db.run(sql, (err) => {if (err) {
+			
+				reject(err);} resolve()} )
+            
+		})
+	}
 }
 
 //Taking advantage of nodeJS caching mechanism returning an instance of the class to implement easily the Singleton pattern
