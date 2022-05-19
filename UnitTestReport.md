@@ -22,15 +22,20 @@ Version:
     class and method name that contains the test case>
     <Jest tests  must be in code/server/unit_test  >
 
- ### **Class *class_name* - method *name***
+ ### **Class *PersistentManager* - method *store(tableName, object)***
 
+PersistentManager.store(tableName, object) saves the object passed as parameters
+in the table specified by tableName. the value of the keys of the object must be equal 
+to the name of the columns.
+The output, if everything goes well, is the last inserted ID.
 
-
-**Criteria for method *name*:**
+**Criteria for method *store*:**
 	
 
- - 
- - 
+ - value of tableName
+ - number of fields in object
+ - value of keys of object
+
 
 
 
@@ -40,16 +45,19 @@ Version:
 
 | Criteria | Predicate |
 | -------- | --------- |
-|          |           |
-|          |           |
-|          |           |
-|          |           |
-
+|tableName | present in DB |       
+|          | not present in DB         |
+| number of fields in object         |   equal to the # of columns - 1 (id is not present)       |
+|          |   not equal to the # of columns - 1        |
+| value of keys of object | same as the database columns |
+| | at least one value is different from the database columns|
 
 
 
 
 **Boundaries**:
+
+In this case there is no boundary case.
 
 | Criteria | Boundary values |
 | -------- | --------------- |
@@ -61,6 +69,16 @@ Version:
 **Combination of predicates**:
 
 
+| value of tableName | number of fields in object     | value of keys of object                                   | Valid / Invalid | Description of the test case                              | Jest test case                                         |
+|--------------------|--------------------------------|-----------------------------------------------------------|-----------------|-----------------------------------------------------------|--------------------------------------------------------|
+| present in DB      | same as the database columns   | same as the database columns                              | V               | PersistentManager.store(tableName, object) -> lastID      | testStoreValid("User", user);                          |
+|                    |                                | at least one value is different from the database columns | I               | PersistentManager.store(tableName, object) -> throw Error | testStoreInvalid("User", wrongKeys);                   |
+|                    | not equal to the # of columns  | same as the database columns                              | I               | PersistentManager.store(tableName, object) -> throw Error | testStoreInvalid("User", wrongNumberOfFields);         |
+|                    |                                | at least one value is different from the database columns | I               | PersistentManager.store(tableName, object) -> throw Error | testStoreInvalid("User", wrongKeysWrongNumber);        |
+| not present in DB  | same as the database columns   | same as the database columns                              | I               | PersistentManager.store(tableName, object) -> throw Error | testStoreInvalid("wrong table", user);                 |
+|                    |                                | at least one value is different from the database columns | I               | PersistentManager.store(tableName, object) -> throw Error | testStoreInvalid("wrong table", wrongKeys);            |
+|                    | not equal to the # of columns  | same as the database columns                              | I               | PersistentManager.store(tableName, object) -> throw Error | testStoreInvalid("wrong table", wrongNumberOfFields);  |
+|                    |                                | at least one value is different from the database columns | I               | PersistentManager.store(tableName, object) -> throw Error | testStoreInvalid("wrong table", wrongKeysWrongNumber); |
 | Criteria 1 | Criteria 2 | ... | Valid / Invalid | Description of the test case | Jest test case |
 |-------|-------|-------|-------|-------|-------|
 |||||||

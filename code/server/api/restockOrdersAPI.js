@@ -4,6 +4,7 @@ const { validationResult } = require('express-validator');
 const PersistentManager = require('../bin/DB/PersistentManager');
 const TestResult = require('../bin/model/TestResult');
 const RestockOrder = require('../bin/model/RestockOrder');
+const SKU = require('../bin/model/SKU');
 
 
 const dateValidation = function(date) {
@@ -14,6 +15,8 @@ const dateValidation = function(date) {
     }
     return false;
 }
+
+
 
 exports.postRestockOrderSchema = {
     issueDate: {
