@@ -40,13 +40,14 @@ Version:
 ## Step 1
 | Classes  | mock up used |Jest test cases |
 |--|--|--|
-||||
-
-
+|PersistentManager| | testStoreValid |
+| || testStoreInvalid |
+| || testLoadValid|
+| || testLoadInvalid|
 ## Step 2
 | Classes  | mock up used |Jest test cases |
 |--|--|--|
-||||
+|SKUManager | | testDefineSKU |
 
 
 ## Step n 
