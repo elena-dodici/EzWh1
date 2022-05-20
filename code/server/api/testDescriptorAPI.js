@@ -31,7 +31,7 @@ exports.postTestDescriptor = function(req,res) {
 
     if (!errors.isEmpty()) {
         return res.status(422).json({
-            errors: errors.array()
+            error: "validation of request body failed"
         });
     }
 
@@ -66,13 +66,26 @@ exports.getTestDescriptors = function(req,res) {
             }
         )
  }
+
+ exports.getTestDescriptorByIDSchema = {
+     id: {
+         notEmpty: true,
+         isInt: {
+             options: {min: 0}
+         }
+     }
+ }
     
 exports.getTestDescriptorByID = function(req,res) {
         let id = req.params.id;
-    
-        if (id<0) {
-            return res.status(422).json({error: "Validation of id failed"});
+        const errors = validationResult(req);
+
+        if (!errors.isEmpty()) {
+            return res.status(422).json({
+                error: "validation of id failed"
+            });
         }
+    
         
         QualityTestManager.getTestDescriptorByID(id).then(
             result => {
@@ -113,7 +126,7 @@ exports.modifyTestDescriptorById = function(req,res) {
 
     if (!errors.isEmpty()) {
         return res.status(422).json({
-            errors: errors.array()
+            error: "validation of request body failed"
         });
     }
         const id = req.params.id;
@@ -140,14 +153,28 @@ exports.modifyTestDescriptorById = function(req,res) {
             }
         )
  }
+
+ exports.deleteTestDescriptorSchema = {
+    id: {
+        notEmpty: true,
+        isInt: {
+            options: {min: 0}
+        }
+    }
+}
     
     
 exports.deleteTestDescriptor = function (req,res) {
         const id = req.params.id;
 
-        if(id<0) {
-            return res.status(422).json({error: "Validation of id failed"});
+        const errors = validationResult(req);
+
+        if (!errors.isEmpty()) {
+            return res.status(422).json({
+                error: "validation of id failed"
+            });
         }
+    
   
         QualityTestManager.deleteTestDescriptor(id).then(
             result => {

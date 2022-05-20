@@ -58,8 +58,8 @@ const possiblePostTypes = [
 	"customer",
 	"supplier",
 	"clerk",
-	"quality employee",
-	"delivery employee",
+	"qualityEmployee",
+	"deliveryEmployee",
 ];
 
 exports.postUserSchema = {
