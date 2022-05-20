@@ -79,13 +79,45 @@ In this case there is no boundary case.
 |                    |                                | at least one value is different from the database columns | I               | PersistentManager.store(tableName, object) -> throw Error | testStoreInvalid("wrong table", wrongKeys);            |
 |                    | not equal to the # of columns  | same as the database columns                              | I               | PersistentManager.store(tableName, object) -> throw Error | testStoreInvalid("wrong table", wrongNumberOfFields);  |
 |                    |                                | at least one value is different from the database columns | I               | PersistentManager.store(tableName, object) -> throw Error | testStoreInvalid("wrong table", wrongKeysWrongNumber); |
-| Criteria 1 | Criteria 2 | ... | Valid / Invalid | Description of the test case | Jest test case |
-|-------|-------|-------|-------|-------|-------|
-|||||||
-|||||||
-|||||||
-|||||||
-|||||||
+
+
+ ### **Class *PersistentManager* - method *loadAllRows(tableName)***
+Loads a list containing all the objects saved in the database
+
+
+**Criteria for method *store*:**
+	
+
+ - value of tableName
+ - number of objects present in the table
+
+
+**Predicates for method *name*:**
+
+| Criteria | Predicate |
+| -------- | --------- |
+|value of tableName | present in DB |       
+|          | not present in DB         |
+|   number of objects present in the table     |   > 0     |
+
+
+**Boundaries**:
+
+
+| Criteria | Boundary values |
+| -------- | --------------- |
+|   number of objects present in the table     |   0     |
+
+
+
+
+
+| value of tableName | number of objects present in the table | Valid / Invalid | Description of the test case                             | Jest test case               |
+|--------------------|----------------------------------------|-----------------|----------------------------------------------------------|------------------------------|
+| present in DB      | >0                                     | V               | PersistentManager.loadAllRows(tableName) -> List&lt;Object> | testLoadValid("User", 1);    |
+|                    | 0                                      | V               | PersistentManager.loadAllRows(tableName) -> Empty list   | testLoadValid("User", 0);    |
+| not present in DB  | >0                                     | I               | PersistentManager.loadAllRows(tableName) -> Throw error  | testLoadInvalid("wrong", 1); |
+|                    | 0                                      | I               | PersistentManager.loadAllRows(tableName) -> Throw error  | testLoadValid("wrong", 0);   |
 
 
 

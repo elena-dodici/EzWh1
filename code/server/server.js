@@ -86,13 +86,13 @@ app.post('/api/testDescriptor',checkSchema(testDescriptor.postTestDescriptorSche
 app.get('/api/testDescriptors',  testDescriptor.getTestDescriptors);
 
 //GET /api/testDescriptors/:id
-app.get('/api/testDescriptors/:id',  testDescriptor.getTestDescriptorByID);
+app.get('/api/testDescriptors/:id', checkSchema(testDescriptor.getTestDescriptorByIDSchema), testDescriptor.getTestDescriptorByID);
 
 //PUT /api/testDescriptor/:id
 app.put('/api/testDescriptor/:id', checkSchema(testDescriptor.modifyTestDescriptorByIdSchema),  testDescriptor.modifyTestDescriptorById);
 
 //DELETE /api/testDescriptor/:id
-app.delete('/api/testDescriptor/:id',  testDescriptor.deleteTestDescriptor);
+app.delete('/api/testDescriptor/:id', checkSchema(testDescriptor.deleteTestDescriptorSchema) ,  testDescriptor.deleteTestDescriptor);
 
 //TEST RESULT
 
@@ -100,16 +100,16 @@ app.delete('/api/testDescriptor/:id',  testDescriptor.deleteTestDescriptor);
 app.post('/api/skuitems/testResult',checkSchema(testResult.postTestResultSchema), testResult.postTestResult);
 
 //GET /api/skuitems/:rfid/testResults
-app.get('/api/skuitems/:rfid/testResults',  testResult.getTestResults);
+app.get('/api/skuitems/:rfid/testResults',  checkSchema(testResult.getTestResultsSchema) ,testResult.getTestResults);
 
 //GET /api/skuitems/:rfid/testResults/:id
-app.get('/api/skuitems/:rfid/testResults/:id',  testResult.getTestResultByID);
+app.get('/api/skuitems/:rfid/testResults/:id',  checkSchema(testResult.getTestResultByIDSchema),testResult.getTestResultByID);
 
 //PUT /api/skuitems/:rfid/testResult/:id
 app.put('/api/skuitems/:rfid/testResult/:id',checkSchema(testResult.modifyTestResultByIdSchema),  testResult.modifyTestResultById);
 
 //DELETE /api/skuitems/:rfid/testResult/:id
-app.delete('/api/skuitems/:rfid/testResult/:id',  testResult.deleteTestResult);
+app.delete('/api/skuitems/:rfid/testResult/:id', checkSchema(testResult.deleteTestResultSchema) ,testResult.deleteTestResult);
 
  
 
@@ -151,10 +151,10 @@ app.get('/api/restockOrders', restockOrders.getRestockOrder);
 app.get('/api/restockOrdersIssued', restockOrders.getRestockIssuedOrder);
 
 //GET /api/restockOrders/:id
-app.get('/api/restockOrders/:id', restockOrders.getRestockOrderById);
+app.get('/api/restockOrders/:id', checkSchema(restockOrders.getRestockOrderByIDSchema), restockOrders.getRestockOrderById);
 
 //GET /api/restockOrders/:id/returnItems
-app.get('/api/restockOrders/:id/returnItems', restockOrders.getItemsById);
+app.get('/api/restockOrders/:id/returnItems', checkSchema(restockOrders.getItemsByIdSchema),restockOrders.getItemsById);
 
 //PUT /api/restockOrder/:id 
 app.put('/api/restockOrder/:id',checkSchema(restockOrders.putStateSchema ),restockOrders.updateState );
@@ -166,7 +166,7 @@ app.put('/api/restockOrder/:id/skuItems',checkSchema(restockOrders.putSKUItemsSc
 app.put('/api/restockOrder/:id/transportNote', checkSchema(restockOrders.putTransportNoteSchema ),restockOrders.addTransportNode);
 
 //GET api/restockOrders/:id/returnItems   
-app.get('/api/restockOrders/:id',restockOrders.getRestockOrder);
+app.get('/api/restockOrders/:id', checkSchema(restockOrders.deleteRestockOrderSchema) ,restockOrders.getRestockOrder);
 
 //ReturnOrder
 //GET /api/returnOrders  

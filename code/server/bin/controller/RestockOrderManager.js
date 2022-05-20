@@ -39,7 +39,7 @@ class RestockOrderManager {
 			let newSkuid = product.SKUId;
 			// let newPrice = product.price;
 			let newqty = product.qty;
-
+			
 			let exists = await PersistentManager.exists(
 				SKU.tableName,
 				"id",
@@ -179,6 +179,9 @@ class RestockOrderManager {
 		}
 
 		let ro = await PersistentManager.loadOneByAttribute('id', RestockOrder.tableName, id);
+		if (ro.state !== "COMPLETEDRETURN") {
+			return Promise.reject("422 completedreturn")
+		}
         let allOrderInfo = await this.addOneOrderInfo(ro);	
 		let allSkuItems = allOrderInfo.skuItems;
 		let skuItemsToReturn = [];
@@ -342,21 +345,19 @@ class RestockOrderManager {
 	}
 
 	async updateTransportNote(id, newTN) {
-		await PersistentManager.startTransaction();
 		const exists = await PersistentManager.exists(
 			RestockOrder.tableName,
 			"id",
 			id
 		);
 		if (!exists) {
-			return Promise.reject("404 RestockOrderid cannot found");
+			return Promise.reject("404 RestockOrderid not found");
 		}
 
 		const transportNoteId = await PersistentManager.store(
 			TransportNote.tableName,
 			{ deliveryDate: newTN.deliveryDate }
 		);
-
 		let restockOrderRow = await PersistentManager.loadOneByAttribute(
 			"id",
 			RestockOrder.tableName,
@@ -364,7 +365,7 @@ class RestockOrderManager {
 		);
 		
 		if(restockOrderRow.state!=="DELIVERED"||restockOrderRow.issue_date > newTN.deliveryDate ){			
-			return Promise.reject("422 Unprocessable Entity ")
+			return Promise.reject("422 Unprocessable Entity")
 		}
 
 		
@@ -376,7 +377,6 @@ class RestockOrderManager {
 			id
 		);
 
-		await PersistentManager.commitTransaction();
 		return updateResult;
 	}
 

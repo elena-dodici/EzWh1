@@ -80,11 +80,25 @@ exports.postTestResult = function(req,res) {
     );
 }
 
+exports.getTestResultsSchema = {
+    rfid: {
+        notEmpty: true,
+        isNumeric: true,
+        isLength: {
+            options: {min: 32, max: 32}
+        }
+    },
+}
+
 exports.getTestResults = function(req,res) {
         let rfid = req.params.rfid;
 
-        if (rfid<0) {
-            return res.status(422).json({error: "validation of rfid failed"});
+        const errors = validationResult(req);
+
+        if (!errors.isEmpty()) {
+            return res.status(422).json({
+                error: "Validation of rfid failed"
+            });
         }
     
         QualityTestManager.getAllTestResultsByRFID(rfid).then(
@@ -97,10 +111,24 @@ exports.getTestResults = function(req,res) {
                 }
             },
             error => {
-                console.log(error);
                 return res.status(500).json({error: 'generic error'});
             }
         )
+}
+
+exports.getTestResultByIDSchema = {
+    rfid: {
+        notEmpty: true,
+        isNumeric: true,
+        isLength: {
+            options: {min: 32, max: 32}
+        }
+    },
+    id: {
+        notEmpty: true,
+        isInt: 
+            {options: {min: 0}}
+    }
 }
     
  exports.getTestResultByID = function(req,res) {
@@ -108,14 +136,13 @@ exports.getTestResults = function(req,res) {
         let id = req.params.id;
         let rfid = req.params.rfid;
 
-        if (rfid<0) {
-            return res.status(422).json({error: "validation of rfid failed"});
-        }
+        const errors = validationResult(req);
 
-        if (id<0) {
-            return res.status(422).json({error: "validation of id failed"});
+        if (!errors.isEmpty()) {
+            return res.status(422).json({
+                error: "Validation of id or rfid failed"
+            });
         }
-        
         
         QualityTestManager.getTestResultByID(id,rfid).then(
             result => {
@@ -147,6 +174,18 @@ exports.modifyTestResultByIdSchema = {
     newResult: {
         notEmpty: true,
         errorMessage: "newResult cannot be empty"
+    },
+    rfid: {
+        notEmpty: true,
+        isNumeric: true,
+        isLength: {
+            options: {min: 32, max: 32}
+        }
+    },
+    id: {
+        notEmpty: true,
+        isInt: 
+            {options: {min: 0}}
     }
 }
     
@@ -155,7 +194,7 @@ exports.modifyTestResultByIdSchema = {
 
     if (!errors.isEmpty()) {
         return res.status(422).json({
-            error: "Validation of request body failed"
+            error: "validation of request body, of id or of rfid failed"
         });
     }
 
@@ -165,16 +204,9 @@ exports.modifyTestResultByIdSchema = {
         const newDate = req.body.newDate;
         const newResult = req.body.newResult;
 
-        if (rfid<0) {
-            return res.status(422).json({error: "validation of rfid failed"});
-        }
-
-        if (id<0) {
-            return res.status(422).json({error: "validation of id failed"});
-        }
 
         if (!dateValidation(newDate)) {
-            return res.status(422).json({error: "date validation failed"});
+            return res.status(422).json({error: "validation of request body, of id or of rfid failed"});
         }
     
         QualityTestManager.modifyTestResultByID(id,rfid, newIdTestDescriptor, newDate,  newResult).then(
@@ -199,19 +231,36 @@ exports.modifyTestResultByIdSchema = {
             }
         )
 }
+
+
+exports.deleteTestResultSchema = {
+    rfid: {
+        notEmpty: true,
+        isNumeric: true,
+        isLength: {
+            options: {min: 32, max: 32}
+        }
+    },
+    id: {
+        notEmpty: true,
+        isInt: 
+            {options: {min: 0}}
+    }
+}
     
     
 exports.deleteTestResult = function (req,res) {
         const id = req.params.id;
         const rfid = req.params.rfid;
-     
-        if (rfid<0) {
-            return res.status(422).json({error: "validation of rfid failed"});
-        }
 
-        if (id<0) {
-            return res.status(422).json({error: "validation of id failed"});
-        }
+        const errors = validationResult(req);
+
+    if (!errors.isEmpty()) {
+        return res.status(422).json({
+            error: "validation of id or of rfid failed"
+        });
+    }
+
   
         QualityTestManager.deleteTestResult(id,rfid).then(
             result => {

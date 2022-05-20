@@ -6,6 +6,7 @@ const TestResult = require('../bin/model/TestResult');
 const RestockOrder = require('../bin/model/RestockOrder');
 const SKU = require('../bin/model/SKU');
 
+const possibleStates = ['ISSUED, DELIVERY, DELIVERED, TESTED, COMPLETEDRETURN, COMPLETED'];
 
 const dateValidation = function(date) {
     const yyyymmddRegex = new RegExp(/^\d{4}\/(0[1-9]|1[0-2])\/(0[1-9]|[12][0-9]|3[01])$/);
@@ -31,6 +32,23 @@ exports.postRestockOrderSchema = {
             option:{min:0}
         }
     },
+    'products.*.SKUId': {
+        notEmpty: true, 
+        isNumeric: {
+            options: {min: 0}
+        }
+    },
+    'products.*.description': {
+        notEmpty: true
+    },
+    'products.*.price': {
+        notEmpty: true,
+        isNumeric: true
+    },
+    'products.*.qty': {
+        notEmpty: true, 
+        isInt: {options: {min:0}}
+    },
 }
 
 //POST /api/restockOrders
@@ -40,6 +58,7 @@ exports.postRestockOrder = function(req,res) {
 
     if (!errors.isEmpty()) {
         return res.status(422).json({
+            //errors: errors.array()
             error: "Validation of request body failed"
         });
     }
@@ -66,13 +85,20 @@ exports.postRestockOrder = function(req,res) {
 
 };
 
+exports.deleteRestockOrderSchema = {
+    id: {
+        notEmpty: true,
+        isInt: {options: {min:0}}
+    }
+}
+
 exports.deleteRestockOrder = function(req,res) {
     
     const errors = validationResult(req);
 
     if (!errors.isEmpty()) {
         return res.status(422).json({
-            error: "Validation of request body failed"
+            error: "Validation of id failed"
         });
     }
 
@@ -86,7 +112,7 @@ exports.deleteRestockOrder = function(req,res) {
             console.log(error);
             switch(error){
                 case "404 RestockOrderid cannot found":
-                    return res.status(503).json({error: "404 RestockOrderid cannot found"})
+                    return res.status(404).json({error: "404 RestockOrderid cannot found"})
                 default:
                     return res.status(503).json({error: 'generic error'})
             }
@@ -104,7 +130,6 @@ exports.getRestockOrder = function(req,res) {
             return res.status(200).json(result);
         },
         error => {
-            console.log(error)
             return res.status(500).json({error: 'generic error'});
         }
     )
@@ -126,12 +151,19 @@ exports.getRestockIssuedOrder = function(req,res) {
     
 }
 
+exports.getRestockOrderByIDSchema = {
+    id: {
+        notEmpty: true,
+        isInt: {options: {min: 0}}
+    }
+}
+
 exports.getRestockOrderById = function(req,res) {
     let id = req.params.id;
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
         return res.status(422).json({
-            error: "Validation of request body failed"
+            error: "Validation of id failed"
         });
     }  
     let result = RestockOrderManager.getRestockOrderByID(id);
@@ -154,12 +186,19 @@ exports.getRestockOrderById = function(req,res) {
     
 }
 
+exports.getItemsByIdSchema = {
+    id: {
+        notEmpty: true,
+        isInt: {options: {min:0}}
+    }
+}
+
 exports.getItemsById = async function(req,res) {
     let id = req.params.id;
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
         return res.status(422).json({
-            error: "Validation of request body failed"
+            error: "Validation of id failed"
         });
     }  
     let result = RestockOrderManager.getItemsById(id);
@@ -173,8 +212,8 @@ exports.getItemsById = async function(req,res) {
             switch(error){
                 case "404 RestockOrderid":
                     return res.status(404).json({error: "RestockOrderId not existing"});
-                case "422 restock order state is not COMPLETED or RETURN":
-                    return res.status(404).json({error: "422 restock order state is not COMPLETED or RETURN"})
+                case "422 completedreturn":
+                    return res.status(422).json({error: "restock order state != COMPLETEDRETURN"})
                  default:
                     return res.status(500).json({error: "generic error"});
             }
@@ -186,7 +225,19 @@ exports.getItemsById = async function(req,res) {
 exports.putStateSchema = {
     newState: {
         notEmpty: true,
+        custom: {
+            options: (value, { req, location, path }) => {
+				if (possibleStates.includes(value)) {
+					return true;
+				} else {
+					return false;
+				}
+			},
+        }
     },
+    id: {
+        isInt: {options: {min: 0}}
+    }
 }
 
 
@@ -195,7 +246,7 @@ exports.updateState = function(req,res) {
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
         return res.status(422).json({
-            error: "Validation of request body failed"
+            error: "Validation of request body or of id failed"
         });
     }  
     let rowID= req.params.id;
@@ -223,12 +274,23 @@ exports.putTransportNoteSchema = {
     transportNote: {
         notEmpty: true,
     },
+    'transportNote.deliveryDate': {
+        notEmpty: true,
+        isDate: true
+    },
+    id: {
+        isInt: {options: {min: 0}}
+    }
+
 }
+
+//validation of request body or of id failed or order state != DELIVERY or deliveryDate is before issueDate
 exports.addTransportNode = function(req,res) {
     
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
         return res.status(422).json({
+            
             error: "Validation of request body failed"
         });
     }
@@ -244,18 +306,16 @@ exports.addTransportNode = function(req,res) {
         error => {
             console.log(error)
             switch(error){
-                
-                case "404 RestockOrderid cannot found":
+                case "404 RestockOrderid not found":
                     return res.status(404).json({error: "RestockOrderId not existing"})
             
                 case "422 Order State is not delievered":
-                        return res.status(404).json({error: "422 Order State is not delievered"})
+                        return res.status(422).json({error: "Order State is not delievered"})
                 
                 case "422 Unprocessable Entity":
                         
-                        return res.status(422).json({error: "422 Unprocessable Entity"})
+                        return res.status(422).json({error: "Order State is not delievered or deliveryDate is before issueDate"})
                 default:
-                    
                     return res.status(503).json({error: "generic error"});
             }
             
@@ -268,6 +328,7 @@ exports.putSKUItemsSchema = {
     skuItems: {
         notEmpty: true,
     },
+    
 }
 exports.updateSKUItems = function(req,res) {
     const errors = validationResult(req);

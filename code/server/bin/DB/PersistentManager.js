@@ -1,4 +1,4 @@
-const sqlite = require("sqlite3");
+/*const sqlite = require("sqlite3");
 
 class PersistentManager {
 	constructor() {
@@ -127,9 +127,12 @@ class PersistentManager {
 
     async loadOneByAttribute(parameter_name, tableName, value ){
         return new Promise ((resolve, reject) => {
-            const sql = "SELECT * FROM " + tableName + " WHERE " + parameter_name + "= ?";
+			
+            const sql = "SELECT * FROM " + tableName + " WHERE " + parameter_name + " = ?";
+			
             const db = this.db;
 			let transaction = this.transaction;
+			
             db.get(sql, value, (err, row) => {if (err){
 				if (transaction.onGoing) {
 					db.run("ROLLBACK");
@@ -255,13 +258,13 @@ class PersistentManager {
 		})
 	}
 }
-
+*/
 //Taking advantage of nodeJS caching mechanism returning an instance of the class to implement easily the Singleton pattern
-module.exports = new PersistentManager();
+//module.exports = new PersistentManager();
 
 
 
-/*const sqlite = require("sqlite3");
+const sqlite = require("sqlite3");
 
 class PersistentManager {
 	constructor() {
@@ -446,8 +449,21 @@ class PersistentManager {
 			return Promise.reject(err);
 		}
 	}
+
+	async deleteAll(tableName) {
+		return new Promise ((resolve, reject) => {
+			const sql = "DELETE FROM " + tableName;
+            const db = new sqlite.Database(this.dbName, (err) => {if (err) reject(err) });
+			db.get("PRAGMA foreign_keys = ON");
+            db.run(sql, (err) => {if (err) {
+			
+				reject(err);} resolve()} )
+            
+		})
+	}
+
+
 }
 
 //Taking advantage of nodeJS caching mechanism returning an instance of the class to implement easily the Singleton pattern
 module.exports = new PersistentManager();
-*/
