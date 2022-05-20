@@ -182,6 +182,7 @@ exports.modifySKUById = function(req,res) {
                     return res.status(422).json({error: "validation of request body failed or if with newAvailableQuantity position is not capable enough in weight or in volume"});
                     break;
                 default:
+                    console.log(error);
                     return res.status(503).json({error: "generic error"});
                     break;
             }

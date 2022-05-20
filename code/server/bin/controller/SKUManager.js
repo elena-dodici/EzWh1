@@ -44,7 +44,9 @@ class SKUManager{
         if (loadedSKU) {
             //There is a position to handle
             if (loadedSKU.position != null) {
-                let loadedPosition = await PositionManager.loadPositionById(loadedSKU.position);
+                
+                let loadedPosition = await PersistentManager.loadOneByAttribute('id', Position.tableName, loadedSKU.position+"");
+                
                 let p = new Position(loadedPosition.id, loadedPosition.aisle, loadedPosition.row, loadedPosition.col,
                     loadedPosition.max_weight, loadedPosition.max_volume, loadedPosition.occupied_weight, loadedPosition.occupied_volume,
                     loadedPosition.sku_id);
@@ -53,8 +55,16 @@ class SKUManager{
                     return Promise.reject("422 position not capable");
                 }
                 //Update the position with the new occupied volume and weight
-                PositionManager.modifyPosition(loadedPosition.id, loadedPosition.aisle, loadedPosition.row, loadedPosition.col,
-                    loadedPosition.max_weight, loadedPosition.max_volume, newQuantity * newWeight, newQuantity * newVolume);
+                let position = {
+                    aisle: loadedPosition.aisle, 
+                    row: loadedPosition.row, 
+                    col: loadedPosition.col,
+                    max_weight: loadedPosition.max_weight, 
+                    max_volume: loadedPosition.max_volume, 
+                    occupied_weight: newQuantity * newWeight, 
+                    occupied_volume: newQuantity * newVolume
+                }
+                await PersistentManager.update(Position.tableName, position, 'id', loadedPosition.id);
             }
             let skuToUpdate = {
                 description: newDescription,

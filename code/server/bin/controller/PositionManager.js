@@ -19,7 +19,7 @@ class PositionManager {
 
     async listAllPositions() {
         let positions = await PersistentManager.loadAllRows(Position.tableName);
-        return positions;
+        return positions.map((p) => {return {positionID: p.id, aisleID: p.aisle, row: p.row, col: p.col, maxWeight: p.max_weight, maxVolume: p.max_volume, occupiedWeight: p.occupied_weight, occupiedVolume: p.occupied_volume }});
     }
 
     async modifyPosition(positionID, aisleID, row, col, max_weight, max_volume, occupied_weight, occupied_volume) {

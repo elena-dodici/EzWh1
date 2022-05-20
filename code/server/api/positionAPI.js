@@ -105,6 +105,11 @@ exports.getPositions = function(req,res) {
 
 
 exports.updatePositionSchema = {
+    positionID: {
+        notEmpty: true,
+        isNumeric: true,
+        isLength: {options: {min:12, max:12}}
+    },
     newAisleID: {
         notEmpty: true,
         isNumeric: true,
@@ -160,7 +165,7 @@ exports.updatePosition = async function(req,res) {
 
     if (!errors.isEmpty()) {
         return res.status(422).json({
-            error: "Validation of request body failed"
+            error: "validation of request body or of positionID failed"
         });
     }
     

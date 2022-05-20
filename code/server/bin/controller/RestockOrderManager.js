@@ -39,7 +39,7 @@ class RestockOrderManager {
 			let newSkuid = product.SKUId;
 			// let newPrice = product.price;
 			let newqty = product.qty;
-
+			
 			let exists = await PersistentManager.exists(
 				SKU.tableName,
 				"id",
@@ -345,7 +345,6 @@ class RestockOrderManager {
 	}
 
 	async updateTransportNote(id, newTN) {
-		await PersistentManager.startTransaction();
 		const exists = await PersistentManager.exists(
 			RestockOrder.tableName,
 			"id",
@@ -378,7 +377,6 @@ class RestockOrderManager {
 			id
 		);
 
-		await PersistentManager.commitTransaction();
 		return updateResult;
 	}
 

@@ -10,7 +10,7 @@ class InternalOrderManager{
     constructor(){}
 
    async defineInternalOrder(date,productlist,customerId){
-        await PersistentManager.startTransaction();
+        
         //issued once created
         //save io , get ioid and take this with product in IOproduct table 
         let newIo = new InternalOrder(null,date,'ISSUED',null);
@@ -24,16 +24,13 @@ class InternalOrderManager{
             let newProduct = new InternalOrderProduct(null,des,pri,qty,sku_id,newIOid);
             PersistentManager.store(InternalOrderProduct.tableName, newProduct);
         }
-        await PersistentManager.commitTransaction();
         return
     }
 
 
     async modifyState(rowID, newState,ProductList){
-        await PersistentManager.startTransaction();
         const exists = await PersistentManager.exists(InternalOrder.tableName, 'id', rowID);
         if (!exists) {
-            await PersistentManager.rollbackTransaction();
             return Promise.reject("404 not found InternalOrder");
         }
         
@@ -49,7 +46,6 @@ class InternalOrderManager{
                 let curSKUqty = curSKU.availableQuantity;  
                            
                 if (curSKUqty===0) {
-                    await PersistentManager.rollbackTransaction();
                     return Promise.reject("Not available qty in DB")
                 }
                 else{                          
@@ -58,7 +54,6 @@ class InternalOrderManager{
                     }              
             }
         }   
-        await PersistentManager.commitTransaction();
         return PersistentManager.update(InternalOrder.tableName,{"state":newState},"id",rowID)
     }
 
