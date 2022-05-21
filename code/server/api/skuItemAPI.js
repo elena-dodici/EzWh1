@@ -60,7 +60,7 @@ exports.postSkuItem = function(req,res) {
                 case "404 SKU":
                     return res.status(404).json({error: "No SKU associated to SKUId"});
                 case "422 duplicate":
-                    return res.status(422).json({error: "Duplicated rfid"})
+                    return res.status(503).json({error: "Duplicated rfid"})
                 default: 
                     return res.status(503).json({error: "generic error"});
             }

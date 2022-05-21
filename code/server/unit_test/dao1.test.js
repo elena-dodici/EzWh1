@@ -44,6 +44,7 @@ describe("testDao",()=>{
 
 function testFilterByAttribute(tableName,TestIds,attr) {
     test('test filterByOneAttr', async () => {         
+        console.log(TestIds[1]);
         let res =  await PersistentManager.loadFilterByAttribute(tableName,"state","TESTED")     
         expect(res[0].id).toStrictEqual(TestIds[1]);
         

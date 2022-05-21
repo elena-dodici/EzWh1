@@ -21,6 +21,13 @@ exports.getAllReturnOrders= function(req,res){
 
 }
 
+exports.getAllReturnOrderByIdSchema = {
+    id: {
+        notEmpty: true,
+        isInt: {options: {min:0}}
+    }
+}
+
 //getbyid
 exports.getAllReturnOrderById = function(req,res){
     const errors = validationResult(req);
@@ -129,6 +136,16 @@ exports.postReturnOrder=function(req,res){
     )
 }
 
+exports.deleteReturnOrderSchema = {
+    id: {
+        isInt: {
+            options: {
+                min:0
+            }
+        }
+    }
+}
+
 //delete
 exports.deleteReturnOrder=function(req,res){
     
@@ -137,7 +154,7 @@ exports.deleteReturnOrder=function(req,res){
 
     if (!errors.isEmpty()) {
         return res.status(422).json({
-            error: "Validation of request body failed"
+            error: "Validation of id failed"
         });
     }  
     let result = ReturnOrderManager.deleteReturnOrder(returnOID);

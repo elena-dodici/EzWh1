@@ -84,13 +84,23 @@ exports.getSKUS = function(req,res) {
     )
 }
 
+exports.getSKUByIDSchema = {
+    id: {
+        notEmpty: true,
+        isInt: {options: {min:0}}
+    }
+}
 
 
 exports.getSKUByID = function(req,res) {
     let id = req.params.id;
 
-    if (id<0) {
-        return res.status(422).json({error: "Validation of id failed"});
+    const errors = validationResult(req);
+
+    if (!errors.isEmpty()) {
+        return res.status(422).json({
+            error: "validation of id failed"
+        });
     }
     
     SKUManager.getSKUByID(id).then(
@@ -182,7 +192,6 @@ exports.modifySKUById = function(req,res) {
                     return res.status(422).json({error: "validation of request body failed or if with newAvailableQuantity position is not capable enough in weight or in volume"});
                     break;
                 default:
-                    console.log(error);
                     return res.status(503).json({error: "generic error"});
                     break;
             }
@@ -235,16 +244,27 @@ exports.putPositionToSku = function(req,res) {
     )
 }
 
+exports.deleteSKUSchema = {
+    id: {
+        notEmpty: true,
+        isInt: {options: {min:0}}
+    }
+}
+
 exports.deleteSKU = function (req,res) {
     const id = req.params.id;
 
-    if(id<0) {
-        return res.status(422).json({error: "Validation of id failed"});
+    const errors = validationResult(req);
+
+    if (!errors.isEmpty()) {
+        return res.status(422).json({
+            error: "validation of id failed"
+        });
     }
 
     SKUManager.deleteSKU(id).then(
         result => {
-            return res.status(204).json();
+            return res.status(204).end();
         },
         error => {
             switch (error) {

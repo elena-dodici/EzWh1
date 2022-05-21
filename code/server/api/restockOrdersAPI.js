@@ -48,12 +48,12 @@ exports.postRestockOrderSchema = {
     'products.*.qty': {
         notEmpty: true, 
         isInt: {options: {min:0}}
-    },
+    }
 }
 
 //POST /api/restockOrders
 exports.postRestockOrder = function(req,res) {
-    //validation to do   
+
     const errors = validationResult(req);
 
     if (!errors.isEmpty()) {
@@ -328,6 +328,15 @@ exports.putSKUItemsSchema = {
     skuItems: {
         notEmpty: true,
     },
+    'skuItems.*.SKUId': {
+        notEmpty: true,
+        isInt: {options: {min:0}}
+    },
+    'skuItems.*.rfid': {
+        notEmpty: true,
+        isNumeric: true,
+        isLength: {options: {min:32, max: 32}}
+    }
     
 }
 exports.updateSKUItems = function(req,res) {

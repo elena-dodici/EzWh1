@@ -41,7 +41,7 @@ exports.postItem = function(req,res) {
 
     if (!errors.isEmpty()) {
         return res.status(422).json({
-            errors: errors.array()
+            error: "validation of request body failed"
         });
     }
 
@@ -82,12 +82,24 @@ exports.getItems = function(req,res) {
             }
         )
  }
+
+ exports.getItemByIDSchema = {
+     id: {
+         notEmpty: true,
+         isInt: {options: {min: 0}}
+     }
+ }
     
 exports.getItemByID = function(req,res) {
         let id = req.params.id;
+
+        const errors = validationResult(req);
     
-        if (id<0) {
-            return res.status(422).json({error: "Validation of id failed"});
+
+        if (!errors.isEmpty()) {
+            return res.status(422).json({
+                error: "validation of id failed"
+            });
         }
         
         ItemManager.getItemByID(id).then(
@@ -125,7 +137,7 @@ exports.modifyItemById = function(req,res) {
 
     if (!errors.isEmpty()) {
         return res.status(422).json({
-            errors: errors.array()
+            error: "validation of request body failed"
         });
     }
         const id = req.params.id;
@@ -147,12 +159,22 @@ exports.modifyItemById = function(req,res) {
         )
 }
     
-    
+
+exports.deleteItemSchema = {
+    id: {
+        notEmpty: true,
+        isInt: {options: {min: 0}}
+    }
+}
 exports.deleteItem = function (req,res) {
         const id = req.params.id;
 
-        if(id<0) {
-            return res.status(422).json({error: "Validation of id failed"});
+        const errors = validationResult(req);
+
+        if (!errors.isEmpty()) {
+            return res.status(422).json({
+                error: "validation of id failed"
+            });
         }
   
         ItemManager.deleteItem(id).then(

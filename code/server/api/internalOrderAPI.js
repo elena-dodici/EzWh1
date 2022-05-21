@@ -25,7 +25,23 @@ exports.postInternalOrderSchema = {
         isNumeric: {
             options: {min: 0}
         }
-        
+    },
+    'products.*.SKUId': {
+        notEmpty: true, 
+        isNumeric: {
+            options: {min: 0}
+        }
+    },
+    'products.*.description': {
+        notEmpty: true
+    },
+    'products.*.price': {
+        notEmpty: true,
+        isNumeric: true
+    },
+    'products.*.qty': {
+        notEmpty: true, 
+        isInt: {options: {min:0}}
     },
 }
 //post
@@ -64,14 +80,27 @@ exports.postInternalOrder = function(req,res){
 }
 
 
+exports.deleteInternalOrderSchema = {
+    id: {
+        notEmpty: true,
+        isInt: {options: {min:0}}
+    }
+}
 exports.deleteInternalOrder = function(req,res) {
-// check delete id is exist!
+
+    const errors = validationResult(req);
+
+    if (!errors.isEmpty()) {
+        return res.status(422).json({
+            error: "Validation of id failed"
+        });
+    }
    
     let roID = req.params.id;     
     let result = InternalOrderManager.deleteIO(roID);  
     result.then( 
         result => {
-            return res.status(204).json();
+            return res.status(204).end();
         },
         error => {
             return res.status(500).json({error:"generic error"});
@@ -122,8 +151,23 @@ exports.getinternalOrdersAccepted = function(req,res) {
     
 }
 
+exports.getinternalOrderByIdSchema = {
+    id: {
+        notEmpty: true,
+        isInt: {options: {min:0}}
+    }
+}
+
 
 exports.getinternalOrderById = function(req,res) {
+
+    const errors = validationResult(req);
+
+    if (!errors.isEmpty()) {
+        return res.status(422).json({
+            error: "Validation of id failed"
+        });
+    }
  
     let id = req.params.id;
     let result = InternalOrderManager.listIOByID(id);

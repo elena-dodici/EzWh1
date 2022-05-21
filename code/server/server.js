@@ -45,7 +45,7 @@ app.post('/api/sku', checkSchema(sku.postSchema), sku.postSKU);
 app.get('/api/skus', sku.getSKUS);
 
 //GET /api/skus/:id
-app.get('/api/skus/:id', sku.getSKUByID);
+app.get('/api/skus/:id', checkSchema(sku.getSKUByIDSchema), sku.getSKUByID);
 
 //PUT /api/sku/:id
 app.put('/api/sku/:id', checkSchema(sku.modifySKUByIdSchema), sku.modifySKUById);
@@ -54,7 +54,7 @@ app.put('/api/sku/:id', checkSchema(sku.modifySKUByIdSchema), sku.modifySKUById)
 app.put('/api/sku/:id/position', checkSchema(sku.putPositionToSkuSchema), sku.putPositionToSku)
 
 //DELETE /api/skus/:id
-app.delete('/api/skus/:id', sku.deleteSKU);
+app.delete('/api/skus/:id', checkSchema(sku.deleteSKUSchema), sku.deleteSKU);
 
 //SKUItem
 
@@ -125,13 +125,13 @@ app.get('/api/internalOrdersIssued', internalOrders.getInternalOrderIssued)
 app.get('/api/internalOrdersAccepted', internalOrders.getinternalOrdersAccepted);
 
 //GET /api/internalOrders/:id 
-app.get('/api/internalOrders/:id', internalOrders.getinternalOrderById);
+app.get('/api/internalOrders/:id', checkSchema(internalOrders.getinternalOrderByIdSchema),internalOrders.getinternalOrderById);
 
 //POST /api/internalOrders  
 app.post('/api/internalOrders', checkSchema(internalOrders.postInternalOrderSchema), internalOrders.postInternalOrder);
 
 //DELETE /api/internalOrdersIssued  
-app.delete('/api/internalOrders/:id', internalOrders.deleteInternalOrder);
+app.delete('/api/internalOrders/:id',checkSchema(internalOrders.deleteInternalOrderSchema), internalOrders.deleteInternalOrder);
 
 //PUT /api/internalOrders/:id   
 app.put('/api/internalOrders/:id', checkSchema(internalOrders.putInternalOrdersSchema),internalOrders.changeInternalOrder);
@@ -142,7 +142,7 @@ app.put('/api/internalOrders/:id', checkSchema(internalOrders.putInternalOrdersS
 app.post('/api/restockOrder', checkSchema(restockOrders.postRestockOrderSchema),restockOrders.postRestockOrder);
 
 //DELETE /api/restockOrder/:id 
-app.delete('/api/restockOrder/:id', restockOrders.deleteRestockOrder);
+app.delete('/api/restockOrder/:id', checkSchema(restockOrders.deleteRestockOrderSchema), restockOrders.deleteRestockOrder);
 
 //GET /api/restockOrders 
 app.get('/api/restockOrders', restockOrders.getRestockOrder);
@@ -173,13 +173,13 @@ app.get('/api/restockOrders/:id', checkSchema(restockOrders.deleteRestockOrderSc
 app.get('/api/returnOrders', returnOrders.getAllReturnOrders)
 
 //GET /api/returnOrders/:id 
-app.get('/api/returnOrders/:id', returnOrders.getAllReturnOrderById)
+app.get('/api/returnOrders/:id', checkSchema(returnOrders.getAllReturnOrderByIdSchema),returnOrders.getAllReturnOrderById)
 
 //POST /api/returnOrder 
 app.post('/api/returnOrder', checkSchema(returnOrders.postReturnOrderSchema),returnOrders.postReturnOrder);
 
 //DELETE /api/returnOrder/:id 
-app.delete('/api/returnOrder/:id', returnOrders.deleteReturnOrder);
+app.delete('/api/returnOrder/:id', checkSchema(returnOrders.deleteReturnOrderSchema),returnOrders.deleteReturnOrder);
 
 
 //USER
@@ -217,13 +217,13 @@ app.post('/api/item',checkSchema(item.postItemSchema), item.postItem);
 app.get('/api/items',  item.getItems);
 
 //GET /api/items/:id
-app.get('/api/items/:id',  item.getItemByID);
+app.get('/api/items/:id',  checkSchema(item.getItemByIDSchema),item.getItemByID);
 
 //PUT /api/item/:id
 app.put('/api/item/:id',checkSchema(item.modifyItemByIdSchema), item.modifyItemById);
 
 //DELETE /api/items/:id
-app.delete('/api/items/:id',  item.deleteItem);
+app.delete('/api/items/:id', checkSchema(item.deleteItemSchema) ,item.deleteItem);
 
 /*
 Activate the server
