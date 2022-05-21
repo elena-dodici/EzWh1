@@ -29,6 +29,11 @@ Version:
     (ex: step1: class A, step 2: class A+B, step 3: class A+B+C, etc)> 
     <Some steps may  correspond to unit testing (ex step1 in ex above), presented in other document UnitTestReport.md>
     <One step will  correspond to API testing>
+
+    The sequence we followed to test is bottom up. In fact we firstly tested the PersistentManager methods as unit tests.
+    Then we tested the Manager classes using the already tested PersistentManager methods.
+    Then we procedeed to test the APIs.
+    For the API testing we tested every scenario in the official requirements.
     
 
 
@@ -40,19 +45,34 @@ Version:
 ## Step 1
 | Classes  | mock up used |Jest test cases |
 |--|--|--|
+
 |PersistentManager| | testStoreValid |
 | || testStoreInvalid |
 | || testLoadValid|
 | || testLoadInvalid|
+| || testDelete |
+| || testInvalidUpdate|
+| || testValidUpdate|
 ## Step 2
 | Classes  | mock up used |Jest test cases |
 |--|--|--|
-|SKUManager | | testDefineSKU |
-
+|SKUManager | | define sku |
+| | | define sku |
+||define sku invalid|
+|| test list all skus valid|
+||change sku position valid|
+|SKUITemManager|| test define sku item |
+|| get item by rfid |
+|| delete sku item |
+|PositionManager|define position|
+||load positions|
+||modify position id|
+|UserManager|load all users|
+||delete user|
+||define user|
 
 ## Step n 
 
-   
 | Classes  | mock up used |Jest test cases |
 |--|--|--|
 ||||
@@ -89,13 +109,19 @@ Report also for each of the scenarios the (one or more) API Mocha tests that cov
 
 | Scenario ID | Functional Requirements covered | Mocha  Test(s) | 
 | ----------- | ------------------------------- | ----------- | 
-|  ..         | FRx                             |             |             
-|  ..         | FRy                             |             |             
-| ...         |                                 |             |             
-| ...         |                                 |             |             
-| ...         |                                 |             |             
-| ...         |                                 |             |             
-
+| 1-1         | FR2                             |  newSKU     |             
+| 1-2         | FR2                             |   modifyPositionOfSku          |             
+| 1-3         |  FR2                               |    modifyWeightVolume         |             
+| 2-1         |    FR3                             |    newPosition         |             
+| 2-2         |    FR3                             |      modifyPositionID       |             
+| 2-3         |     FR3                            |        weightVolumeOfPosition     |           
+| 2-4         |    FR3                             |      modifyAisleRowCol       |  
+| 2-5         |    FR3                             |          delPosition   |    
+| 3-1         |     FR5                            |        addingRO1     | 
+| 3-2         |   FR5                              |       addingRO2      | 
+| 4-1         |   FR1                              |       newUser      | 
+| 4-2         |     FR1                            |      modifyUser       | 
+| 4-3         |   FR1                              |      deleteUser       | 
 
 
 # Coverage of Non Functional Requirements

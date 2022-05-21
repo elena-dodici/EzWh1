@@ -31,7 +31,7 @@ describe('test scenarios 3-1 3-2', () => {
         expectedHTTPStatus = 201;
     })
 
-    it("adding ro", function (done) {
+    it("addingRO1", function (done) {
         
         const ro = {
             issueDate: date,
@@ -48,7 +48,7 @@ describe('test scenarios 3-1 3-2', () => {
 
 });
 
-describe('test scenarios 3-1', () => {
+describe('test scenarios 3-2', () => {
 
     let supplierid = null;
 
@@ -66,7 +66,7 @@ describe('test scenarios 3-1', () => {
         expectedHTTPStatus = 201;
     })
 
-    it("adding ro", function (done) {
+    it("addingRO2", function (done) {
         
         const ro = {
             issueDate: date,
