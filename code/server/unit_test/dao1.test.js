@@ -115,11 +115,12 @@ let T8 = {
 
         describe("test Invalid Delete", () => {
             test("InValidDelete", async () => {
-                for (let T in InvalidList)
+                for (let T in InvalidList){           
                     // expect(async () => {
                     //     await PersistentManager.delete(T.attr,T.val,T.table);
                     //   }).toThrow();    
                     return expect(PersistentManager.delete(T.attr, T.val, T.table)).rejects.toThrow();
+                }
 
             });
         })
@@ -138,7 +139,7 @@ describe("test Valid Update", () => {
     let T1 = {
         table: RestockOrder.tableName,
         object: { state: "DELIVERED" },
-        attribute_name: "issue"
+        attribute_name: "issue_date"
     }
 
     TestValidUpdate(RestockOrder.tableName, RO, 2, RO2, 3, T1);
