@@ -382,6 +382,7 @@ class PersistentManager {
 					reject(err) }
                 resolve();
             });
+
             
         }) 
     }
@@ -420,22 +421,22 @@ class PersistentManager {
 		})
 	}
 
-	
-	async loadOneByAttributeSelected(tableName, parameter_name, value, selectedNames) {
-		return new Promise ((resolve, reject) => {
-			const selectedAttributes = selectedNames.join(',');
-			const sql = "SELECT " + selectedAttributes + " FROM " + tableName + " WHERE " + parameter_name + "= ?";
-            const db = this.db;
-			let transaction = this.transaction;
-            db.get(sql, value, (err, row) => {if (err) {
-				if (transaction.onGoing) {
-					db.run("ROLLBACK");
-					transaction.onGoing = false;
-				}
-				reject(err);} resolve(row); } )
+	//never used 
+	// async loadOneByAttributeSelected(tableName, parameter_name, value, selectedNames) {
+	// 	return new Promise ((resolve, reject) => {
+	// 		const selectedAttributes = selectedNames.join(',');
+	// 		const sql = "SELECT " + selectedAttributes + " FROM " + tableName + " WHERE " + parameter_name + "= ?";
+    //         const db = this.db;
+	// 		let transaction = this.transaction;
+    //         db.get(sql, value, (err, row) => {if (err) {
+	// 			if (transaction.onGoing) {
+	// 				db.run("ROLLBACK");
+	// 				transaction.onGoing = false;
+	// 			}
+	// 			reject(err);} resolve(row); } )
             
-		})
-	}
+	// 	})
+	// }
 
 	async exists(tableName, parameter_name, value) {
 		try {
