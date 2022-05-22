@@ -67,6 +67,12 @@ exports.postItem = function(req,res) {
                 case "404 Supplier not found":
                     return res.status(404).json({error: "Supplier not existing"});
                     break;
+                case "422 supplier already sells an Item with the same ID":
+                    return res.status(422).json({error: "Supplier already sells an Item with the same ID"});
+                    break;
+                case "422 this supplier already sells an item with the same SKUId":
+                    return res.status(422).json({error: "This supplier already sells an item with the same SKUId"});
+                    break;
                 default:
                     return res.status(503).json({error: "generic error"});
                     break;

@@ -13,13 +13,27 @@ class ItemManager {
         
         let i = new Item(id,description, price, SKUId,supplierId); 
         
-        let existsSKU = await PersistentManager.exists(SKU.tableName, 'id', SKUId);
-        if (!existsSKU) {
+        let loadedSKU = await PersistentManager.loadOneByAttribute("id",SKU.tableName, SKUId);
+        if (!loadedSKU) {
             return Promise.reject("404 SKU not found");
         }
         let loadedUser = await PersistentManager.loadOneByAttribute("id",User.tableName,supplierId);
         if (!loadedUser || loadedUser.type.toLowerCase() != 'supplier') {
             return Promise.reject("404 Supplier not found");
+        }
+        let loadedItem = await PersistentManager.loadOneByAttribute("id",Item.tableName, id);
+        if(loadedItem){
+            if(loadedItem.supplierId == supplierId){
+                return Promise.reject("422 supplier already sells an Item with the same ID");
+            }
+        }
+        let listSameSKUId = await PersistentManager.loadFilterByAttribute(Item.tableName,"SKUId",SKUId);
+        if(listSameSKUId){
+            for (let i = 0; i < listSameSKUId.length; i++) {
+                if(listSameSKUId[i].supplierId == supplierId){
+                 return Promise.reject("422 this supplier already sells an item with the same SKUId"); 
+                }
+              }
         }
         return PersistentManager.store(Item.tableName, i); 
     }
