@@ -6,7 +6,7 @@ const TestResult = require('../bin/model/TestResult');
 const RestockOrder = require('../bin/model/RestockOrder');
 const SKU = require('../bin/model/SKU');
 
-const possibleStates = ['ISSUED, DELIVERY, DELIVERED, TESTED, COMPLETEDRETURN, COMPLETED'];
+const possibleStates = ['ISSUED', 'DELIVERY', 'DELIVERED', 'TESTED', 'COMPLETEDRETURN', 'COMPLETED'];
 
 const dateValidation = function(date) {
     const yyyymmddRegex = new RegExp(/^\d{4}\/(0[1-9]|1[0-2])\/(0[1-9]|[12][0-9]|3[01])$/);
