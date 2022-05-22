@@ -1,3 +1,4 @@
+
 const PersistentManager = require('../bin/DB/PersistentManager');
 const PositionManager = require('../bin/controller/PositionManager');
 
@@ -13,7 +14,7 @@ describe('Position tests', () => {
     positionTests(positionID, aisleID, row, col, maxWeight, maxVolume)
 
     function positionTests(positionID) {
-        beforeAll(async () => {
+        beforeEach(async () => {
             await PersistentManager.deleteAll("Position");
 
         })
@@ -35,6 +36,7 @@ describe('Position tests', () => {
         })
 
         test('load positions', async()=> {
+            await PositionManager.definePosition(positionID, aisleID, row, col, maxWeight, maxVolume);
             const p = await PositionManager.listAllPositions();
             
             const expected = {
@@ -52,6 +54,7 @@ describe('Position tests', () => {
         })
 
         test('modify position id', async() => {
+            await PositionManager.definePosition(positionID, aisleID, row, col, maxWeight, maxVolume);
             const newID = "000100010001"
             await PositionManager.changePositionID(positionID, newID);
             const pos = await PositionManager.listAllPositions();

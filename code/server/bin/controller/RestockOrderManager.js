@@ -97,6 +97,8 @@ class RestockOrderManager {
 				}
 			);
 		}
+		console.log(newRestockOrderId);
+		return newRestockOrderId;
 	}
 
 	async getAllRestockOrder() {

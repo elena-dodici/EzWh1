@@ -64,10 +64,11 @@ describe('list all skus', () => {
     function listSKUS (tableName) {
         beforeEach(async () => {
             await PersistentManager.deleteAll(tableName);
-            id1 = await PersistentManager.store(tableName, s1);
+            //id1 = await PersistentManager.store(tableName, s1);
         })
 
         test('test list all skus valid', async () => {
+            id1 = await SKUManager.defineSKU(s1.description, s1.weight, s1.volume, s1.price, s1.notes, s1.availableQuantity);
             const list = await SKUManager.listAllSKUs();
             let exp1 = s1;
             exp1.id = id1;
@@ -90,7 +91,7 @@ describe('set sku position', () => {
         occupied_weight: 0,
         occupied_volume: 0
     }
-    const s = {
+    const sk = {
         description: "description",
         weight: 10,
         volume: 10,
@@ -109,12 +110,14 @@ describe('set sku position', () => {
         beforeEach(async () => {
             await PersistentManager.deleteAll("SKU");
             await PersistentManager.deleteAll("Position");
-            idSKU = await PersistentManager.store("SKU", s);
-            await PersistentManager.store("Position", p1);
+            
             
         })
 
         test('change sku position valid', async () => {
+
+            idSKU = await PersistentManager.store("SKU", sk);
+            await PersistentManager.store("Position", p1);
             await SKUManager.setPosition(idSKU, positionID);
             const s = await PersistentManager.loadOneByAttribute('id', "SKU", idSKU);
             const p = await PersistentManager.loadOneByAttribute('id', "Position", positionID);

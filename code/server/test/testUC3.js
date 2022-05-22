@@ -23,9 +23,10 @@ describe('test scenarios 3-1 3-2', () => {
         await PersistentManager.deleteAll("RestockOrder");
         await PersistentManager.deleteAll("User");
         await PersistentManager.deleteAll("SKU");
+        await PersistentManager.deleteAll("Item");
         skuid = await SKUManager.defineSKU("des",1,1,1,"notes",1);
         supplierid = await UserManager.defineUser("john", "jo", "password", "supp@supp.it", "supplier");
-        item = await ItemManager.defineItem("des", 1, skuid, supplierid);
+        item = await ItemManager.defineItem(1,"des", 1, skuid, supplierid);
         products = [{"SKUId":skuid,"description":"a product","price":10.99,"qty":30}]
         date = "2021/11/29 09:33";
         expectedHTTPStatus = 201;
@@ -58,9 +59,10 @@ describe('test scenarios 3-2', () => {
         await PersistentManager.deleteAll("RestockOrder");
         await PersistentManager.deleteAll("User");
         await PersistentManager.deleteAll("SKU");
+        await PersistentManager.deleteAll("Item");
         skuid = await SKUManager.defineSKU("des",1,1,1,"notes",1);
         supplierid = await UserManager.defineUser("john", "jo", "password", "supp@supp.it", "supplier");
-        item = await ItemManager.defineItem("des", 1, skuid, supplierid);
+        item = await ItemManager.defineItem(1,"des", 1, skuid, supplierid);
         products = [{"SKUId":skuid,"description":"a product","price":10.99,"qty":30}]
         date = "2021/11/29 09:33";
         expectedHTTPStatus = 201;

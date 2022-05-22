@@ -28,6 +28,7 @@ class ReturnOrderManager {
             
             let curproRFID = product.RFID;
             PersistentManager.update(SkuItem.tableName, { returnOrder_id: newReturnOID }, "RFID", curproRFID);
+            PersistentManager.update(SkuItem.tableName, { Available: 0 }, "RFID", curproRFID);
         }
         return 0;
     }

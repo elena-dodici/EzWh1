@@ -237,10 +237,10 @@ let T8 = {
         describe("test Invalid Delete", () => {
             test("InValidDelete", async () => {
                 for (let T in InvalidList){           
-                    // expect(async () => {
+                    // await expect(async () => {
                     //     await PersistentManager.delete(T.attr,T.val,T.table);
-                    //   }).toThrow();    
-                    return expect(PersistentManager.delete(T.attr, T.val, T.table)).rejects.toThrow();
+                    //   }).rejects.toThrow();    
+                    await expect(PersistentManager.delete(T.attr, T.val, T.table)).rejects.toThrow();
                 }
 
             });
@@ -416,12 +416,12 @@ describe("test Invalid Update", () => {
 
 
     let InvalidUpdateList = [];
-    InvalidUpdateList.push( T2)
+    InvalidUpdateList.push( T2,T3,T4,T5,T6,T7,T8,T9,T10,T11,T12,T13,T14,T15,T16,T17)
 
-    TestInvalidUpdate(RestockOrder.tableName, RO, 2, RO2, 3, T2);
+    TestInvalidUpdate(RestockOrder.tableName, RO, 2, RO2, 3, InvalidUpdateList);
    
 
-    function TestInvalidUpdate(table, RO, NumInput1, RO2, NumInput2,T2) {
+    function TestInvalidUpdate(table, RO, NumInput1, RO2, NumInput2,InvalidUpdateList) {
         //clear DB
         let RoId = [];
         beforeEach(async () => {
@@ -436,11 +436,10 @@ describe("test Invalid Update", () => {
         });
 
 
-
         test("InValidUpdate", async () => {
             for (let T of InvalidUpdateList) {
                 return expect(PersistentManager.update(T.table, T.object, T.attribute_name, "2021/11/29 09:33")).rejects.toThrow();
-             }
+            }
         });
 
         // test("InValid Update When Row not availale", async () => {

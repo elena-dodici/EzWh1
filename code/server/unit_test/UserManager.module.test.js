@@ -11,7 +11,7 @@ describe('user tests',  () => {
     const types = ['supplier', 'customer', 'manager']
     userTests();
     function userTests() {
-        beforeAll( async () => {
+        beforeEach( async () => {
             await PersistentManager.deleteAll("User");
         })
 
@@ -35,6 +35,14 @@ describe('user tests',  () => {
         })
 
         test('delete user', async () => {
+            const userForDB = {
+                username: "test@test.com",
+                password: "testPassword",
+                name: "name",
+                surname: "surname",
+                type: "customer"
+            }
+            const userid = await PersistentManager.store("User", userForDB);
             await UserManager.deleteUser('test@test.com', 'customer');
             const users = await UserManager.getAllUsers();
             expect(users).toEqual([]);
@@ -48,7 +56,7 @@ describe('user tests',  () => {
             }
             let users = await UserManager.getAllUsers();
             users = new Set(users);
-            let expectedUsers = types.map( (t, i) => {;return {
+            let expectedUsers = types.map( (t, i) => {return {
                 id: ids[i],
                 name: "John",
                 surname: "Smith",
@@ -61,7 +69,5 @@ describe('user tests',  () => {
             expect(users).toEqual(expectedUsers);
         })
     }
-
-    
 
 })

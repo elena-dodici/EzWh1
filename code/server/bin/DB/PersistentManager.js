@@ -117,9 +117,9 @@ class PersistentManager {
             const db = new sqlite.Database(this.dbName, (err) => {if (err) reject(err) });
 			db.get("PRAGMA foreign_keys = ON");
             db.run(sql, [...attributesValue, id], (err) => {
-                if (err) {
+                if (err) 
 					reject(err);
-				}
+				
 				
                 resolve();
             });

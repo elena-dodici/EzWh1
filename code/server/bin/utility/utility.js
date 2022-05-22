@@ -7,3 +7,4 @@ exports.renameKey = function (o, old_key, new_key) {
         delete o[old_key];
     }
 }
+
