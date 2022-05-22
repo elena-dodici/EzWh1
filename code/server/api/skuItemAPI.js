@@ -23,7 +23,7 @@ exports.postSkuItemSchema = {
     },
     SKUId: {
         notEmpty: true,
-        isInt: {
+        isNumeric: {
             options: {min: 0}
         }
     },
