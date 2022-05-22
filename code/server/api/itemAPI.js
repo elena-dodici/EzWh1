@@ -4,6 +4,10 @@ const ItemManager = require('../bin/controller/ItemManager');
 const {validationResult} = require('express-validator');
 
 exports.postItemSchema = {
+    id: {
+        notEmpty: true,
+        isInt: {options: {min:0}}
+    },
     description: {
         notEmpty: true,
         errorMessage: "description cannot be empty"
@@ -44,14 +48,14 @@ exports.postItem = function(req,res) {
             error: "validation of request body failed"
         });
     }
-
+    let id = req.body.id;
     let description = req.body.description;
     let price = req.body.price;
     let SKUId= req.body.SKUId;
     let supplierId= req.body.supplierId;
 
 
-    ItemManager.defineItem(description,price,SKUId,supplierId).then( 
+    ItemManager.defineItem(id, description,price,SKUId,supplierId).then( 
         result => {
             return res.status(201).json();
         },

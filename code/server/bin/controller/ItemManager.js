@@ -9,11 +9,10 @@ class ItemManager {
 
     constructor() {}
 
-    async defineItem(description, price, SKUId,supplierId) {
+    async defineItem(id, description, price, SKUId,supplierId) {
         
-        let i = new Item(null,description, price, SKUId,supplierId); 
-        //Item id is autoincremented
-        delete i.id;
+        let i = new Item(id,description, price, SKUId,supplierId); 
+        
         let existsSKU = await PersistentManager.exists(SKU.tableName, 'id', SKUId);
         if (!existsSKU) {
             return Promise.reject("404 SKU not found");

@@ -64,10 +64,11 @@ describe('list all skus', () => {
     function listSKUS (tableName) {
         beforeEach(async () => {
             await PersistentManager.deleteAll(tableName);
-            id1 = await PersistentManager.store(tableName, s1);
+            //id1 = await PersistentManager.store(tableName, s1);
         })
 
         test('test list all skus valid', async () => {
+            id1 = await SKUManager.defineSKU(s1.description, s1.weight, s1.volume, s1.price, s1.notes, s1.availableQuantity);
             const list = await SKUManager.listAllSKUs();
             let exp1 = s1;
             exp1.id = id1;

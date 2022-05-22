@@ -13,7 +13,9 @@ describe('sku items tests', () => {
     skuItemsTests(rfid, date);
 
     function skuItemsTests (rfid, dateofstock) {
-        beforeAll(async () => {
+        beforeEach(async () => {
+            await PersistentManager.deleteAll("SKU");
+            await PersistentManager.deleteAll("SKUItem");
             const s1 = {
                 description: "description",
                 weight: 10,
@@ -23,8 +25,6 @@ describe('sku items tests', () => {
                 availableQuantity: 10,
                 position: null
             }
-            await PersistentManager.deleteAll("SKU");
-            await PersistentManager.deleteAll("SKUItem");
             id1 = await PersistentManager.store("SKU", s1);
             expected = {
                 RFID: '12341234123412341234123412341234',
@@ -52,6 +52,7 @@ describe('sku items tests', () => {
 
         //SEARCH BY RFID
         test('get item by rfid', async() => {
+            await SKUItemManager.defineSKUItem(rfid, id1, dateofstock);
             const item = await SKUItemManager.searchByRFID(rfid);
             expectedFromApi = {...expected};
             
@@ -59,9 +60,15 @@ describe('sku items tests', () => {
         })
 
         test('delete sku item', async() => {
+            await SKUItemManager.defineSKUItem(rfid, id1, dateofstock);
             await SKUItemManager.deleteSKUItem(rfid);
             const items = await PersistentManager.loadAllRows("SKUItem");
             expect(items).toEqual([]);
+        })
+
+        afterEach(async () => {
+            await PersistentManager.deleteAll("SKUItem");
+            await PersistentManager.deleteAll("SKU");
         })
     }
 });
