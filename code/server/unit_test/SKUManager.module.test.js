@@ -110,12 +110,13 @@ describe('set sku position', () => {
         beforeEach(async () => {
             await PersistentManager.deleteAll("SKU");
             await PersistentManager.deleteAll("Position");
-            idSKU = await PersistentManager.store("SKU", s);
-            await PersistentManager.store("Position", p1);
+            
             
         })
 
         test('change sku position valid', async () => {
+            idSKU = await PersistentManager.store("SKU", s);
+            await PersistentManager.store("Position", p1);
             await SKUManager.setPosition(idSKU, positionID);
             const s = await PersistentManager.loadOneByAttribute('id', "SKU", idSKU);
             const p = await PersistentManager.loadOneByAttribute('id', "Position", positionID);
