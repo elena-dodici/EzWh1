@@ -25,9 +25,7 @@ describe('RestockOrder tests', () => {
         let testId=[];
         beforeAll(async () => {
             await PersistentManager.deleteAll("RestockOrder");
-            //todo : 保证所有约束都可以通过 在before all 加上数据
-            // double check 如果存储成功 可以直接返回ID
-           // testId = await PersistentManager.store("RestockOrder",input)
+        
 
         })
 
