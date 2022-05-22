@@ -1,3 +1,4 @@
+
 const PersistentManager = require('../bin/DB/PersistentManager');
 const PositionManager = require('../bin/controller/PositionManager');
 
