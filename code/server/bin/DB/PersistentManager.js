@@ -70,16 +70,6 @@ class PersistentManager {
 		});
 	}
 
-	async loadAllRowsSelected(tableName, selectedAttributes) {
-		return new Promise((resolve, reject) => {
-			const selected = selectedAttributes.join(',');
-			const sql = "SELECT " + selected + " FROM " + tableName;
-			const db = new sqlite.Database(this.dbName, (err) => {if (err) reject(err) });
-			db.get("PRAGMA foreign_keys = ON");
-            db.run(sql, (err,rows) => {if (err) reject(err); resolve(rows); } )
-            db.close();
-		})
-	}
 
     async delete(attribute_name ,id, tableName) {
         return new Promise ((resolve, reject) => {
@@ -166,7 +156,6 @@ class PersistentManager {
 		return new Promise ((resolve, reject) => {
 			const selectedAttributes = selectedNames.join(',');
 			const sql = "SELECT " + selectedAttributes + " FROM " + tableName + " WHERE " + parameter_name + "= ?";
-			console.log(sql);
             const db = new sqlite.Database(this.dbName, (err) => {if (err) reject(err) });
 			db.get("PRAGMA foreign_keys = ON");
             db.get(sql, value, (err, row) => {if (err) reject(err); resolve(row); } )

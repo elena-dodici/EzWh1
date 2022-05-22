@@ -10,8 +10,17 @@ class UserManager {
 
     }
 
-    getAllUsers() {
-        return PersistentManager.loadAllRows(User.tableName);
+    async getAllUsers() {
+        
+        const users = await PersistentManager.loadAllRows(User.tableName);
+        const usersAPI = users.map((u) => ({
+            id: u.id,
+            name: u.name,
+            surname: u.surname,
+            email: u.username,
+            type: u.type,
+        }));
+        return usersAPI;
     }
 
     async defineUser(name, surname, password, username, type) {

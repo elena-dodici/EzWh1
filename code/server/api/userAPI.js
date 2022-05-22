@@ -37,14 +37,8 @@ exports.getSuppliers = function (req, res) {
 exports.getUsers = function (req, res) {
 	UserManager.getAllUsers().then(
 		(users) => {
-			const usersAPI = users.map((u) => ({
-				id: u.id,
-				name: u.name,
-				surname: u.surname,
-				email: u.username,
-				type: u.type,
-			}));
-			return res.status(200).json(usersAPI);
+			
+			return res.status(200).json(users);
 		},
 		(error) => {
 			return res.status(500).json({ error: "generic error" });
