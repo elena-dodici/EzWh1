@@ -91,7 +91,7 @@ describe('set sku position', () => {
         occupied_weight: 0,
         occupied_volume: 0
     }
-    const s = {
+    const sk = {
         description: "description",
         weight: 10,
         volume: 10,
@@ -115,7 +115,8 @@ describe('set sku position', () => {
         })
 
         test('change sku position valid', async () => {
-            idSKU = await PersistentManager.store("SKU", s);
+
+            idSKU = await PersistentManager.store("SKU", sk);
             await PersistentManager.store("Position", p1);
             await SKUManager.setPosition(idSKU, positionID);
             const s = await PersistentManager.loadOneByAttribute('id', "SKU", idSKU);

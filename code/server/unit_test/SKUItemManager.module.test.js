@@ -13,10 +13,11 @@ describe('sku items tests', () => {
     skuItemsTests(rfid, date);
 
     function skuItemsTests (rfid, dateofstock) {
+        let s1 = null;
         beforeEach(async () => {
             await PersistentManager.deleteAll("SKU");
             await PersistentManager.deleteAll("SKUItem");
-            const s1 = {
+            s1 = {
                 description: "description",
                 weight: 10,
                 volume: 10,
@@ -25,6 +26,30 @@ describe('sku items tests', () => {
                 availableQuantity: 10,
                 position: null
             }
+            
+            
+            
+            
+        })
+
+        test('test define sku item', async () => {
+            id1 = await PersistentManager.store("SKU", s1);
+            expected = {
+                RFID: '12341234123412341234123412341234',
+                Available: 0,
+                DateOfStock: '2022-01-01',
+                SKUId: id1,
+                internalOrder_id: null,
+                restockOrder_id: null,
+                returnOrder_id: null
+            }
+            await SKUItemManager.defineSKUItem(rfid, id1, dateofstock);
+            const skuitem = await PersistentManager.loadOneByAttribute('rfid', "SKUItem", rfid);
+            expect(skuitem).toEqual(expected);
+        })
+
+        //SEARCH BY RFID
+        test('get item by rfid', async() => {
             id1 = await PersistentManager.store("SKU", s1);
             expected = {
                 RFID: '12341234123412341234123412341234',
@@ -41,17 +66,6 @@ describe('sku items tests', () => {
                 DateOfStock: '2022-01-01',
                 SKUId: id1
             }
-            
-        })
-
-        test('test define sku item', async () => {
-            await SKUItemManager.defineSKUItem(rfid, id1, dateofstock);
-            const skuitem = await PersistentManager.loadOneByAttribute('rfid', "SKUItem", rfid);
-            expect(skuitem).toEqual(expected);
-        })
-
-        //SEARCH BY RFID
-        test('get item by rfid', async() => {
             await SKUItemManager.defineSKUItem(rfid, id1, dateofstock);
             const item = await SKUItemManager.searchByRFID(rfid);
             expectedFromApi = {...expected};
@@ -60,6 +74,7 @@ describe('sku items tests', () => {
         })
 
         test('delete sku item', async() => {
+            id1 = await PersistentManager.store("SKU", s1);
             await SKUItemManager.defineSKUItem(rfid, id1, dateofstock);
             await SKUItemManager.deleteSKUItem(rfid);
             const items = await PersistentManager.loadAllRows("SKUItem");
