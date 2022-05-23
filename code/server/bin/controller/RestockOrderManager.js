@@ -97,7 +97,7 @@ class RestockOrderManager {
 				}
 			);
 		}
-		console.log(newRestockOrderId);
+		//console.log(newRestockOrderId);
 		return newRestockOrderId;
 	}
 
@@ -112,7 +112,7 @@ class RestockOrderManager {
 		for (const order of restockOrders) {
 			let eachOrderInfo = await this.addOneOrderInfo(order);
 			if(eachOrderInfo.state==="ISSUED") {
-				eachOrderInfo.deliveryDate=[];
+				eachOrderInfo.transportNote=[];
 				if(eachOrderInfo.state==="DELIVERY"){
 					eachOrderInfo.skuItems =[];
 				}
