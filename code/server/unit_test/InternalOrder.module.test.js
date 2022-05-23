@@ -38,19 +38,19 @@ describe('InternalOrder tests', () => {
 
         })
 
-        // test('define InternalOrder', async () => {
+        test('define InternalOrder', async () => {
 
-        //     let IoId =  await InternalOrderManager.defineInternalOrder(input.date, input.products, input.customerId);          
-        //     const res = await PersistentManager.loadOneByAttribute("id","InternalOrder",IoId);
-        //     const expected = {
-        //         id: IoId,
-        //         date: input.date,
-        //         state:"ISSUED",
-        //         customer_id : input.customerId
+            let IoId =  await InternalOrderManager.defineInternalOrder(input.date, input.products, input.customerId);          
+            const res = await PersistentManager.loadOneByAttribute("id","InternalOrder",IoId);
+            const expected = {
+                id: IoId,
+                date: input.date,
+                state:"ISSUED",
+                customer_id : input.customerId
                 
-        //     };
-        //     expect(res).toEqual(expected);
-        // })
+            };
+            expect(res).toEqual(expected);
+        })
 
         test('load All InternalOrder', async()=> {
             let IoId =  await InternalOrderManager.defineInternalOrder(input.date, input.products, input.customerId);          
