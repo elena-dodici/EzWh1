@@ -92,7 +92,6 @@ describe('user tests',  () => {
             await UserManager.modifyUser('test@test.com', 'customer', 'supplier');
             let userFromDB = await PersistentManager.loadOneByAttribute('id', "User", u);
             expect(userFromDB.type).toEqual('supplier');
-            
         })
 
         
