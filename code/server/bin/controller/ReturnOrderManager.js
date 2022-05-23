@@ -36,20 +36,20 @@ class ReturnOrderManager {
     async listAllReturnOrders() {
         let ReturnOrders = await PersistentManager.loadAllRows(ReturnOrder.tableName);
         //get rdif and skuid from SKUitem table      
-        
         let res = [];
-        let productList = [];
+        //let productList = [];
         for (const curReturnOrder of ReturnOrders) {
             //return every product info   
                   
             let product = await this.addProductsList(curReturnOrder);
             //combine into a array         
-            productList.push(product);
+            //productList.push(product);
 
             let result ={
-                "returnDate":curReturnOrder.returnDate,
-                "products":productList,
-                "restockOrderId":curReturnOrder.restockOrder_id
+                id : curReturnOrder.id,
+                returnDate : curReturnOrder.returnDate,
+                products: product,
+                restockOrderId :curReturnOrder.restockOrder_id
     
             }
             res.push(result)
@@ -59,7 +59,6 @@ class ReturnOrderManager {
     }
 
     async getReturnOrderByID(reoID) {
-        
         const exists = await PersistentManager.exists(ReturnOrder.tableName, 'id', reoID);
         if (!exists) {
             return Promise.reject("404 ReturnOrderid cannot found");
@@ -69,9 +68,9 @@ class ReturnOrderManager {
         
         let product = await this.addProductsList(curReturnOrder);
         let result ={
-            "returnDate":curReturnOrder.returnDate,
-            "products":product,
-            "restockOrderId":curReturnOrder.restockOrder_id
+            returnDate: curReturnOrder.returnDate,
+            products :product,
+            restockOrderId : curReturnOrder.restockOrder_id
 
         }
         
@@ -94,7 +93,7 @@ class ReturnOrderManager {
 
             let result = await PersistentManager.loadFilterByAttribute(Sku.tableName, "id", sku.SKUId);
             let item = {
-            "Skuid": sku.SKUId,
+            "SKUId": sku.SKUId,
             "description": result[0].description,
             "price": result[0].price,
             "RFID": sku.RFID                    

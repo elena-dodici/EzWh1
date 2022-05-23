@@ -1,9 +1,15 @@
+
 const SKUManager = require('../bin/controller/SKUManager');
 const PersistentManager = require('../bin/DB/PersistentManager');
+const utility = require('../bin/utility/utility');
 
 //Assuming data validation done at a higher level
 async function testDefineSKU() {
 describe('define sku', () => {
+
+    beforeEach( async () => {
+        await utility.deleteDatabase();
+    })
     test('define sku', async () => {
         const lastSKUId = await SKUManager.defineSKU("description", 10, 10, 10, "notes", 10);
         const sku = await PersistentManager.loadOneByAttribute('id', "SKU", lastSKUId);
@@ -36,9 +42,7 @@ describe('define sku', () => {
         expect(sku).not.toEqual(expected);
     })
 
-    afterEach(() => {
-        PersistentManager.deleteAll("SKU");
-    })
+
 })
 }
 
@@ -47,6 +51,7 @@ testDefineSKU()
 
 
 describe('list all skus', () => {
+    const tableName = "SKU";
     const s1 = {
         description: "description",
         weight: 10,
@@ -59,24 +64,21 @@ describe('list all skus', () => {
 
     let id1 = null;
     
-    listSKUS("SKU");
+    beforeEach(async () => {
+        await utility.deleteDatabase();
+        //id1 = await PersistentManager.store(tableName, s1);
+    })
 
-    function listSKUS (tableName) {
-        beforeEach(async () => {
-            await PersistentManager.deleteAll(tableName);
-            //id1 = await PersistentManager.store(tableName, s1);
-        })
-
-        test('test list all skus valid', async () => {
-            id1 = await SKUManager.defineSKU(s1.description, s1.weight, s1.volume, s1.price, s1.notes, s1.availableQuantity);
-            const list = await SKUManager.listAllSKUs();
-            let exp1 = s1;
-            exp1.id = id1;
-            exp1.testDescriptors = [];
-            const sku = list[0];
-            expect(sku).toEqual(exp1);
-        })
-    }
+    test('test list all skus valid', async () => {
+        id1 = await SKUManager.defineSKU(s1.description, s1.weight, s1.volume, s1.price, s1.notes, s1.availableQuantity);
+        const list = await SKUManager.listAllSKUs();
+        let exp1 = s1;
+        exp1.id = id1;
+        exp1.testDescriptors = [];
+        const sku = list[0];
+        expect(sku).toEqual(exp1);
+    })
+    
 });
 
 describe('set sku position', () => {
@@ -108,8 +110,8 @@ describe('set sku position', () => {
 
     function setPosition (kuid, positionid) {
         beforeEach(async () => {
-            await PersistentManager.deleteAll("SKU");
-            await PersistentManager.deleteAll("Position");
+            
+            await utility.deleteDatabase();
             
             
         })
@@ -125,6 +127,32 @@ describe('set sku position', () => {
             expect(s.position + "").toEqual(positionID);
             expect(p.occupied_volume).toEqual(s.volume*s.availableQuantity);
             expect(p.occupied_weight).toEqual(s.weight*s.availableQuantity);
+        })
+
+        test('change sku position invalid', async () => {
+
+            idSKU = await PersistentManager.store("SKU", sk);
+            await PersistentManager.store("Position", p1);
+            return expect(SKUManager.setPosition(idSKU, "not existing")).rejects.toEqual("404 position");
+            /*
+            await SKUManager.setPosition(idSKU, positionID);
+            const s = await PersistentManager.loadOneByAttribute('id', "SKU", idSKU);
+            const p = await PersistentManager.loadOneByAttribute('id', "Position", positionID);
+            
+            expect(s.position + "").not.toEqual(positionID);*/
+        })
+
+        test('change sku position sku invalid', async () => {
+
+            idSKU = await PersistentManager.store("SKU", sk);
+            await PersistentManager.store("Position", p1);
+            return expect(SKUManager.setPosition(idSKU + 1, positionID)).rejects.toEqual("404 SKU");
+            /*
+            await SKUManager.setPosition(idSKU, positionID);
+            const s = await PersistentManager.loadOneByAttribute('id', "SKU", idSKU);
+            const p = await PersistentManager.loadOneByAttribute('id', "Position", positionID);
+            
+            expect(s.position + "").not.toEqual(positionID);*/
         })
     }
 });

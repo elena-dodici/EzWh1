@@ -3,10 +3,12 @@ const chaiHttp = require('chai-http');
 const PersistentManager = require('../bin/DB/PersistentManager');
 const InternalOrderManager = require('../bin/controller/InternalOrderManager');
 const InternalOrder = require('../bin/model/InternalOrder')
+const utility = require('../bin/utility/utility');
 chai.use(chaiHttp);
 chai.should();
 
 const app = require('../server');
+const UserManager = require('../bin/controller/UserManager');
 var agent = chai.request.agent(app);
 let IoId=null;
 
@@ -15,11 +17,13 @@ describe("test scenario 9-1 9-2 9-3", ()=>{
 
     
     before(async ()=>{
-        await PersistentManager.deleteAll("InternalOrder");
+        await utility.deleteDatabase();
+        const supp = await UserManager.defineUser('name','surname','pass','user@user.com','customer');
+        
         IoId = await InternalOrderManager.defineInternalOrder("2021/11/29 09:33",
                                                             [{"SKUId":12,"description":"a product","price":10.99,"qty":3},
                                                             {"SKUId":180,"description":"another product","price":11.99,"qty":3}],
-                                                            null)
+                                                            supp)
     })
 
 

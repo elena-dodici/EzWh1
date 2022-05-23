@@ -1,6 +1,7 @@
 
 const PersistentManager = require('../bin/DB/PersistentManager');
 const PositionManager = require('../bin/controller/PositionManager');
+const SKUManager = require('../bin/controller/SKUManager');
 
 describe('Position tests', () => {
 
@@ -71,6 +72,23 @@ describe('Position tests', () => {
             }
             expect(p).toEqual(expected);
 
+        })
+
+        test('modify position id with relative sku', async() => {
+            let s = await SKUManager.defineSKU('des', 10,10,10,"notes",1);
+            await PositionManager.definePosition(positionID, aisleID, row, col, 10000, 10000);
+            await SKUManager.setPosition(s,positionID );
+            const newID = "000100010001"
+            return expect(PositionManager.modifyPosition(positionID, aisleID, row, col, 2, 2, 1,1)).rejects.toEqual("422 cant store sku");
+
+            
+        })
+
+        test('delete position', async () => {
+            await PositionManager.definePosition(positionID, aisleID, row, col, maxWeight, maxVolume);
+            await PositionManager.deletePosition(positionID);
+            const positions = await PersistentManager.loadAllRows("Position");
+            expect(positions).toEqual([]);
         })
     }
 })

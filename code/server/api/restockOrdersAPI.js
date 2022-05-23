@@ -75,10 +75,10 @@ exports.postRestockOrder = function(req,res) {
     
     result.then(
         result => {
-            return res.status(201).json(result);
+            return res.status(201).end();
         },
         error => {
-            console.log(error)
+            console.log(error);
             return res.status(503).json({error: 'generic error'})
         }
     )
@@ -246,7 +246,8 @@ exports.updateState = function(req,res) {
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
         return res.status(422).json({
-            error: "Validation of request body or of id failed"
+            error: errors.array()
+            //error: "Validation of request body or of id failed"
         });
     }  
     let rowID= req.params.id;

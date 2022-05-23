@@ -9,13 +9,23 @@ describe('RestockOrder tests', () => {
 
 
 
-    RestockOrderTest()
-
-    function RestockOrderTest() {
        
+        describe('restock order tests', () => {
         let input={};
         beforeEach(async () => {
-            await PersistentManager.deleteAll("RestockOrder");
+            await PersistentManager.deleteAll('InternalOrder');
+    await PersistentManager.deleteAll('InternalOrderProduct');
+    await PersistentManager.deleteAll('Item');
+    await PersistentManager.deleteAll('Position');
+    await PersistentManager.deleteAll('ProductOrder');
+    await PersistentManager.deleteAll('RestockOrder');
+    await PersistentManager.deleteAll('ReturnOrder');
+    await PersistentManager.deleteAll('SKU');
+    await PersistentManager.deleteAll('SKUItem');
+    await PersistentManager.deleteAll('TestDescriptor');
+    await PersistentManager.deleteAll('TestResult');
+    await PersistentManager.deleteAll('TransportNote');
+    await PersistentManager.deleteAll('User');
             //supply must  exist  
             const user = new User("user1@ezwh.com", "testpassword", "John", "Snow", "supplier");          
             supplier_id = await PersistentManager.store("User",user);
@@ -90,5 +100,5 @@ describe('RestockOrder tests', () => {
 
 
         })
-    }
+    })
 })

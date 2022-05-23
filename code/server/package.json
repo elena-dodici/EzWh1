@@ -14,6 +14,6 @@
   },
   "scripts": {
     "apiTest": "mocha test --runInBand --exit",
-    "test": "jest --runInBand"
+    "test": "jest \"--runInBand\""
   }
 }

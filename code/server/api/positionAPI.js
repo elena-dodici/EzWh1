@@ -54,6 +54,7 @@ exports.postPosition = function(req,res) {
 
     if (!errors.isEmpty()) {
         return res.status(422).json({
+            //error: errors.array()
             error: "Validation of request body failed"
         });
     }
@@ -165,6 +166,7 @@ exports.updatePosition = async function(req,res) {
 
     if (!errors.isEmpty()) {
         return res.status(422).json({
+            //error: errors.array()
             error: "validation of request body or of positionID failed"
         });
     }

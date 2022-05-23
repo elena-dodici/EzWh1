@@ -11,8 +11,19 @@ const PersistentManager = require('../bin/DB/PersistentManager');
  
         beforeEach(async () => {
             //clear DB 
-            await PersistentManager.deleteAll("SKU");
-            await PersistentManager.deleteAll("TestDescriptor");
+            await PersistentManager.deleteAll('InternalOrder');
+    await PersistentManager.deleteAll('InternalOrderProduct');
+    await PersistentManager.deleteAll('Item');
+    await PersistentManager.deleteAll('Position');
+    await PersistentManager.deleteAll('ProductOrder');
+    await PersistentManager.deleteAll('RestockOrder');
+    await PersistentManager.deleteAll('ReturnOrder');
+    await PersistentManager.deleteAll('SKU');
+    await PersistentManager.deleteAll('SKUItem');
+    await PersistentManager.deleteAll('TestDescriptor');
+    await PersistentManager.deleteAll('TestResult');
+    await PersistentManager.deleteAll('TransportNote');
+    await PersistentManager.deleteAll('User');
         });
        
         test('define testDescriptor valid', async () => {
@@ -38,10 +49,7 @@ const PersistentManager = require('../bin/DB/PersistentManager');
             expect(testDescriptor).toEqual(expected);
         });
 
-        afterEach(() => {
-            PersistentManager.deleteAll("TestDescriptor");
-            PersistentManager.deleteAll("SKU");
-        });
+
    
 })}
   
@@ -53,8 +61,19 @@ const PersistentManager = require('../bin/DB/PersistentManager');
 
         beforeEach(async () => {
             //clear DB 
-            await PersistentManager.deleteAll("SKU");
-            await PersistentManager.deleteAll("TestDescriptor");
+            await PersistentManager.deleteAll('InternalOrder');
+    await PersistentManager.deleteAll('InternalOrderProduct');
+    await PersistentManager.deleteAll('Item');
+    await PersistentManager.deleteAll('Position');
+    await PersistentManager.deleteAll('ProductOrder');
+    await PersistentManager.deleteAll('RestockOrder');
+    await PersistentManager.deleteAll('ReturnOrder');
+    await PersistentManager.deleteAll('SKU');
+    await PersistentManager.deleteAll('SKUItem');
+    await PersistentManager.deleteAll('TestDescriptor');
+    await PersistentManager.deleteAll('TestResult');
+    await PersistentManager.deleteAll('TransportNote');
+    await PersistentManager.deleteAll('User');
         });
     
         test('get all testDescriptors', async () => {
@@ -78,23 +97,33 @@ const PersistentManager = require('../bin/DB/PersistentManager');
             expect(list).toEqual([testDescriptors_1,testDescriptors_2]);
         })
 
-        afterEach(() => {
-            PersistentManager.deleteAll("TestDescriptor");
-            PersistentManager.deleteAll("SKU");
-        })
+
     })
     
 }
 
     //Test modifyTestDescriptor
-    testmodifyTestDescriptor("new test name","new description");
-
-    async function testmodifyTestDescriptor(newName, newDescription) {
         describe('Test modify testDescriptor', () => { 
+            let newName = "new test name";
+            let newDescription = "new description";
+            let id_sku  = null;
+            let test_id  = null;
+            let newTestDescriptor = null;
         beforeEach(async () => {
             //clear DB 
-            await PersistentManager.deleteAll("TestDescriptor");
-            await PersistentManager.deleteAll("SKU");
+            await PersistentManager.deleteAll('InternalOrder');
+    await PersistentManager.deleteAll('InternalOrderProduct');
+    await PersistentManager.deleteAll('Item');
+    await PersistentManager.deleteAll('Position');
+    await PersistentManager.deleteAll('ProductOrder');
+    await PersistentManager.deleteAll('RestockOrder');
+    await PersistentManager.deleteAll('ReturnOrder');
+    await PersistentManager.deleteAll('SKU');
+    await PersistentManager.deleteAll('SKUItem');
+    await PersistentManager.deleteAll('TestDescriptor');
+    await PersistentManager.deleteAll('TestResult');
+    await PersistentManager.deleteAll('TransportNote');
+    await PersistentManager.deleteAll('User');
         });
     
         test('modify testDescriptor', async () => {
@@ -106,16 +135,16 @@ const PersistentManager = require('../bin/DB/PersistentManager');
                 availableQuantity: 10,
                 position: null
             }
-            let id_sku = await PersistentManager.store("SKU",sku);
+            id_sku = await PersistentManager.store("SKU",sku);
     
             const testDescriptor = {
                 name: "test name",
                 procedureDescription: "procedure description",
                 idSKU: id_sku
             }
-            let test_id = await PersistentManager.store("testDescriptor",testDescriptor);
+            test_id = await PersistentManager.store("testDescriptor",testDescriptor);
             await QualityTestManager.modifyTestDescriptor(test_id , newName, newDescription,id_sku);
-            const newTestDescriptor = await PersistentManager.loadOneByAttribute('id', "TestDescriptor", test_id);
+            newTestDescriptor = await PersistentManager.loadOneByAttribute('id', "TestDescriptor", test_id);
             const expected = {
                 id: test_id,
                 name: "new test name",
@@ -125,12 +154,9 @@ const PersistentManager = require('../bin/DB/PersistentManager');
             expect(newTestDescriptor).toEqual(expected);
         })
 
-        afterEach(() => {
-            PersistentManager.deleteAll("TestDescriptor");
-            PersistentManager.deleteAll("SKU");
+        
         })
-        })
-    }
+    
 
     //Test defineTestResult Valid
     testDefineTestResultValid("12341234123412341234123412341234","2022-01-01",1);
@@ -138,30 +164,52 @@ const PersistentManager = require('../bin/DB/PersistentManager');
     async function testDefineTestResultValid(rfid,Date,Result) {
         describe('define testResult', () => {
 
+            let testDescriptor_id = null;
+            let lastTestResultId = null;
+            let testResult = null;
         beforeEach(async () => {
             //clear DB 
-            await PersistentManager.deleteAll("TestResult");
-            await PersistentManager.deleteAll("TestDescriptor");
-            await PersistentManager.deleteAll("SKUItem");
+            await PersistentManager.deleteAll('InternalOrder');
+            await PersistentManager.deleteAll('InternalOrderProduct');
+            await PersistentManager.deleteAll('Item');
+            await PersistentManager.deleteAll('Position');
+            await PersistentManager.deleteAll('ProductOrder');
+            await PersistentManager.deleteAll('RestockOrder');
+            await PersistentManager.deleteAll('ReturnOrder');
+            await PersistentManager.deleteAll('SKU');
+            await PersistentManager.deleteAll('SKUItem');
+            await PersistentManager.deleteAll('TestDescriptor');
+            await PersistentManager.deleteAll('TestResult');
+            await PersistentManager.deleteAll('TransportNote');
+            await PersistentManager.deleteAll('User');
            
         });
        
         test('define testResult valid', async () => {
+            const sku = {description: "description",
+                weight: 10,
+                volume: 10,
+                price: 10, 
+                notes: "notes",
+                availableQuantity: 10,
+                position: null
+            }
+            let s = await PersistentManager.store("SKU", sku);
             const testDescriptor = {
                 name: "test name",
                 procedureDescription: "procedure description",
-                idSKU: null
+                idSKU: s
             }
             const skuItem = {
                 RFID: '12341234123412341234123412341234',
                 Available: 0,
                 DateOfStock: '2022-01-01',
-                SKUId: null,
+                SKUId: s,
                 internalOrder_id: null,
                 restockOrder_id: null,
                 returnOrder_id: null
             }
-            let testDescriptor_id = await PersistentManager.store("testDescriptor",testDescriptor);
+            testDescriptor_id = await PersistentManager.store("testDescriptor",testDescriptor);
             await PersistentManager.store("SKUItem",skuItem);
             const lastTestResultId = await QualityTestManager.defineTestResult(rfid,Date,Result,testDescriptor_id);
             const testResult = await PersistentManager.loadOneByAttribute('id', "TestResult", lastTestResultId);
@@ -175,11 +223,7 @@ const PersistentManager = require('../bin/DB/PersistentManager');
             expect(testResult).toEqual(expected);
         });
 
-        afterEach(() => {
-            PersistentManager.deleteAll("TestResult");
-            PersistentManager.deleteAll("TestDescriptor");
-            PersistentManager.deleteAll("SKUItem");
-        });
+
     })
 }
 
@@ -188,29 +232,53 @@ const PersistentManager = require('../bin/DB/PersistentManager');
 
     async function testmodifyTestResult(rfid, newDate, newResult) {
         describe('Test modify testResult', () => { 
+            let s = null;
+            let testDescriptor_id = null;
+            let test_id = null;
         beforeEach(async () => {
             //clear DB 
-            await PersistentManager.deleteAll("TestResult");
-            await PersistentManager.deleteAll("TestDescriptor");
-            await PersistentManager.deleteAll("SKUItem");
+            await PersistentManager.deleteAll('InternalOrder');
+    await PersistentManager.deleteAll('InternalOrderProduct');
+    await PersistentManager.deleteAll('Item');
+    await PersistentManager.deleteAll('Position');
+    await PersistentManager.deleteAll('ProductOrder');
+    await PersistentManager.deleteAll('RestockOrder');
+    await PersistentManager.deleteAll('ReturnOrder');
+    await PersistentManager.deleteAll('SKU');
+    await PersistentManager.deleteAll('SKUItem');
+    await PersistentManager.deleteAll('TestDescriptor');
+    await PersistentManager.deleteAll('TestResult');
+    await PersistentManager.deleteAll('TransportNote');
+    await PersistentManager.deleteAll('User');
         });
     
         test('modify testResult', async () => {
+            const sku = {
+                description: "des",
+                weight: 10,
+                volume: 10,
+                price: 10,
+                notes: "notes",
+                availableQuantity: 1,
+                position: null
+            }
+            
+            s = await PersistentManager.store("SKU", sku);
             const testDescriptor = {
                 name: "test name",
                 procedureDescription: "procedure description",
-                idSKU: null
+                idSKU: s
             }
             const skuItem = {
                 RFID: '12341234123412341234123412341234',
                 Available: 0,
                 DateOfStock: '2022-01-01',
-                SKUId: null,
+                SKUId: s,
                 internalOrder_id: null,
                 restockOrder_id: null,
                 returnOrder_id: null
             }
-            let testDescriptor_id = await PersistentManager.store("testDescriptor",testDescriptor);
+            testDescriptor_id = await PersistentManager.store("testDescriptor",testDescriptor);
             await PersistentManager.store("SKUItem",skuItem);
             const testResult = {
                 rfid: '12341234123412341234123412341234',
@@ -218,7 +286,7 @@ const PersistentManager = require('../bin/DB/PersistentManager');
                 Result: 1,
                 idTestDescriptor: testDescriptor_id
             }
-            let test_id = await PersistentManager.store("testResult",testResult);
+            test_id = await PersistentManager.store("testResult",testResult);
             await QualityTestManager.modifyTestResultByID(test_id ,rfid, testDescriptor_id, newDate, newResult);
             const newTestResult = await PersistentManager.loadOneByAttribute('id', "TestResult", test_id);
             const expected = {
@@ -231,11 +299,7 @@ const PersistentManager = require('../bin/DB/PersistentManager');
             expect(newTestResult).toEqual(expected);
         })
 
-        afterEach(() => {
-            PersistentManager.deleteAll("TestResult");
-            PersistentManager.deleteAll("TestDescriptor");
-            PersistentManager.deleteAll("SKUItem");
-        })
+
     })
     
 }

@@ -6,6 +6,9 @@ const ReturnOrderManager = require('../bin/controller/ReturnOrderManager');
 const SKU = require('../bin/model/SKU');
 const SKUItem = require('../bin/model/SKUItem');
 const utility = require("../bin/utility/utility");
+const UserManager = require('../bin/controller/UserManager');
+const SKUItemManager = require('../bin/controller/SKUItemManager');
+const ItemManager = require('../bin/controller/ItemManager');
 
 describe('RestockOrder tests', () => {
 
@@ -14,39 +17,53 @@ describe('RestockOrder tests', () => {
     RestockOrderTest()
 
     function RestockOrderTest() {
-        let restockOrderId=[];
+        let restockOrderId= null;
         let input={};
         let SkuId=null;
         let rfid = null;
         beforeEach(async () => {
-            await PersistentManager.deleteAll("ReturnOrder");
-            //restockOrder 
-            //sku must exist
-            let Sku  = new SKU(null, "product", "2", "3", 10.99, "notes", 5, null);
-            delete Sku.testDescriptors;
-            let SkuId = await PersistentManager.store("SKU",Sku);
+            await utility.deleteDatabase();
+
+
             
-            let ro = new RestockOrder(null, "2021/10/29 09:33", "ISSUED", null, null);
-            restockOrderId = await PersistentManager.store("RestockOrder",ro )
-            input ={
-                date : "2021/11/29 09:33",
-                productsList : [{"SKUId":SkuId,"description":"a new item","price":10.99,"RFID":"12345678901234567890123456789019"} ],       
-            }
-            //skuitem must exist
+            /*
             let s = new SKUItem( input.productsList[0].RFID, SkuId,"2021/10/29 09:33",null,null,null);
             utility.renameKey(s, "relativeSKU", "SKUId");
             utility.renameKey(s, "internalOrder", "internalOrder_id");
             utility.renameKey(s, "restockOrder", "restockOrder_id");
             utility.renameKey(s, "returnOrder", "returnOrder_id");
     
-            await PersistentManager.store("SKUItem",s);
+            await PersistentManager.store("SKUItem",s);*/
         })
 
         
-
+        
         test('define returnOrder', async () => {
-            let roId =  await ReturnOrderManager.defineReturnOrder(input.date,input.productsList,restockOrderId);          
+            let Sku  = new SKU(null, "product", "2", "3", 10.99, "notes", 5, null);
+            delete Sku.testDescriptors;
+            let supp = await UserManager.defineUser("john","smith","password", "john@smit.com", "supplier"); 
+            let SkuId = await PersistentManager.store("SKU",Sku);
+            input ={
+                date : "2021/11/29 09:33",
+                productsList : [{"SKUId":SkuId,"description":"a new item","price":10.99,"RFID":"12345678901234567890123456789019"} ],       
+            }
+            //skuitem must exist
+            await SKUItemManager.defineSKUItem(input.productsList[0].RFID, SkuId, "2021/10/29 09:33");
+            await ItemManager.defineItem(1, "des", 10.99, SkuId, supp);
+            prods = [ 
+                {
+                    SKUId: SkuId,
+                    description: "a new item",
+                    price: 10.99,
+                    qty: 30
+                }
+            ]
+            let restockOrderId = await RestockOrderManager.defineRestockOrder("2021/10/29 09:33", prods, supp);
+            let roId =  await ReturnOrderManager.defineReturnOrder(input.date,input.productsList,restockOrderId);    
+                  
+
             const ro = await PersistentManager.loadOneByAttribute("id","ReturnOrder",roId);
+            
             const expected = {
                 id: roId,
                 returnDate: input.date,
@@ -57,15 +74,34 @@ describe('RestockOrder tests', () => {
         })
 
         test('load All returnOrder', async()=> {
-            let roId =  await ReturnOrderManager.defineReturnOrder(input.date,input.productsList,restockOrderId);          
+            
+            let Sku  = new SKU(null, "a new item", "2", "3", 10.99, "notes", 5, null);
+            delete Sku.testDescriptors;
+            let supp = await UserManager.defineUser("john","smith","password", "john@smit.com", "supplier"); 
+            let SkuId = await PersistentManager.store("SKU",Sku);
+            let date = "2021/11/29 09:33";
+            let prods = [ {SKUId:SkuId,description:"a new item",price:10.99,RFID:"12345678901234567890123456789019"} ];
+            //skuitem must exist
+            await SKUItemManager.defineSKUItem(prods[0].RFID, SkuId, "2021/10/29 09:33");
+            await ItemManager.defineItem(1, "des", 10.99, SkuId, supp);
+            let p = [ 
+                {
+                    SKUId: SkuId,
+                    description: "a new item",
+                    price: 10.99,
+                    qty: 30
+                }
+            ]
+            let restockOrderId = await RestockOrderManager.defineRestockOrder("2021/10/29 09:33", p, supp);
+            let roId =  await ReturnOrderManager.defineReturnOrder(date, prods,restockOrderId);    
+            //const ro = await PersistentManager.loadOneByAttribute("id","ReturnOrder",roId);        
             const res = await ReturnOrderManager.listAllReturnOrders();
             
             const expected = {         
                     id:roId,
-                    returnDate:input.date,
-                    products: [{"SKUId":SkuId,"description":input.productsList[0].description,"price":input.productsList[0].price,"RFID":"12345678901234567890123456789019"}],
+                    returnDate: date,
+                    products: prods,
                     restockOrderId : restockOrderId
-                
         
             }
             expect(res[0]).toEqual(expected);

@@ -33,7 +33,7 @@ exports.getAllReturnOrderById = function(req,res){
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
         return res.status(422).json({
-            error: "Validation of request body failed"
+            error: "Validation of id failed"
         });
     }
     let returnOId = req.params.id;
@@ -41,12 +41,12 @@ exports.getAllReturnOrderById = function(req,res){
     let result =  ReturnOrderManager.getReturnOrderByID(returnOId);
     result.then(
         result=>{
-            return res.status(200).json("Delete successfully");
+            return res.status(200).json(result);
         },
         error=>{
             switch(error){
                 case "404 ReturnOrderid cannot found":
-                    return res.status(404).json({error: "404 ReturnOrderid cannot found"})
+                    return res.status(404).json({error: "no return order associated to id"})
             
                 default:     
                     return res.status(500).json({error: "generic error"});
@@ -140,7 +140,7 @@ exports.deleteReturnOrderSchema = {
     id: {
         isInt: {
             options: {
-                min:0
+                min: 0
             }
         }
     }
@@ -160,7 +160,7 @@ exports.deleteReturnOrder=function(req,res){
     let result = ReturnOrderManager.deleteReturnOrder(returnOID);
     result.then(
         result=>{          
-            return res.status(204).json();
+            return res.status(204).end();
         }, 
         error=>{
             return res.status(500).json({error:"generic error"});

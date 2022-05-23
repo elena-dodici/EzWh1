@@ -1,4 +1,3 @@
-
 const UserManager = require("../bin/controller/UserManager");
 const PersistentManager = require("../bin/DB/PersistentManager");
 
@@ -68,6 +67,36 @@ describe('user tests',  () => {
             
             expect(users).toEqual(expectedUsers);
         })
-    }
 
+        test('login', async () => {
+            let u = await UserManager.defineUser('john', 'smith', 'testpassword', 'test@test.com', 'customer');
+            
+            //return {id: u.id, username: u.username, name: u.name};
+            const expectedUser = {
+                id: u,
+                username: 'test@test.com',
+                name: 'john'
+            }
+
+            let res = await UserManager.login('test@test.com', 'testpassword', 'customer');
+            expect(res).toEqual(expectedUser);
+        })
+
+        test('logout', async () => {
+            let res = await UserManager.logout();
+            expect(res).toEqual(true);
+        })
+
+        test('modify type', async () => {
+            let u = await UserManager.defineUser('john', 'smith', 'testpassword', 'test@test.com', 'customer');
+            await UserManager.modifyUser('test@test.com', 'customer', 'supplier');
+            let userFromDB = await PersistentManager.loadOneByAttribute('id', "User", u);
+            expect(userFromDB.type).toEqual('supplier');
+            
+        })
+
+        
+       
+
+    }
 })

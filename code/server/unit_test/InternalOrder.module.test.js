@@ -16,6 +16,8 @@ describe('InternalOrder tests', () => {
         let input={};
         beforeEach(async () => {
             await PersistentManager.deleteAll("InternalOrder");
+            await PersistentManager.deleteAll("SKU");
+            await PersistentManager.deleteAll("InternalOrderProduct");
             //customer must  exist  
             const user = new User("user1@ezwh.com", "testpassword", "John", "Snow", "customer");          
             customerId = await PersistentManager.store("User",user);
