@@ -47,20 +47,20 @@ exports.postSkuItem = function(req,res) {
 
     //Date validation
     if (!dateValidation(dateOfStock)) {
-        return res.status(422).json({error: "date validation failed"});
+        return res.status(422).json({error: "Validation of request body failed"});
     }
 
 
     SKUItemManager.defineSKUItem(rfid, SKUId, dateOfStock).then(
         result => {
-            return res.status(201).json();
+            return res.status(201).end();
         },
         error => {
             switch (error) {
                 case "404 SKU":
                     return res.status(404).json({error: "No SKU associated to SKUId"});
                 case "422 duplicate":
-                    return res.status(503).json({error: "Duplicated rfid"})
+                    return res.status(503).json({error: "generic error"})
                 default: 
                     return res.status(503).json({error: "generic error"});
             }
@@ -221,7 +221,7 @@ exports.putSkuItem = function (req,res) {
 
     SKUItemManager.modifySKUItem(rfid, newRFID, newAvailable, newDateOfStock).then(
         result => {
-            return res.status(200).json()
+            return res.status(200).end()
         },
         error => {
             switch (error) {
@@ -259,7 +259,7 @@ exports.deleteSkuItem = function (req,res) {
 
     SKUItemManager.deleteSKUItem(rfid).then(
         result => {
-            return res.status(204).json();
+            return res.status(204).end();
         },
         error => {
             return res.status(503).json({error: "generic error"});

@@ -21,7 +21,10 @@ Version:
 
 # Dependency graph 
 
-     <report the here the dependency graph of the classes in EzWH, using plantuml or other tool>
+In the dependency graph we grouped the model classes in one block to avoid confusion.
+
+![high_level](./Images//apitestreport/dependencyGraph.png)
+
      
 # Integration approach
 
@@ -58,18 +61,18 @@ Version:
 |--|--|--|
 |SKUManager | | define sku |
 | | | define sku |
-||define sku invalid|
-|| test list all skus valid|
-||change sku position valid|
+|||define sku invalid|
+||| test list all skus valid|
+|||change sku position valid|
 |SKUITemManager|| test define sku item |
-|| get item by rfid |
-|| delete sku item |
-|PositionManager|define position|
-||load positions|
-||modify position id|
-|UserManager|load all users|
-||delete user|
-||define user|
+||| get item by rfid |
+||| delete sku item |
+|PositionManager||define position|
+|||load positions|
+|||modify position id|
+|UserManager||load all users|
+|||delete user|
+|||define user|
 
 ## Step n 
 
@@ -109,20 +112,24 @@ Report also for each of the scenarios the (one or more) API Mocha tests that cov
 
 | Scenario ID | Functional Requirements covered | Mocha  Test(s) | 
 | ----------- | ------------------------------- | ----------- | 
-| 1-1         | FR2                             |  newSKU     |             
-| 1-2         | FR2                             |   modifyPositionOfSku          |             
-| 1-3         |  FR2                               |    modifyWeightVolume         |             
-| 2-1         |    FR3                             |    newPosition         |             
-| 2-2         |    FR3                             |      modifyPositionID       |             
-| 2-3         |     FR3                            |        weightVolumeOfPosition     |           
-| 2-4         |    FR3                             |      modifyAisleRowCol       |  
-| 2-5         |    FR3                             |          delPosition   |    
+| 1-1         | FR2                             |  adding a new SKU     |             
+| 1-2         | FR2                             |   modifying sku position          |             
+| 1-3         |  FR2                               |    modifying sku weight and volume        |             
+| 2-1         |    FR3                             |    adding a new Position         |             
+| 2-2         |    FR3                             |      modifying a Position ID      |             
+| 2-3         |     FR3                            |        modifying weight and volume    |           
+| 2-4         |    FR3                             |      modifying aisle,row,col      |  
+| 2-5         |    FR3                             |          delete position   |    
 | 3-1         |     FR5                            |        addingRO1     | 
 | 3-2         |   FR5                              |       addingRO2      | 
-| 4-1         |   FR1                              |       newUser      | 
-| 4-2         |     FR1                            |      modifyUser       | 
-| 4-3         |   FR1                              |      deleteUser       | 
-
+| 4-1         |   FR1                              |       adding a new user      | 
+| 4-2         |     FR1                            |      modifying a user       | 
+| 4-3         |   FR1                              |      deleting user      | 
+| 5-1-1        |        FR5                         | updating Delivered state / updating Delivered state invalid | 
+| 5-2-1        |           FR5                     | updating Delivered state to tested / updating Delivered state to tested invalid |
+| 5-2-1        |           FR5                      | updating Delivered state to tested / updating Delivered state to tested invalid |
+| 5-2-2        |            FR5                   | updating Delivered state to tested / updating Delivered state to tested invalid |
+| 5-2-3        |            FR5                     | updating Delivered state to tested / updating Delivered state to tested invalid |
 
 # Coverage of Non Functional Requirements
 

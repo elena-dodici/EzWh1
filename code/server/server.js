@@ -12,6 +12,7 @@ const restockOrders = require('./api/restockOrdersAPI');
 const returnOrders = require('./api/returnOrdersAPI')
 const user = require('./api/userAPI');
 const item = require('./api/itemAPI');
+const utility = require('./bin/utility/utility');
 // init express
 const app = new express();
 const port = 3001;
@@ -224,6 +225,9 @@ app.put('/api/item/:id',checkSchema(item.modifyItemByIdSchema), item.modifyItemB
 
 //DELETE /api/items/:id
 app.delete('/api/items/:id', checkSchema(item.deleteItemSchema) ,item.deleteItem);
+
+//Initialize the db
+//utility.initializeDB();
 
 /*
 Activate the server

@@ -223,7 +223,7 @@ exports.putPositionToSku = function(req,res) {
     
     SKUManager.setPosition(id, position).then(
         result => {
-            return res.status(200).json();
+            return res.status(200).end();
         },
         error => { 
             switch (error) {
@@ -234,7 +234,7 @@ exports.putPositionToSku = function(req,res) {
                     return res.status(404).json({error: "Position not existing or SKU not existing"});
                     break;
                 case "422 position not capable":
-                    return res.status(422).json({error: "newAvailableQuantity position is not capable enough in weight or in volume"});
+                    return res.status(422).json({error: "validation of position through the algorithm failed or position isn't capable to satisfy volume and weight constraints for available quantity of sku or position is already assigned to a sku"});
                     break;
                 default:
                     return res.status(503).json({error: "generic error"});

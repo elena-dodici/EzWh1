@@ -94,7 +94,7 @@ describe('test scenario 5-1-1', () => {
     }
 })
 
-describe('test scenario 5-2-1', () => {
+describe('test scenario 5-2-1 5-2-2 5-2-3', () => {
     let skuid = null;
     let supplierid = null;
     let item = null;
@@ -140,7 +140,7 @@ describe('test scenario 5-2-1', () => {
     }
 
     function updateRestockOrderInvalidTested(expectedHTTPStatus, state, rid) {
-        it('updating Delivered state to tested', function (done) {
+        it('updating Delivered state to tested invalid', function (done) {
             const newState = {newState: state}
             agent.put(`/api/restockOrder/${rid}`).send(newState).then(
                 function (res) {
@@ -153,13 +153,64 @@ describe('test scenario 5-2-1', () => {
     }
 })
 
+describe('test scenario 5-2-1 5-2-2 5-2-3', () => {
+    let skuid = null;
+    let supplierid = null;
+    let item = null;
+    let products = null;
+    let date = null;
+    let rfid = null;
+    let roid = null;
+    beforeEach(async () => {
+        
+        await PersistentManager.deleteAll("RestockOrder");
+        await PersistentManager.deleteAll("User");
+        await PersistentManager.deleteAll("SKU");
+        await PersistentManager.deleteAll("Item");
+        await PersistentManager.deleteAll("SKUItem");
+        skuid = await SKUManager.defineSKU("des",1,1,1,"notes",1);
+        supplierid = await UserManager.defineUser("john", "jo", "password", "supp@supp.it", "supplier");
+        item = await ItemManager.defineItem(1,"des", 1, skuid, supplierid);
+        products = [{"SKUId":skuid,"description":"a product","price":10.99,"qty":1}]
+        date = "2021/11/29 09:33";
+        roid = await RestockOrderManager.defineRestockOrder(date, products, supplierid);
+        await RestockOrderManager.modifyState(roid, "DELIVERED");
+        rfid = "40311480885985959917534647794760";
+    })
+
+    updateRestockOrderTested(200, "TESTED")
+    updateRestockOrderInvalidTested(422, "wrongField", roid)
+    updateRestockOrderInvalidTested(422, "wrongField", roid)
+    updateRestockOrderInvalidTested(422, "TESTED", -1)
+    updateRestockOrderInvalidTested(422, "TESTED", "not a number")
 
 
+    function updateRestockOrderTested(expectedHTTPStatus, state) {
+        it('updating Delivered state to tested', function (done) {
+            const newState = {newState: state}
+            agent.put(`/api/restockOrder/${roid}`).send(newState).then(
+                function (res) {
+                    res.should.have.status(expectedHTTPStatus);
+                    done();
+                }
+            )
+                    
+        })
+    }
 
-
-
-
-
+    function updateRestockOrderInvalidTested(expectedHTTPStatus, state, rid) {
+        it('updating Delivered state to tested inva', function (done) {
+            const newState = {newState: state}
+            agent.put(`/api/restockOrder/${rid}`).send(newState).then(
+                function (res) {
+                    res.should.have.status(expectedHTTPStatus);
+                    done();
+                }
+            )
+                    
+        })
+    }
+})
 
 
 
