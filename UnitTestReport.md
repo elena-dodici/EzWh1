@@ -37,11 +37,7 @@ The output, if everything goes well, is the last inserted ID.
  - value of keys of object
 
 
-
-
-
-
-**Predicates for method *name*:**
+**Predicates for method *store*:**
 
 | Criteria | Predicate |
 | -------- | --------- |
@@ -120,7 +116,11 @@ Loads a list containing all the objects saved in the database
 |                    | 0                                      | I               | PersistentManager.loadAllRows(tableName) -> Throw error  | testLoadValid("wrong", 0);   |
 
 
+<<<<<<< HEAD
 ### **Class *PersistentManager* - 1st method : *delete(attribute_name ,id, tableName)***
+=======
+### **Class *PersistentManager* -  method : *delete(attribute_name ,id, tableName)***
+>>>>>>> a36b2dc6c76e08b83eb809782ad31c59c897e63c
 PersistentManager.delete(attribute_name ,id, tableName) delete the  rows which are found according to request in the certain Table 
 
 
@@ -231,8 +231,11 @@ PersistentManager.delete(attribute_name ,id, tableName) delete the  rows which a
 |               |                                                       || |                           |incorrect type of value |I|T16  update(tableName, object, attribute_name, id) -> throw Error|TestInvalidUpdate(RestockOrder.tableName,RO,2,RO2,3,T2,InvalidUpdateList);|
 |Invalid TableName      |      ...                                     |||                            ||I|T17 throw Error|||
 
+<<<<<<< HEAD
 
 
+=======
+>>>>>>> a36b2dc6c76e08b83eb809782ad31c59c897e63c
 
 
 # White Box Unit Tests

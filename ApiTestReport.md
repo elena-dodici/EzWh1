@@ -73,6 +73,15 @@ In the dependency graph we grouped the model classes in one block to avoid confu
 |UserManager||load all users|
 |||delete user|
 |||define user|
+|RestockOrderManager|define Restock order|
+||list all restock Order|
+||modify the state|
+|ReturnOrderManager|define Return order|
+||list all return Order|
+|InternalOrderManager|define Internal order|
+||modify the state of Internal Order|
+||list all Internal Order|
+
 
 ## Step n 
 
@@ -130,6 +139,18 @@ Report also for each of the scenarios the (one or more) API Mocha tests that cov
 | 5-2-1        |           FR5                      | updating Delivered state to tested / updating Delivered state to tested invalid |
 | 5-2-2        |            FR5                   | updating Delivered state to tested / updating Delivered state to tested invalid |
 | 5-2-3        |            FR5                     | updating Delivered state to tested / updating Delivered state to tested invalid |
+| 5-3         |   FR5                              |      updateRestockOrder      | 
+| 6-1        |   FR5.9                              |      newReturnOrder      | 
+| 6-2       |   FR5.9                              |      newReturnOrder      | 
+| 7-1       |   FR1                              |      newLogin      | 
+| 7-2      |   FR1                              |      newLogOut      | 
+| 9-1     |   FR6                              |      modifyIOState    | 
+| 9-2     |   FR6                              |      modifyIOState    | 
+| 9-3     |   FR6                              |      modifyIOState    | 
+| 10-1     |   FR5.12                              |      modifyIOState    | 
+
+
+
 
 # Coverage of Non Functional Requirements
 

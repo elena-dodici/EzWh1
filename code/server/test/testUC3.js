@@ -32,7 +32,7 @@ describe('test scenarios 3-1 3-2', () => {
         expectedHTTPStatus = 201;
     })
 
-    it("addingRO1", function (done) {
+    it("addingRO1", async () => {
         
         const ro = {
             issueDate: date,
@@ -43,13 +43,13 @@ describe('test scenarios 3-1 3-2', () => {
         .send(ro)
         .then(function (res) {
             res.should.have.status(expectedHTTPStatus);
-            done();
+            
         })
     });
 
 });
 
-describe('test scenarios 3-2', () => {
+describe('test scenarios 3-2', async () => {
 
     let supplierid = null;
 
@@ -68,7 +68,7 @@ describe('test scenarios 3-2', () => {
         expectedHTTPStatus = 201;
     })
 
-    it("addingRO2", function (done) {
+    it("addingRO2", async ()=> {
         
         const ro = {
             issueDate: date,
@@ -79,7 +79,7 @@ describe('test scenarios 3-2', () => {
         .send(ro)
         .then(function (res) {
             res.should.have.status(expectedHTTPStatus);
-            done();
+           
         })
     });
 

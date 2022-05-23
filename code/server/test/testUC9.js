@@ -26,16 +26,16 @@ describe("test scenario 9-1 9-2 9-3", ()=>{
 
 
 
-modifyState(200,IoId,"ACCEPTED")
-modifyState(200,IoId,"CANCELLED")
-modifyState(200,IoId,"REFUSED")
+modifyIOState(200,IoId,"ACCEPTED")
+modifyIOState(200,IoId,"CANCELLED")
+modifyIOState(200,IoId,"REFUSED")
 
 
 
 
 //set availablity of skuitem to 0
-    function modifyState(expectedHTTPStatus,id,newState){
-        it('modifyState', async ()=>{ 
+    function modifyIOState(expectedHTTPStatus,id,newState){
+        it('modifyIOState', async ()=>{ 
             //check sku item descrease correct qty in sku table and position? 
             
             

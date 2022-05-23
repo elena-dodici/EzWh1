@@ -4,6 +4,7 @@ const InternalOrder = require('../model/InternalOrder')
 const InternalOrderProduct = require('../model/InternalOrderProduct')
 const SKUItem = require('../model/SKUItem')
 const SKU = require('../model/SKU')
+const User = require('../model/User')
 
 
 class InternalOrderManager{
@@ -13,7 +14,23 @@ class InternalOrderManager{
         
         //issued once created
         //save io , get ioid and take this with product in IOproduct table 
-        let newIo = new InternalOrder(null,date,'ISSUED',null);
+
+        //check xustomerId whether exists
+		const customerExists = await PersistentManager.loadByMoreAttributes(
+			User.tableName,
+			["id", "type"],
+			[customerId, "customer"]
+		);
+
+		
+		if (customerExists.length === 0) {
+			return Promise.reject("404 no customerId found");
+		}
+
+
+
+
+        let newIo = new InternalOrder(null,date,'ISSUED',customerId);
         let newIOid = await PersistentManager.store(InternalOrder.tableName, newIo);
         for(let i=0;i<productlist.length;i++){
             let product = productlist[i];
@@ -24,7 +41,7 @@ class InternalOrderManager{
             let newProduct = new InternalOrderProduct(null,des,pri,qty,sku_id,newIOid);
             PersistentManager.store(InternalOrderProduct.tableName, newProduct);
         }
-        return
+        return newIOid;
     }
 
 

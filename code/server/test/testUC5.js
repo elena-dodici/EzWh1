@@ -61,7 +61,7 @@ describe('test scenario 5-1-1', () => {
                         agent.put(`/api/restockOrder/${roid}`).send(newState).then(
                             function (res) {
                                 res.should.have.status(expectedHTTPStatus);
-                                done();
+                                done()
                             }
                         )
                     }
@@ -134,6 +134,7 @@ describe('test scenario 5-2-1 5-2-2 5-2-3', () => {
                     res.should.have.status(expectedHTTPStatus);
                     done();
                 }
+                
             )
                     
         })

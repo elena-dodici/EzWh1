@@ -21,16 +21,18 @@ describe('test scenarios 11-1 11-2', async () => {
         user_id = await UserManager.defineUser("john", "jo", "password", "supp@supp.it", "supplier");
         
     })
-    newItem(201, "description", 12.14, sku_id, user_id);
-    newItem(422, 12345, 12.14, sku_id, user_id);
-    newItem(422, "description", "invalid price", sku_id, user_id);
-    newItem(422, "description", 12.14, "invalid SKUId", user_id);
-    newItem(422, "description", 12.14, sku_id, "invalid supplierId");
-    newItem(422, "description", -12.14, sku_id, user_id);
-    newItem(422, "description", 12.14, -sku_id, user_id);
-    newItem(422, "description", 12.14, sku_id, -user_id);
-    newItem(404, 12345, 12.14, 1000, user_id);
-    newItem(404, 12345, 12.14, sku_id, 1000);
+    newItem(201, 1,"description", 12.14, sku_id, user_id);
+    newItem(422, 2,12345, 12.14, sku_id, user_id);
+    newItem(422, 3,"description", "invalid price", sku_id, user_id);
+    newItem(422, 4,"description", 12.14, "invalid SKUId", user_id);
+    newItem(422, 5,"description", 12.14, sku_id, "invalid supplierId");
+    newItem(422, 6,"description", -12.14, sku_id, user_id);
+    newItem(422, 7,"description", 12.14, -sku_id, user_id);
+    newItem(422, 8,"description", 12.14, sku_id, -user_id);
+    //same sku_id and user_id of an existing item
+    newItem(422, 9,"description", 12.14, sku_id, user_id);
+    newItem(404, 10,12345, 12.14, 1000, user_id);
+    newItem(404, 11,12345, 12.14, sku_id, 1000);
 
     modifyItem(200, 1, "new description", 10.11);
     modifyItem(422, 1, 12345, 10.11);
@@ -44,9 +46,10 @@ describe('test scenarios 11-1 11-2', async () => {
 });
 
 //Scenario 11-1
-function newItem(expectedHTTPStatus, description, price, SKUId, supplierId) {
+function newItem(expectedHTTPStatus,id, description, price, SKUId, supplierId) {
     it('adding a new Item', function (done) {
         let item = {
+            id: id,
             description: description,
             pice: price,
             SKUId: SKUId,

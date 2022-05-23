@@ -30,7 +30,7 @@ class ReturnOrderManager {
             PersistentManager.update(SkuItem.tableName, { returnOrder_id: newReturnOID }, "RFID", curproRFID);
             PersistentManager.update(SkuItem.tableName, { Available: 0 }, "RFID", curproRFID);
         }
-        return 0;
+        return newReturnOID;
     }
 
     async listAllReturnOrders() {
