@@ -324,7 +324,7 @@ async function StockSomeItem(expectedHTTPStatus, id, rfids) {
             .then(function (res) {
                 res.should.have.status(expectedHTTPStatus);
                 agent.put(`/api/sku/${sku_id}`)
-                .send(newPos)
+                .send(newSku)
                     .then(function (res) {
                         res.should.have.status(expectedHTTPStatus);
                         agent.put(`/api/restockOrder/${id}`).send(newState).then(

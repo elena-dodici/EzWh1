@@ -103,6 +103,12 @@ exports.getTestDescriptorByID = function(req,res) {
  }
 
 exports.modifyTestDescriptorByIdSchema = {
+    id: {
+        notEmpty: true,
+        isInt: {
+            options: {min: 0}
+        }
+    },
     newName: {
         notEmpty: true,
         errorMessage: "newName cannot be empty"

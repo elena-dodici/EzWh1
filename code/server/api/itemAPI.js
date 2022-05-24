@@ -128,6 +128,10 @@ exports.getItemByID = function(req,res) {
  }
 
 exports.modifyItemByIdSchema = {
+    id: {
+        notEmpty: true,
+        isInt: {options: {min:0}}
+    },
     newDescription: {
         notEmpty: true,
         errorMessage: "newDescription cannot be empty"
