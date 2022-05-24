@@ -242,14 +242,16 @@ PersistentManager.delete(attribute_name ,id, tableName) delete the  rows which a
 
 | Unit name | Jest test case |
 |--|--|
-|||
-|||
-||||
+|PersistentManager.js|PersistentManager.module.test.js|
+|PersistentManager.js|testExists.module.test.js|
+|Position.js|testIsIdValid.module.test.js||
 
 ### Code coverage report
 
     <Add here the screenshot report of the statement and branch coverage obtained using
     the coverage tool. >
+
+![coverage_report](./Images/apitestreport/coverage_report.png)
 
 
 ### Loop coverage analysis
@@ -263,5 +265,6 @@ PersistentManager.delete(attribute_name ,id, tableName) delete the  rows which a
 |||||
 ||||||
 
+Analyzing the files of our project, we observed that no significant loops are present. However, according to the code coverage report, we tried to test some specific methods with different 'if' statements to increase the branch coverage percentage, including the tests performed for the PersistentManager.js file.
 
 
