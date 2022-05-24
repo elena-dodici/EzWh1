@@ -8,34 +8,38 @@ chai.use(chaiHttp);
 chai.should();
 
 const app = require('../server');
+const { expect, use } = require('chai');
 var agent = chai.request.agent(app);
 
+let sku_id1 = null;
+let user_id = null;
 
-describe('test scenarios 11-1 11-2', async () => {
+describe('test scenarios 11-1 11-2', () => {
 
     before(async () => {
+        
         await PersistentManager.deleteAll("Item");
         await PersistentManager.deleteAll("User");
         await PersistentManager.deleteAll("SKU");
-        sku_id = await SKUManager.defineSKU("des",1,1,1,"notes",1);
+        sku_id1 = await SKUManager.defineSKU("des 1",1,1,1,"notes",1);
         user_id = await UserManager.defineUser("john", "jo", "password", "supp@supp.it", "supplier");
+     
         
     })
-    newItem(201, 1,"description", 12.14, sku_id, user_id);
-    newItem(422, 2,12345, 12.14, sku_id, user_id);
-    newItem(422, 3,"description", "invalid price", sku_id, user_id);
-    newItem(422, 4,"description", 12.14, "invalid SKUId", user_id);
-    newItem(422, 5,"description", 12.14, sku_id, "invalid supplierId");
-    newItem(422, 6,"description", -12.14, sku_id, user_id);
-    newItem(422, 7,"description", 12.14, -sku_id, user_id);
-    newItem(422, 8,"description", 12.14, sku_id, -user_id);
+    
+    newItem(201, 1,"description", 12.14, 1, 1);
+    newItem(422, 3,"description", "invalid price", 1, 1);
+    newItem(422, 4,"description", 12.14, "invalid SKUId", 1);
+    newItem(422, 5,"description", 12.14, 1, "invalid supplierId");
+    newItem(422, 6,"description", -12.14, 1, 1);
+    newItem(422, 7,"description", 12.14, -1, 1);
+    newItem(422, 8,"description", 12.14, 1, -1);
     //same sku_id and user_id of an existing item
-    newItem(422, 9,"description", 12.14, sku_id, user_id);
-    newItem(404, 10,12345, 12.14, 1000, user_id);
-    newItem(404, 11,12345, 12.14, sku_id, 1000);
+    newItem(422, 9,"description", 12.14, 1, 1);
+    newItem(404, 10,"description", 12.14, 100000, 1);
+    newItem(404, 11,"description", 12.14, 1, 100000);
 
     modifyItem(200, 1, "new description", 10.11);
-    modifyItem(422, 1, 12345, 10.11);
     modifyItem(422, 1, "new description", "invalid new price");
     modifyItem(422, "invalid id", "new description", 10.11);
     modifyItem(422, -1, "new description", 10.11);
@@ -48,10 +52,16 @@ describe('test scenarios 11-1 11-2', async () => {
 //Scenario 11-1
 function newItem(expectedHTTPStatus,id, description, price, SKUId, supplierId) {
     it('adding a new Item', function (done) {
-        let item = {
+        if(supplierId == 1){
+            supplierId = user_id;
+        }
+        if(SKUId == 1){
+            SKUId = sku_id1;
+        }
+        const item = {
             id: id,
             description: description,
-            pice: price,
+            price: price,
             SKUId: SKUId,
             supplierId: supplierId
         }
