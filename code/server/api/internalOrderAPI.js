@@ -11,6 +11,7 @@ const dateValidation = function(date) {
     return false;
 }
 
+const possibleStates = ['ISSUED', 'ACCEPTED', 'REFUSED', 'CANCELED', 'COMPLETED'];
 
 exports.postInternalOrderSchema = {
   
@@ -63,7 +64,7 @@ exports.postInternalOrder = function(req,res){
 
     //Date validation
     if (!dateValidation(issue_date)) {
-        return res.status(422).json({error: "date validation failed"});
+        return res.status(422).json({error: "Validation of request body failed"});
     }
     
     let result =  InternalOrderManager.defineInternalOrder(issue_date,productlist,customerId);
@@ -179,7 +180,7 @@ exports.getinternalOrderById = function(req,res) {
             console.log(error)
             switch(error){
                 case "404 InternalOrderId cannot found":
-                    return res.status(404).json({error: "InternalOrderId cannot found"})
+                    return res.status(404).json({error: "no internal order associated to id"})
                 default:     
                     return res.status(503).json({error: "generic error"});
             }
@@ -193,11 +194,21 @@ exports.getinternalOrderById = function(req,res) {
 exports.putInternalOrdersSchema = {
     newState: {
         notEmpty: true,
+        custom: {
+            options: (value, { req, location, path }) => {
+                if (possibleStates.includes(value)) {
+                    return true;
+                } else {
+                    return false;
+                }
+            },
+        
     },
     products: {
-        notEmpty: false,
-
+        optional: true
     },
+    
+    }
 }
 
 exports.changeInternalOrder = function(req,res) {  
@@ -225,10 +236,11 @@ exports.changeInternalOrder = function(req,res) {
         error => {
             switch(error){
                 case "404 not found InternalOrder":
-                    return res.status(404).json({error: "InternalOrderId not existing"})
+                    return res.status(404).json({error: "no internal order associated to id"})
             
+                    //? not requested by the api
                 case "Not available qty in DB":
-                    return res.status(422).json({error: "Not available Quantity in WareHouse"})
+                    return res.status(422).json({error: "generic error"})
 
                 default:     
                     console.log(error)

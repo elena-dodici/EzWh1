@@ -161,12 +161,14 @@ class RestockOrderManager {
 
 		let orderToReturn = await this.addOneOrderInfo(ro);
 		delete orderToReturn.id;
-		if(orderToReturn.state==="ISSUED") {
-			orderToReturn.deliveryDate=[];
+		if (!orderToReturn.transportNote) {
+			orderToReturn.transportNote = {};
+		}
+
 			if(orderToReturn.state==="DELIVERY"){
 				orderToReturn.skuItems =[];
 			}
-	   }
+	   
 		return orderToReturn;
 	}
 
@@ -388,9 +390,10 @@ class RestockOrderManager {
 			"id",
 			roID
 		);
+		/*
 		if (!exists) {
 			return Promise.reject("404 RestockOrderid cannot found");
-		}
+		}*/
 		return PersistentManager.delete("id", roID, RestockOrder.tableName);
 	}
 }

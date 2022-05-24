@@ -25,10 +25,6 @@ exports.postTestDescriptorSchema = {
 exports.postTestDescriptor = function(req,res) {
     const errors = validationResult(req);
     
-    if (Object.keys(req.body).length === 0) {
-        return res.status(422).json({error: 'Empty body request'});
-    }
-
     if (!errors.isEmpty()) {
         return res.status(422).json({
             error: "validation of request body failed"
@@ -97,7 +93,7 @@ exports.getTestDescriptorByID = function(req,res) {
                 }
             },
             error => {
-                return res.status(500).json({error: 'Generic error'});
+                return res.status(500).json({error: 'generic error'});
             }
         )
  }
@@ -132,7 +128,7 @@ exports.modifyTestDescriptorById = function(req,res) {
 
     if (!errors.isEmpty()) {
         return res.status(422).json({
-            error: "validation of request body failed"
+            error: "validation of request body or of id failed"
         });
     }
         const id = req.params.id;
@@ -147,10 +143,10 @@ exports.modifyTestDescriptorById = function(req,res) {
             error => {
                 switch (error) {
                     case "404 idSKU not found":
-                        return res.status(404).json({error: "SKU not existing"});
+                        return res.status(404).json({error: "no test descriptor associated id or no sku associated to IDSku"});
                         break;
                     case "404 TestDescriptor id not found":
-                        return res.status(404).json({error: "TestDescriptor not existing"});
+                        return res.status(404).json({error: "no test descriptor associated id or no sku associated to IDSku"});
                         break;
                     default:
                         return res.status(503).json({error: "generic error"});
@@ -184,12 +180,12 @@ exports.deleteTestDescriptor = function (req,res) {
   
         QualityTestManager.deleteTestDescriptor(id).then(
             result => {
-                return res.status(204).json();
+                return res.status(204).end();
             },
             error => {
                 switch (error) {
                     case "404":
-                        return res.status(404).json({error: "TestDescriptor not existing"})
+                        return res.status(503).json({error: "generic error"})
                     default: 
                         return res.status(503).json({error: "generic error"})
                     

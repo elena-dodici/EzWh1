@@ -44,13 +44,11 @@ exports.postTestResult = function(req,res) {
 
     if (!errors.isEmpty()) {
         return res.status(422).json({
-            error: "Validation of request body failed"
+            error: "validation of request body or of rfid failed"
         });
     }
     
-    if (Object.keys(req.body).length === 0) {
-        return res.status(422).json({error: 'Empty body request'});
-    }
+
 
     let rfid = req.body.rfid;
     let Date = req.body.Date;
@@ -60,19 +58,19 @@ exports.postTestResult = function(req,res) {
     
     //Date validation
     if (!dateValidation(Date)) {
-        return res.status(422).json({error: "date validation failed"});
+        return res.status(422).json({error: "validation of request body or of rfid failed"});
     }
 
     QualityTestManager.defineTestResult(rfid,Date,Result,idTestDescriptor).then( 
         result => {
-            return res.status(201).json();
+            return res.status(201).end();
         },
         error => {
             switch (error) {
                 case "404 rfid not found":
-                    return res.status(404).json({error: "no sku item associated to rfid"});
+                    return res.status(404).json({error: "no sku item associated to rfid or no test descriptor associated to idTestDescriptor"});
                 case "404 TestDescriptor not found":
-                    return res.status(404).json({error: "no test descriptor associated to idTestDescriptor"})
+                    return res.status(404).json({error: "no sku item associated to rfid or no test descriptor associated to idTestDescriptor"})
                 default: 
                     return res.status(503).json({error: "generic error"});
             }
@@ -216,13 +214,13 @@ exports.modifyTestResultByIdSchema = {
             error => {
                 switch (error) {
                     case "404 rfid not found":
-                        return res.status(404).json({error: "SKUitem not existing"});
+                        return res.status(404).json({error: "no sku item associated to rfid or no test descriptor associated to newIdTestDescriptor or no test result associated to id"});
                         break;
                     case "404 TestDescriptor id not found":
-                        return res.status(404).json({error: "TestDescriptor not existing"});
+                        return res.status(404).json({error: "no sku item associated to rfid or no test descriptor associated to newIdTestDescriptor or no test result associated to id"});
                         break;
                     case "404 TestResult id not found":
-                        return res.status(404).json({error: "TestResult not existing"});
+                        return res.status(404).json({error: "no sku item associated to rfid or no test descriptor associated to newIdTestDescriptor or no test result associated to id"});
                         break;
                     default:
                         return res.status(503).json({error: "generic error"});
@@ -268,8 +266,9 @@ exports.deleteTestResult = function (req,res) {
             },
             error => {
                 switch (error) {
+                    /* Not requested
                     case "404":
-                        return res.status(404).json({error: "TestResult not existing"});
+                        return res.status(404).json({error: "TestResult not existing"});*/
                     default: 
                         return res.status(503).json({error: "generic error"});
                     

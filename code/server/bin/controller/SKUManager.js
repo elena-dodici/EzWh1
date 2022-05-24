@@ -36,7 +36,19 @@ class SKUManager{
     }
 
     async getSKUByID(id) {
-        return PersistentManager.loadOneByAttribute('id', SKU.tableName, id);
+        let exists = await PersistentManager.exists(SKU.tableName, 'id', id);
+        if (!exists) {
+            return Promise.reject("404 sku");
+        }
+        let currentSKU = await PersistentManager.loadOneByAttribute('id', SKU.tableName, id);
+        currentSKU.testDescriptors = [];
+        
+        let res = await this._loadTests(id);
+            for (const test of res) {
+               currentSKU.testDescriptors.push(test.id);
+            }  
+        delete currentSKU.id;
+        return currentSKU;
     }
 
     async modifySKU(id, newDescription, newWeight, newVolume, newPrice, newNotes, newQuantity) {
@@ -87,10 +99,11 @@ class SKUManager{
         if (!loadedPosition) {
             return Promise.reject("404 position");
         }
-        let loadedSKU = await this.getSKUByID(SKUId);
-        if (!loadedSKU) {
+        let existsSKU = await PersistentManager.exists(SKU.tableName, 'id', SKUId);
+        if (!existsSKU) {
             return Promise.reject("404 SKU");
         }
+        let loadedSKU = await this.getSKUByID(SKUId);
         const sku_weight = loadedSKU.weight;
         const sku_volume = loadedSKU.volume;
         const sku_quantity = loadedSKU.availableQuantity;

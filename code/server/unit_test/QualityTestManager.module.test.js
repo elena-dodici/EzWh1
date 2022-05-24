@@ -223,6 +223,64 @@ const PersistentManager = require('../bin/DB/PersistentManager');
             expect(testResult).toEqual(expected);
         });
 
+        test('define test result 404 rfid', async () => {
+            const sku = {description: "description",
+                weight: 10,
+                volume: 10,
+                price: 10, 
+                notes: "notes",
+                availableQuantity: 10,
+                position: null
+            }
+            let s = await PersistentManager.store("SKU", sku);
+            const testDescriptor = {
+                name: "test name",
+                procedureDescription: "procedure description",
+                idSKU: s
+            }
+            const skuItem = {
+                RFID: '12341234123412341234123412341234',
+                Available: 0,
+                DateOfStock: '2022-01-01',
+                SKUId: s,
+                internalOrder_id: null,
+                restockOrder_id: null,
+                returnOrder_id: null
+            }
+            testDescriptor_id = await PersistentManager.store("testDescriptor",testDescriptor);
+            await PersistentManager.store("SKUItem",skuItem);
+            return expect(QualityTestManager.defineTestResult("1",Date,Result,testDescriptor_id)).rejects.toEqual("404 rfid not found");
+        }) 
+
+        test('define test result 404 descriptor', async () => {
+            const sku = {description: "description",
+                weight: 10,
+                volume: 10,
+                price: 10, 
+                notes: "notes",
+                availableQuantity: 10,
+                position: null
+            }
+            let s = await PersistentManager.store("SKU", sku);
+            const testDescriptor = {
+                name: "test name",
+                procedureDescription: "procedure description",
+                idSKU: s
+            }
+            const skuItem = {
+                RFID: '12341234123412341234123412341234',
+                Available: 0,
+                DateOfStock: '2022-01-01',
+                SKUId: s,
+                internalOrder_id: null,
+                restockOrder_id: null,
+                returnOrder_id: null
+            }
+            testDescriptor_id = await PersistentManager.store("testDescriptor",testDescriptor);
+            await PersistentManager.store("SKUItem",skuItem);
+            return expect(QualityTestManager.defineTestResult(rfid,Date,Result,-1)).rejects.toEqual("404 TestDescriptor not found");
+        }) 
+
 
     })
 }

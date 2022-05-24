@@ -135,10 +135,11 @@ class QualityTestManager {
 
     
     async deleteTestResult(TestId,rfid) {
+        /*
         let loadedTestResults = await PersistentManager.loadByMoreAttributes(TestResult.tableName,["rfid","id"],[rfid,TestId]);
         if (!loadedTestResults){
             return Promise.reject("404");
-        }     
+        }     */
          return PersistentManager.delete('id', TestId, TestResult.tableName);
      }
 }

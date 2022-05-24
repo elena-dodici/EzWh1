@@ -1,6 +1,7 @@
 
 const ItemManager = require('../bin/controller/ItemManager');
 const PersistentManager = require('../bin/DB/PersistentManager');
+const utility = require('../bin/utility/utility');
 
 describe('define item', () => {
     const description = "description";
@@ -64,6 +65,7 @@ describe('Test modify Item', () => {
         await PersistentManager.deleteAll("Item");
         await PersistentManager.deleteAll("SKU");
         await PersistentManager.deleteAll("User");
+        await utility.deleteDatabase();
     });
 
     test('modify Item', async () => {
@@ -103,11 +105,43 @@ describe('Test modify Item', () => {
         expect(Item).toEqual(expected);
     })
 
-afterEach(() => {
-    PersistentManager.deleteAll("Item");
-    PersistentManager.deleteAll("SKU");
-    PersistentManager.deleteAll("User");
+
 })
+
+describe('delete item', () => {
+    beforeEach(() => {
+        utility.deleteDatabase();
+    })
+
+    test('delete item', async () => {
+        const sku = {description: "description",
+            weight: 10,
+            volume: 10,
+            price: 10, 
+            notes: "notes",
+            availableQuantity: 10,
+            position: null
+        }
+        const user = {
+            username: "test@test.com",
+            password: "testPassword",
+            name: "name",
+            surname: "surname",
+            type: "SUPPLIER"
+        }
+        let sku_id = await PersistentManager.store("SKU",sku);
+        let supplier_id = await PersistentManager.store("User",user);
+        const item = {
+            description: "description",
+            price: '2022-01-01',
+            SKUId: sku_id,
+            supplierId: supplier_id
+        }
+        let item_id = await PersistentManager.store("Item",item);
+        await ItemManager.deleteItem(item_id);
+    })
+
+
 })
 
 

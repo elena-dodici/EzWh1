@@ -157,4 +157,53 @@ describe('set sku position', () => {
     }
 });
 
+describe('modifySku', ()=> {
+    const skuToSave = {
+        description: "des",
+        weight: 1,
+        volume: 1,
+        price: 1,
+        notes: "notes",
+        availableQuantity: 1,
+        position: null
+    }
+    const position = {
+        id: "123412341234",
+        aisle: "1234",
+        row: "1234",
+        col: "1234",
+        max_weight: 100,
+        max_volume: 100,
+        occupied_weight: 0,
+        occupied_volume: 0
+    }
+    beforeEach(async () => {
+        await utility.deleteDatabase();
+        await PersistentManager.store("Position", position);
+
+    })
+
+    modifySKU("newDes", 1,1,1,"notes",2);
+
+    function modifySKU(newDes, newWeight, newVolume, newPrice, newNotes, newQuantity) {
+        test('modify sku', async () => {
+            skuToSave.position = position.id;
+        let skuid = await PersistentManager.store("SKU", skuToSave);
+        await SKUManager.modifySKU(skuid, newDes, newWeight, newVolume, newPrice, newNotes, newQuantity);
+        const expected = {
+            description: "newDes",
+            weight: 1,
+            volume: 1,
+            price: 1,
+            notes: "notes",
+            availableQuantity: 2,
+            position: "123412341234",
+            testDescriptors: []
+        }
+        const sku_to_expect = await SKUManager.getSKUByID(skuid);
+        expect(sku_to_expect).toEqual(expected);
+        })
+    }
+})
+
 

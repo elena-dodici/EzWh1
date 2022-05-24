@@ -17,10 +17,7 @@ describe('RestockOrder tests', () => {
     RestockOrderTest()
 
     function RestockOrderTest() {
-        let restockOrderId= null;
-        let input={};
-        let SkuId=null;
-        let rfid = null;
+
         beforeEach(async () => {
             await utility.deleteDatabase();
 
@@ -43,7 +40,7 @@ describe('RestockOrder tests', () => {
             delete Sku.testDescriptors;
             let supp = await UserManager.defineUser("john","smith","password", "john@smit.com", "supplier"); 
             let SkuId = await PersistentManager.store("SKU",Sku);
-            input ={
+            let input ={
                 date : "2021/11/29 09:33",
                 productsList : [{"SKUId":SkuId,"description":"a new item","price":10.99,"RFID":"12345678901234567890123456789019"} ],       
             }

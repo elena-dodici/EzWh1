@@ -114,7 +114,7 @@ exports.postReturnOrder=function(req,res){
     let productsList = req.body.products;
 
     if (!dateValidation(date)) {
-        return res.status(422).json({error: "date validation failed"});
+        return res.status(422).json({error: "Validation of request body failed"});
     }
 
     let result = ReturnOrderManager.defineReturnOrder( date,productsList,roId);
@@ -125,7 +125,7 @@ exports.postReturnOrder=function(req,res){
         error=>{
             switch(error){
                 case "404 not found restockOrderId":
-                    return res.status(404).json({error: "RestockOrderId not existing"})
+                    return res.status(404).json({error: "no restock order associated to restockOrderId"})
             
                 
                 default:     

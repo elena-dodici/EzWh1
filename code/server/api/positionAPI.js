@@ -70,14 +70,14 @@ exports.postPosition = function(req,res) {
     const isIdValid = p.isIdValid()
 
     if (!isIdValid) {
-        return res.status(422).json({error: 'Position ID  is not in the correct form or doesn\'t respect the aisle+row+col constraint.'});
+        return res.status(422).json({error: 'validation of request body failed'});
     }
     
     let result = PositionManager.definePosition(positionID, aisleID, row, col, maxWeight, maxVolume)
     
     result.then(
         result => {
-            return res.status(201).json();
+            return res.status(201).end();
         },
         error => {
             return res.status(503).json({error: 'generic error'})
@@ -185,7 +185,7 @@ exports.updatePosition = async function(req,res) {
     const isIdValid = p.isIdValid()
 
     if (!isIdValid) {
-        return res.status(503).json({error: 'Invalid format'});
+        return res.status(422).json({error: 'validation of request body or of positionID failed'});
     }
 
     let result = PositionManager.modifyPosition(id, aisle, row, col, max_weight, max_volume, occupied_weight, occupied_volume);
@@ -195,8 +195,9 @@ exports.updatePosition = async function(req,res) {
         },
         error => {
             switch (error) {
+                /*
                 case "422 cant store sku":
-                    return res.status(503).json({error: 'Position\'s new values can\'t store related sku anymore'});
+                    return res.status(503).json({error: 'generic error'});*/
                 case "404 position":
                     return res.status(404).json({error: 'no position associated to positionID'});
                 default:
@@ -232,7 +233,7 @@ exports.changePositionID = function(req,res) {
 
     if (!errors.isEmpty()) {
         return res.status(422).json({
-            error: "Validation of request body failed"
+            error: "validation of request body or of positionID failed"
         });
     }
     
@@ -271,7 +272,7 @@ exports.deletePosition = function(req,res) {
 
     if (!errors.isEmpty()) {
         return res.status(422).json({
-            error: "Validation of request body failed"
+            error: "validation of positionID failed"
         });
     }
     
@@ -279,7 +280,7 @@ exports.deletePosition = function(req,res) {
     let result = PositionManager.deletePosition(id);
     result.then(
         result => {
-            return res.status(204).json();
+            return res.status(204).end();
         },
         error => {
             return res.status(503).json({error: 'generic error'})

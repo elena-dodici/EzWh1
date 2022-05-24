@@ -105,15 +105,19 @@ exports.getSKUByID = function(req,res) {
     
     SKUManager.getSKUByID(id).then(
         result => {
-            if (result) {
                 return res.status(200).json(result);
-            }
-            else {
-                return res.status(404).json({error: "no SKU associated to id"});
-            }
+
         },
         error => {
-            return res.status(500).json({error: "generic error"});
+            console.log(error);
+            switch (error) {
+                
+                case "404 sku": 
+                    return res.status(500).json({error: "No SKU associated to id"});
+                default: 
+                    return res.status(500).json({error: "generic error"});  
+            }
+            
         }
     )
 }

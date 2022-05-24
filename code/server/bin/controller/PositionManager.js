@@ -12,7 +12,9 @@ class PositionManager {
 
     definePosition(positionID, aisleID, row, col, maxWeight, maxVolume) {
         
+        
         let p = new Position(positionID, aisleID, row, col, maxWeight, maxVolume, 0, 0);
+        
         return PersistentManager.store(Position.tableName, p);
 
     }
@@ -42,9 +44,10 @@ class PositionManager {
             //Check if the new position can store the sku
             const canItStore = p.canItStore(aq * w, aq * v);
 
+            /*Check not requested by api
         if (!canItStore) {
             return Promise.reject("422 cant store sku")
-            }
+            }*/
         }
 
 

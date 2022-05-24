@@ -64,9 +64,10 @@ class ItemManager {
     
     async deleteItem(ItemId) {
         const exists = await PersistentManager.exists(Item.tableName, 'id', ItemId);
+        /*
         if (!exists){
             return Promise.reject("404");
-        }
+        }*/
         return PersistentManager.delete('id', ItemId, Item.tableName);
         
     }

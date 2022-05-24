@@ -39,13 +39,11 @@ exports.postItemSchema = {
 exports.postItem = function(req,res) {
     const errors = validationResult(req);
     
-    if (Object.keys(req.body).length === 0) {
-        return res.status(422).json({error: 'Empty body request'});
-    }
+
 
     if (!errors.isEmpty()) {
         return res.status(422).json({
-            error: "validation of request body failed"
+            error: "validation of request body failed or this supplier already sells an item with the same SKUId or supplier already sells an Item with the same ID"
         });
     }
     let id = req.body.id;
@@ -62,16 +60,16 @@ exports.postItem = function(req,res) {
         error => {
             switch (error) {
                 case "404 SKU not found":
-                    return res.status(404).json({error: "SKU not existing"});
+                    return res.status(404).json({error: "Sku not found"});
                     break;
                 case "404 Supplier not found":
-                    return res.status(404).json({error: "Supplier not existing"});
+                    return res.status(404).json({error: "Supplier not found"});
                     break;
                 case "422 supplier already sells an Item with the same ID":
-                    return res.status(422).json({error: "Supplier already sells an Item with the same ID"});
+                    return res.status(422).json({error: "validation of request body failed or this supplier already sells an item with the same SKUId or supplier already sells an Item with the same ID"});
                     break;
                 case "422 this supplier already sells an item with the same SKUId":
-                    return res.status(422).json({error: "This supplier already sells an item with the same SKUId"});
+                    return res.status(422).json({error: "validation of request body failed or this supplier already sells an item with the same SKUId or supplier already sells an Item with the same ID"});
                     break;
                 default:
                     return res.status(503).json({error: "generic error"});
@@ -165,7 +163,7 @@ exports.modifyItemById = function(req,res) {
             error => {
                 switch (error) {
                     case "404":
-                        return res.status(404).json({error: "no item associated to id"});
+                        return res.status(404).json({error: "Item not existing"});
                     default:
                         return res.status(503).json({error: 'Generic error'});
                 }
@@ -197,8 +195,9 @@ exports.deleteItem = function (req,res) {
             },
             error => {
                 switch (error) {
+                    /*Not requested
                     case "404":
-                        return res.status(404).json({error: "Item not existing"})
+                        return res.status(404).json({error: "Item not existing"})*/
                     default: 
                         return res.status(503).json({error: "generic error"})
                     

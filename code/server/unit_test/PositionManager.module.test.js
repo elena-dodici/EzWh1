@@ -74,15 +74,7 @@ describe('Position tests', () => {
 
         })
 
-        test('modify position id with relative sku', async() => {
-            let s = await SKUManager.defineSKU('des', 10,10,10,"notes",1);
-            await PositionManager.definePosition(positionID, aisleID, row, col, 10000, 10000);
-            await SKUManager.setPosition(s,positionID );
-            const newID = "000100010001"
-            return expect(PositionManager.modifyPosition(positionID, aisleID, row, col, 2, 2, 1,1)).rejects.toEqual("422 cant store sku");
 
-            
-        })
 
         test('delete position', async () => {
             await PositionManager.definePosition(positionID, aisleID, row, col, maxWeight, maxVolume);

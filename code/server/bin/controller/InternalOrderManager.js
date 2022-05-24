@@ -55,6 +55,7 @@ class InternalOrderManager{
             for(let product of ProductList){
                 let curProRFID=product.RFID;
                 let curSkuID =product.SkuID;
+                //not requested?
                 await PersistentManager.update(SKUItem.tableName,{"Available":0},"RFID",curProRFID)
                                
                 let curSKU =  await PersistentManager.loadOneByAttribute("id",SKU.tableName,curSkuID)
