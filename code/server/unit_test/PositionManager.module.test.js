@@ -3,6 +3,7 @@ const PersistentManager = require('../bin/DB/PersistentManager');
 const PositionManager = require('../bin/controller/PositionManager');
 const SKUManager = require('../bin/controller/SKUManager');
 
+
 describe('Position tests', () => {
 
     positionID = "123412341234";
@@ -73,6 +74,26 @@ describe('Position tests', () => {
             expect(p).toEqual(expected);
 
         })
+        test('modify position id 404', async() => {
+            await PositionManager.definePosition(positionID, aisleID, row, col, maxWeight, maxVolume);
+            const newID = "000100010001"
+            return expect(PositionManager.changePositionID("notExisting", newID)).rejects.toEqual("404 position");
+        })
+
+        test('modify position', async () => {
+            await PositionManager.definePosition(positionID, aisleID, row, col, maxWeight, maxVolume);
+            await PositionManager.modifyPosition(positionID,"0123","0123","0123",1,1,1,1);
+            const p = await PersistentManager.loadOneByAttribute("id", "Position", "012301230123");
+            expect(p.id).toEqual("012301230123")
+        })
+
+        test('modify position', async () => {
+            await PositionManager.definePosition(positionID, aisleID, row, col, maxWeight, maxVolume);
+            return expect(PositionManager.modifyPosition("notEx","0123","0123","0123",1,1,1,1)).rejects.toEqual("404 position");
+            
+        })
+
+
 
 
 

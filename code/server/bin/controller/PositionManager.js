@@ -98,20 +98,6 @@ class PositionManager {
     }
 
 
-    async _loadSkus(id) {
-        let sku
-        await PersistentManager.loadOneByAttribute('position', SKU.tableName, id).then(
-            result => {
-                sku = result;
-            },
-            error => {
-                console.log(error);
-            }  
-        );
-        return sku;
-
-    }
-
 }
 
 

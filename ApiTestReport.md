@@ -49,66 +49,40 @@ In the dependency graph we grouped the model classes in one block to avoid confu
 | Classes  | mock up used |Jest test cases |
 |--|--|--|
 
-|PersistentManager| | testStoreValid |
-| || testStoreInvalid |
-| || testLoadValid|
-| || testLoadInvalid|
-| || testDelete |
-| || testInvalidUpdate|
-| || testValidUpdate|
+|PersistentManager| | PersistentManager.module.test.js |
+
 ## Step 2
 | Classes  | mock up used |Jest test cases |
 |--|--|--|
-|SKUManager | | define sku |
-| | | define sku |
-|||define sku invalid|
-||| test list all skus valid|
-|||change sku position valid|
-|SKUITemManager|| test define sku item |
-||| get item by rfid |
-||| delete sku item |
-|PositionManager||define position|
-|||load positions|
-|||modify position id|
-|UserManager||load all users|
-|||delete user|
-|||define user|
-|RestockOrderManager|define Restock order|
-||list all restock Order|
-||modify the state|
-|ReturnOrderManager|define Return order|
-||list all return Order|
-|InternalOrderManager|define Internal order|
-||modify the state of Internal Order|
-||list all Internal Order|
+| SKUManager | | SKUManager.module.test.js|
+| SKUItemManager | | SKUItemManager.module.test.js |
+| PositionManager || PositionManager.module.test.js|
+| UserManager || UserManager.module.test.js|
+| RestockOrderManager | | RestockOrderManager.module.test.js |
+| ReturnOrderManager |  |ReturnOrderManager.module.test.js| 
+| InternalOrderManager | | InternalOrderManager.module.test.js |
+| ItemManager | | ItemManager.module.test.js | 
+| QualityTestManager | | QualityTestManager.module.test.js |
 
-
-## Step n 
-
-| Classes  | mock up used |Jest test cases |
-|--|--|--|
-||||
+## Step 3
+| API mocha tests| 
+| --- |
+| testUC1.js |
+| testUC2.js |
+| testUC3.js |
+| testUC4.js |
+| testUC5.js |
+| testUC6.js |
+| testUC7.js |
+| testUC9.js |
+| testUC10.js |
+| testUC11.js |
+| testUC12.js |
 
 
 
 
 # API testing - Scenarios
-
-
-<If needed, define here additional scenarios for the application. Scenarios should be named
- referring the UC in the OfficialRequirements that they detail>
-
-## Scenario UCx.y
-
-| Scenario |  name |
-| ------------- |:-------------:| 
-|  Precondition     |  |
-|  Post condition     |   |
-| Step#        | Description  |
-|  1     |  ... |  
-|  2     |  ... |
-
-
 
 # Coverage of Scenarios and FR
 
@@ -139,16 +113,23 @@ Report also for each of the scenarios the (one or more) API Mocha tests that cov
 | 5-2-1        |           FR5                      | updating Delivered state to tested / updating Delivered state to tested invalid |
 | 5-2-2        |            FR5                   | updating Delivered state to tested / updating Delivered state to tested invalid |
 | 5-2-3        |            FR5                     | updating Delivered state to tested / updating Delivered state to tested invalid |
-| 5-3         |   FR5                              |      updateRestockOrder      | 
-| 6-1        |   FR5.9                              |      newReturnOrder      | 
-| 6-2       |   FR5.9                              |      newReturnOrder      | 
-| 7-1       |   FR1                              |      newLogin      | 
-| 7-2      |   FR1                              |      newLogOut      | 
+| 5-3-1         |   FR5                              |      stock skuItems      | 
+| 5-3-2 | FR5 |  stock skuItems |
+| 5-3-3 | FR5 | stock skuItems |
+| 6-1        |   FR5                              |      new Return Order      | 
+| 6-2       |   FR5                              |      new Return Order      | 
+| 7-1       |   FR1                              |      test manager Login      | 
+| 7-2      |   FR1                              |      test manager Logout      | 
 | 9-1     |   FR6                              |      modifyIOState    | 
 | 9-2     |   FR6                              |      modifyIOState    | 
 | 9-3     |   FR6                              |      modifyIOState    | 
-| 10-1     |   FR5.12                              |      modifyIOState    | 
-
+| 10-1     |   FR5.12                              |      modifyState    | 
+| 11-1 | FR7 | adding a new Item |
+| 11-2 |  FR7 | modifying Item by Id |
+| 12-1 | FR3 | adding a new Test Descriptor|
+| 12-2 | FR3 | modifying Test Descriptor by Id |
+| 12-3 |FR3  | delete Test Descriptor |
+ 
 
 
 
@@ -162,5 +143,10 @@ Report also for each of the scenarios the (one or more) API Mocha tests that cov
 
 | Non Functional Requirement | Test name |
 | -------------------------- | --------- |
-|                            |           |
+|             NFR2               |     All      |
+| NFR3 | adding a new user |
+| NFR4 | adding a new position|
+| NFR5 | adding a new SKU |
+|  NFR6  |  stock skuItems  | 
+| NFR9 |  addingRO1 | 
 

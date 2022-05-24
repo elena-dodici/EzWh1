@@ -197,6 +197,10 @@ describe('test scenarios 5.3', () => {
     stockSKUItems(200, ro_id, rfids[0]);
     stockSKUItems(422, -1, rfids[0]);
     stockSKUItems(404, "positive not existent", rfids[0]);
+    StockZeroItem(200, 1);
+StockZeroItem(422, -1);
+StockZeroItem(404, "positive not existing");
+
     
 
 //Scenario 5-3-1
@@ -250,14 +254,14 @@ function stockSKUItems(expectedHTTPStatus,id, rfids) {
     });
 }
 
-StockZeroItem(200, 1);
-StockZeroItem(422, -1);
-StockZeroItem(404, "positive not existing");
-
 
 //Scenario 5-3-2
-async function StockZeroItem(expectedHTTPStatus, id) {
-        ro_id = await RestockOrderManager.defineRestockOrder("2021/11/29 09:33", products, supp);
+function StockZeroItem(expectedHTTPStatus, id) {
+    
+        
+        it('stock zero SKU items of a RO', async function () {
+            ro_id = await RestockOrderManager.defineRestockOrder("2021/11/29 09:33", products, supp);
+        
         await RestockOrderManager.modifyState(ro_id,"TESTED");
         if (id === -1) {
             ro_id = -ro_id;
@@ -265,7 +269,6 @@ async function StockZeroItem(expectedHTTPStatus, id) {
         if (id === "positive not existent") {
             ro_id = 100000000;
         }
-        it('stock zero SKU items of a RO', async function () {
             ro_id = await RestockOrderManager.defineRestockOrder("2021/11/29 09:33", products, supp);
             await RestockOrderManager.modifyState(ro_id,"TESTED");
             if (id == -1) {
@@ -289,8 +292,10 @@ StockSomeItem(200, ro_id, rfids[0]);
 StockSomeItem(422, -1, rfids[0]);
 StockSomeItem(404, "positive not existent",rfids[0]);
         //Scenario 5-3-3
-async function StockSomeItem(expectedHTTPStatus, id, rfids) {
-    rfids = ["12341234123412341234123412341234","12341234123412341234123412341235"];
+function StockSomeItem(expectedHTTPStatus, id, rfids) {
+
+    it('Stock some SKU items of a RO', async function () {
+        rfids = ["12341234123412341234123412341234","12341234123412341234123412341235"];
     ro_id = await RestockOrderManager.defineRestockOrder("2021/11/29 09:33", products, supp);
     await RestockOrderManager.modifyState(ro_id,"TESTED");
     if (id === -1) {
@@ -299,7 +304,6 @@ async function StockSomeItem(expectedHTTPStatus, id, rfids) {
     if (id === "positive not existent") {
         ro_id = 100000000;
     }
-    it('Stock some SKU items of a RO', function (done) {
         if(test_pos.Result==1 && test_neg.Result==0){
         let newPos = {
             "newAisleID": position.aisleID,
@@ -318,7 +322,8 @@ async function StockSomeItem(expectedHTTPStatus, id, rfids) {
             "newPrice" : sku.price,
             "newAvailableQuantity" : sku.availableQuantity + rfids.length
         }
-        const newState = {newState: "COMPLETEDRETURN"}       
+        const newState = {newState: "COMPLETEDRETURN"}  
+             
         agent.put(`/api/position/${pos_id}`)
             .send(newPos)
             .then(function (res) {
@@ -330,7 +335,7 @@ async function StockSomeItem(expectedHTTPStatus, id, rfids) {
                         agent.put(`/api/restockOrder/${id}`).send(newState).then(
                             function (res) {
                                 res.should.have.status(expectedHTTPStatus);
-                                done();
+                             
                     })    
             })
         }) 

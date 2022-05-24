@@ -8,9 +8,7 @@ describe('define item', () => {
     const price = 10.10;
     beforeEach(async () => {
         //clear DB 
-        await PersistentManager.deleteAll("Item");
-        await PersistentManager.deleteAll("SKU");
-        await PersistentManager.deleteAll("User");
+        await utility.deleteDatabase();
     });
 
     test('define item valid', async () => {
@@ -45,11 +43,23 @@ describe('define item', () => {
     expect(Item).toEqual(expected);
 });
 
-afterEach(() => {
-    PersistentManager.deleteAll("Item");
-    PersistentManager.deleteAll("SKU");
-    PersistentManager.deleteAll("User");
-});
+test('define item 404', async () => {
+    expect(ItemManager.defineItem(12, "des", 1, 0, 0)).rejects.toEqual("404 SKU not found");
+})
+
+test('define item 404 supp', async () => {
+    const sku = {description: "description",
+        weight: 10,
+        volume: 10,
+        price: 10, 
+        notes: "notes",
+        availableQuantity: 10,
+        position: null
+    }
+    let id_sku = await PersistentManager.store("SKU",sku);
+    expect(ItemManager.defineItem(12, "des", 1, id_sku, 0)).rejects.toEqual("404 Supplier not found");
+})
+
 
 })
 
