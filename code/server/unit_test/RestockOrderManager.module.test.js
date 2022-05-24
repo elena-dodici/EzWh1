@@ -160,6 +160,34 @@ describe('RestockOrder tests', () => {
 
         })
 
+        test('modify  state with invalid id ', async() => {
+            const user = new User("user1@ezwh.com", "testpassword", "John", "Snow", "supplier");          
+            supplier_id = await PersistentManager.store("User",user);
+            
+            //sku must exist
+            let Sku  = new SKU(null, "product", "2", "3", 10.99, "notes", 5, null);
+            delete Sku.testDescriptors;
+            let SkuId = await PersistentManager.store("SKU",Sku);
+            //itemid must be exist
+            let item = new Item(null,"a new item",10.99,SkuId,supplier_id);
+            let itemId = await PersistentManager.store("Item",item);
+        
+            input ={
+                issue_date : "2021/11/29 09:33",
+                products : [{"SKUId":SkuId,"description":"a new item","price":10.99,"qty":30},
+                           ],
+                supplier_id : supplier_id
+            }
+            const newState = "DELIVERED";
+            // return type change if state change into delivered
+            let roId =  await RestockOrderManager.defineRestockOrder(input.issue_date, input.products, input.supplier_id);                     
+            expect( RestockOrderManager.modifyState(0,newState)).rejects.toEqual("404 RestockOrderid cannot found");
+     
+            
+    
+
+        })
+
 
 
         test('load all issued orders', async () => {
@@ -194,6 +222,33 @@ describe('RestockOrder tests', () => {
             let res = await RestockOrderManager.getAllIssuedOrder();
             expect(res).toEqual(expected);
         })
+
+
+        test('load all issued orders invalid', async () => {
+            const user = new User("user1@ezwh.com", "testpassword", "John", "Snow", "supplier");          
+            supplier_id = await PersistentManager.store("User",user);
+            
+            //sku must exist
+            let Sku  = new SKU(null, "product", "2", "3", 10.99, "notes", 5, null);
+            delete Sku.testDescriptors;
+            let SkuId = await PersistentManager.store("SKU",Sku);
+            //itemid must be exist
+            let item = new Item(null,"a new item",10.99,SkuId,supplier_id);
+            let itemId = await PersistentManager.store("Item",item);
+        
+            input ={
+                issue_date : "2021/11/29 09:33",
+                products : [{"SKUId":SkuId,"description":"a new item","price":10.99,"qty":30},
+                           ],
+                supplier_id : supplier_id
+            }
+            let roId =  await RestockOrderManager.defineRestockOrder(input.issue_date, input.products, input.supplier_id);
+            
+            await RestockOrderManager.modifyState(roId,"TESTED");
+           expect( RestockOrderManager.getAllIssuedOrder()).rejects.toEqual("404 No IssuedOrders Found");
+
+        })
+        
 
         test('get restock order by id', async () => {
             const user = new User("user1@ezwh.com", "testpassword", "John", "Snow", "supplier");          
@@ -236,6 +291,43 @@ describe('RestockOrder tests', () => {
             }
             let r = await RestockOrderManager.getRestockOrderByID(roId);
             expect(r).toEqual(expected);
+        })
+
+        
+        test('get restock order by invalid ', async () => {
+            const user = new User("user1@ezwh.com", "testpassword", "John", "Snow", "supplier");          
+            supplier_id = await PersistentManager.store("User",user);
+            
+            //sku must exist
+            let Sku  = new SKU(null, "product", "2", "3", 10.99, "notes", 5, null);
+            delete Sku.testDescriptors;
+            let SkuId = await PersistentManager.store("SKU",Sku);
+            //itemid must be exist
+            let item = new Item(null,"a new item",10.99,SkuId,supplier_id);
+            let itemId = await PersistentManager.store("Item",item);
+        
+            input ={
+                issue_date : "2021/11/29 09:33",
+                products : [{"SKUId":SkuId,"description":"a new item","price":10.99,"qty":30},
+                           ],
+                supplier_id : supplier_id
+            }
+            let roId =  await RestockOrderManager.defineRestockOrder(input.issue_date, input.products, input.supplier_id);
+
+            /*        {
+            "issueDate":"2021/11/29 09:33",
+            "state": "DELIVERED",
+            "products": [{"SKUId":12,"description":"a product","price":10.99,"qty":30},
+                        {"SKUId":180,"description":"another product","price":11.99,"qty":20},...],
+            "supplierId" : 1,
+            "transportNote":{"deliveryDate":"2021/12/29"},
+            "skuItems" : [{"SKUId":12,"rfid":"12345678901234567890123456789016"},{"SKUId":12,"rfid":"12345678901234567890123456789017"},...]
+
+        }
+ */
+     
+            expect(RestockOrderManager.getRestockOrderByID(0)) .rejects.toEqual("404 No RestockOrder Found");
+            
         })
     })
 })
