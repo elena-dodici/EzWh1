@@ -70,6 +70,11 @@ describe('RestockOrder tests', () => {
             expect(ro).toEqual(expected);
         })
 
+
+        test('define invalid return ', async () => {              
+           expect(ReturnOrderManager.defineReturnOrder("2022-20-20", [], 0)).rejects.toEqual("404 not found restockOrderId");
+        })
+
         test('load All returnOrder', async()=> {
             
             let Sku  = new SKU(null, "a new item", "2", "3", 10.99, "notes", 5, null);
