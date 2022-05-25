@@ -103,7 +103,7 @@ describe('RestockOrder tests', () => {
                            ],
                 supplier_id : supplier_id
             }
-            expect( RestockOrderManager.defineRestockOrder(input.issue_date, input.products, input.supplier_id)).rejects.toEqual("404 item");        
+            return expect( RestockOrderManager.defineRestockOrder(input.issue_date, input.products, input.supplier_id)).rejects.toEqual("404 item");        
            
         })
 

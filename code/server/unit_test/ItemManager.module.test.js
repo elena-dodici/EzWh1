@@ -46,7 +46,7 @@ describe('define item', () => {
 
 
 test('define item 404', async () => {
-    expect(ItemManager.defineItem(12, "des", 1, 0, 0)).rejects.toEqual("404 SKU not found");
+    return expect(ItemManager.defineItem(12, "des", 1, 0, 0)).rejects.toEqual("404 SKU not found");
 })
 
 test('define item 404 supp', async () => {
@@ -122,9 +122,9 @@ describe('Test modify Item', () => {
 
 })
 
-describe('delete item', () => {
-    beforeEach(() => {
-        utility.deleteDatabase();
+describe('delete item',  () => {
+    beforeEach( async () => {
+        await utility.deleteDatabase();
     })
 
     test('delete item', async () => {
