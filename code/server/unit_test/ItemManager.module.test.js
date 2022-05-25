@@ -43,6 +43,8 @@ describe('define item', () => {
     expect(Item).toEqual(expected);
 });
 
+
+
 test('define item 404', async () => {
     expect(ItemManager.defineItem(12, "des", 1, 0, 0)).rejects.toEqual("404 SKU not found");
 })
@@ -115,6 +117,8 @@ describe('Test modify Item', () => {
         expect(Item).toEqual(expected);
     })
 
+    
+
 
 })
 
@@ -153,5 +157,81 @@ describe('delete item', () => {
 
 
 })
+
+
+describe('get item', () => {
+    const description = "description";
+    const price = 10.10;
+    beforeEach(async () => {
+        //clear DB 
+        await utility.deleteDatabase();
+    });
+
+    test('get item valid', async () => {
+    const sku = {description: "description",
+        weight: 10,
+        volume: 10,
+        price: 10, 
+        notes: "notes",
+        availableQuantity: 10,
+        position: null
+    }
+    const user = {
+        username: "test@test.com",
+        password: "testPassword",
+        name: "name",
+        surname: "surname",
+        type: "SUPPLIER"
+    }
+    let id_sku = await PersistentManager.store("SKU",sku);
+    let supplier_id = await PersistentManager.store("User",user);
+    const item_id = 1;
+    await ItemManager.defineItem(item_id, description, price, id_sku,supplier_id);
+    let res = await ItemManager.getAllItems();
+    const Item = await PersistentManager.loadOneByAttribute('id', "Item", item_id);
+
+    expect(res[0]).toEqual(Item);
+
+    
+    });
+
+    test('get item with id', async () => {
+        const sku = {description: "description",
+            weight: 10,
+            volume: 10,
+            price: 10, 
+            notes: "notes",
+            availableQuantity: 10,
+            position: null
+        }
+        const user = {
+            username: "test@test.com",
+            password: "testPassword",
+            name: "name",
+            surname: "surname",
+            type: "SUPPLIER"
+        }
+        let id_sku = await PersistentManager.store("SKU",sku);
+        let supplier_id = await PersistentManager.store("User",user);
+        const item_id = 1;
+        await ItemManager.defineItem(item_id, description, price, id_sku,supplier_id);
+        let res = await ItemManager.getItemByID(item_id);
+        const Item = await PersistentManager.loadOneByAttribute('id', "Item", item_id);
+    
+        expect(res).toEqual(Item);
+    
+        
+    });
+    
+
+
+
+
+
+})
+
+
+
+
 
 
