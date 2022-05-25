@@ -14,24 +14,24 @@ describe('RestockOrder tests', () => {
         let input={};
         beforeEach(async () => {
             await PersistentManager.deleteAll('InternalOrder');
-        await PersistentManager.deleteAll('InternalOrderProduct');
-        await PersistentManager.deleteAll('Item');
-        await PersistentManager.deleteAll('Position');
-        await PersistentManager.deleteAll('ProductOrder');
-        await PersistentManager.deleteAll('RestockOrder');
-        await PersistentManager.deleteAll('ReturnOrder');
-        await PersistentManager.deleteAll('SKU');
-        await PersistentManager.deleteAll('SKUItem');
-        await PersistentManager.deleteAll('TestDescriptor');
-        await PersistentManager.deleteAll('TestResult');
-        await PersistentManager.deleteAll('TransportNote');
-        await PersistentManager.deleteAll('User');
+            await PersistentManager.deleteAll('InternalOrderProduct');
+            await PersistentManager.deleteAll('Item');
+            await PersistentManager.deleteAll('Position');
+            await PersistentManager.deleteAll('ProductOrder');
+            await PersistentManager.deleteAll('RestockOrder');
+            await PersistentManager.deleteAll('ReturnOrder');
+            await PersistentManager.deleteAll('SKU');
+            await PersistentManager.deleteAll('SKUItem');
+            await PersistentManager.deleteAll('TestDescriptor');
+            await PersistentManager.deleteAll('TestResult');
+            await PersistentManager.deleteAll('TransportNote');
+            await PersistentManager.deleteAll('User');
             
-        })
+        },9000)
 
         afterEach( async () => {
             await utility.deleteDatabase();
-        })
+        },9000)
 
         test('define restockOrder', async () => {
             const user = new User("user1@ezwh.com", "testpassword", "John", "Snow", "supplier");          
@@ -85,6 +85,27 @@ describe('RestockOrder tests', () => {
             
         })
 
+        test('define restockOrder no itemid', async () => {
+            const user = new User("user1@ezwh.com", "testpassword", "John", "Snow", "supplier");          
+            supplier_id = await PersistentManager.store("User",user);
+            
+            //sku must exist
+            let Sku  = new SKU(null, "product", "2", "3", 10.99, "notes", 5, null);
+            delete Sku.testDescriptors;
+            let SkuId = await PersistentManager.store("SKU",Sku);
+            //itemid must be exist
+            // let item = new Item(null,"a new item",10.99,SkuId,supplier_id);
+            //let itemId = await PersistentManager.store("Item",item);
+        
+            input ={
+                issue_date : "2021/11/29 09:33",
+                products : [{"SKUId":SkuId,"description":"a new item","price":10.99,"qty":30},
+                           ],
+                supplier_id : supplier_id
+            }
+            expect( RestockOrderManager.defineRestockOrder(input.issue_date, input.products, input.supplier_id)).rejects.toEqual("404 item");        
+           
+        })
 
 
 
@@ -126,6 +147,32 @@ describe('RestockOrder tests', () => {
                 skuItems:[]
             }
             expect(res[0]).toEqual(expected);
+            expect(res[1]).toEqual(undefined);
+        })
+
+        test('load delivered restockOrder with  empty skuitems', async()=> {
+            const user = new User("user1@ezwh.com", "testpassword", "John", "Snow", "supplier");          
+            supplier_id = await PersistentManager.store("User",user);
+            
+            //sku must exist
+            let Sku  = new SKU(null, "product", "2", "3", 10.99, "notes", 5, null);
+            delete Sku.testDescriptors;
+            let SkuId = await PersistentManager.store("SKU",Sku);
+            //itemid must be exist
+            let item = new Item(null,"a new item",10.99,SkuId,supplier_id);
+            let itemId = await PersistentManager.store("Item",item);
+        
+            input ={
+                issue_date : "2021/11/29 09:33",
+                products : [{"SKUId":SkuId,"description":"a new item","price":10.99,"qty":30},
+                           ],
+                supplier_id : supplier_id
+            }
+            let roId =  await RestockOrderManager.defineRestockOrder(input.issue_date, input.products, input.supplier_id);                     
+            await RestockOrderManager.modifyState(roId,"DELIVERY");
+            const res = await RestockOrderManager.getAllRestockOrder();
+            
+            expect(res[0].skuItems).toEqual([]);
             expect(res[1]).toEqual(undefined);
         })
 
@@ -334,5 +381,60 @@ describe('RestockOrder tests', () => {
             return expect(RestockOrderManager.getRestockOrderByID(0)) .rejects.toEqual("404 No RestockOrder Found");
             
         })
+
+        test('delete restockOrder', async () => {
+            const user = new User("user1@ezwh.com", "testpassword", "John", "Snow", "supplier");          
+            supplier_id = await PersistentManager.store("User",user);
+            
+            //sku must exist
+            let Sku  = new SKU(null, "product", "2", "3", 10.99, "notes", 5, null);
+            delete Sku.testDescriptors;
+            let SkuId = await PersistentManager.store("SKU",Sku);
+            //itemid must be exist
+            let item = new Item(null,"a new item",10.99,SkuId,supplier_id);
+            let itemId = await PersistentManager.store("Item",item);
+        
+            input ={
+                issue_date : "2021/11/29 09:33",
+                products : [{"SKUId":SkuId,"description":"a new item","price":10.99,"qty":30},
+                           ],
+                supplier_id : supplier_id
+            }
+            let roId =  await RestockOrderManager.defineRestockOrder(input.issue_date, input.products, input.supplier_id);          
+            await RestockOrderManager.deleteRestockOrder(roId);
+            const ro = await PersistentManager.loadOneByAttribute("id","RestockOrder",roId);         
+            expect(ro).toEqual(undefined);
+        })
+
+        test('put skuitem of restockorder with nondelivered(invalid) state', async () => {
+            const user = new User("user1@ezwh.com", "testpassword", "John", "Snow", "supplier");          
+            supplier_id = await PersistentManager.store("User",user);
+            
+            //sku must exist
+            let Sku  = new SKU(null, "product", "2", "3", 10.99, "notes", 5, null);
+            delete Sku.testDescriptors;
+            let SkuId = await PersistentManager.store("SKU",Sku);
+            //itemid must be exist
+            let item = new Item(null,"a new item",10.99,SkuId,supplier_id);
+            let itemId = await PersistentManager.store("Item",item);
+        
+            input ={
+                issue_date : "2021/11/29 09:33",
+                products : [{"SKUId":SkuId,"description":"a new item","price":10.99,"qty":30},
+                           ],
+                supplier_id : supplier_id
+            }
+            let roId =  await RestockOrderManager.defineRestockOrder(input.issue_date, input.products, input.supplier_id);          
+            let newSkuitemsinfo = {
+                "skuItems" : [{"SKUId":SkuId,"rfid":"12345678901234567890123456789016"}]
+            }
+    
+            return expect(RestockOrderManager.putSKUItems(roId, newSkuitemsinfo)).rejects.toEqual("422 The state of order is not DELIVERED");
+        
+        })
+
+
+    
+
     })
 })
