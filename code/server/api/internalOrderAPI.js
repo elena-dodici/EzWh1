@@ -208,6 +208,9 @@ exports.putInternalOrdersSchema = {
     products: {
         optional: true
     },
+    id: {
+        isInt: { options: {min:0}}
+    }
 }
 
 exports.changeInternalOrder = function(req,res) {  
@@ -216,7 +219,7 @@ exports.changeInternalOrder = function(req,res) {
 
     if (!errors.isEmpty()) {
         return res.status(422).json({
-            error: "Validation of request body failed"
+            error: "Validation of request body or of id failed"
         });
     }
     let rowID= req.params.id;
@@ -237,9 +240,10 @@ exports.changeInternalOrder = function(req,res) {
                 case "404 not found InternalOrder":
                     return res.status(404).json({error: "no internal order associated to id"})
             
-                    //? not requested by the api
+                    /*
+                    // not requested by the api
                 case "Not available qty in DB":
-                    return res.status(422).json({error: "generic error"})
+                    return res.status(422).json({error: "generic error"})*/
 
                 default:     
                     console.log(error)
