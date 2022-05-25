@@ -41,21 +41,20 @@ describe('test scenarios 1-1 1-2 1-3 ', async () => {
     }
 */ 
 function newSKU(expectedHTTPStatus, description, weight, volume, notes, price, availableQuantity) {
-    it('adding a new SKU', function (done) {
+    it('adding a new SKU', async function () {
         let sku = { description: description, weight: weight, volume: volume, notes: notes, price: price, availableQuantity: availableQuantity}
         agent.post('/api/sku')
             .send(sku)
             .then(function (res) {
                 res.should.have.status(expectedHTTPStatus);
                 
-                done();
             });
     });
 }
 
 //Scenario 1-2
  function modifyPositionOfSku(expectedHTTPStatus) {
-    it('modifying sku position', function (done) {
+    it('modifying sku position', async function () {
         agent.get('/api/skus').then(
             function (res) {
                 let skuid = res.body[0].id;
@@ -69,7 +68,7 @@ function newSKU(expectedHTTPStatus, description, weight, volume, notes, price, a
                                 agent.put(`/api/sku/${skuid}/position`).send(positionObj).then(
                                     function (res) {
                                         res.should.have.status(expectedHTTPStatus);
-                                        done();
+                                        
                                     }
                                 )
                             }
@@ -83,7 +82,7 @@ function newSKU(expectedHTTPStatus, description, weight, volume, notes, price, a
 
 //Scenario 1-3 
  function modifyWeightVolume(expectedHTTPStatus, weight, volume) {
-    it('modifying sku weight and volume', function (done) {
+    it('modifying sku weight and volume', async function () {
         agent.get('/api/skus').then(
             function (res) {
                 let skuid = res.body[0].id;
@@ -101,7 +100,7 @@ function newSKU(expectedHTTPStatus, description, weight, volume, notes, price, a
                         agent.put(`/api/sku/${skuid}`).send(modifiedSKU).then(
                             function (res) {
                                 res.should.have.status(expectedHTTPStatus);
-                                done();
+                                
                             }
                         )
                     }

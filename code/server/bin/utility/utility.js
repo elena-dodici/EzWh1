@@ -2,6 +2,7 @@
 
 const UserManager = require("../controller/UserManager");
 const PersistentManager = require("../DB/PersistentManager");
+const dbstructure = require('../DB/DatabaseStructure');
 
 exports.renameKey = function (o, old_key, new_key) {
     if (old_key !== new_key) {
@@ -37,6 +38,20 @@ exports.deleteDatabase = async function() {
     await PersistentManager.deleteAll('User');
 }
 exports.initializeDB = async function() {
+    await dbstructure.createUserTable();
+    await dbstructure.createPositionTable();
+    await dbstructure.createTNTable();
+    await dbstructure.createSKUTable();
+    await dbstructure.createTDTable();
+    await dbstructure.createItemTable();
+    await dbstructure.createROTable();
+    await dbstructure.createReOTable();
+    await dbstructure.createIOTable();
+    await dbstructure.createPOTable();
+    await dbstructure.createIOPTable();
+    await dbstructure.createSKUItemTable();
+    await dbstructure.createTRTable();
+    //Delete data from tables
     await PersistentManager.deleteAll('InternalOrder');
     await PersistentManager.deleteAll('InternalOrderProduct');
     await PersistentManager.deleteAll('Item');
@@ -50,6 +65,7 @@ exports.initializeDB = async function() {
     await PersistentManager.deleteAll('TestResult');
     await PersistentManager.deleteAll('TransportNote');
     await PersistentManager.deleteAll('User');
+    //create users
     UserManager.defineUser('John','Smith','testpassword', 'user1@ezwh.com', 'customer');;
     UserManager.defineUser('John','Smith','testpassword', 'qualityEmployee1@ezwh.com', 'qualityEmployee');
     UserManager.defineUser('John','Smith','testpassword', 'clerk1@ezwh.com', 'clerk');
@@ -57,3 +73,4 @@ exports.initializeDB = async function() {
     UserManager.defineUser('John','Smith','testpassword', 'supplier1@ezwh.com', 'supplier');
     UserManager.defineUser('John','Smith','testpassword', 'manager1@ezwh.com', 'manager');
 }
+
