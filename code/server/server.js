@@ -13,6 +13,7 @@ const returnOrders = require('./api/returnOrdersAPI')
 const user = require('./api/userAPI');
 const item = require('./api/itemAPI');
 const utility = require('./bin/utility/utility');
+const dbstructure = require('./bin/DB/DatabaseStructure');
 // init express
 const app = new express();
 const port = 3001;
@@ -229,7 +230,7 @@ app.put('/api/item/:id',checkSchema(item.modifyItemByIdSchema), item.modifyItemB
 app.delete('/api/items/:id', checkSchema(item.deleteItemSchema) ,item.deleteItem);
 
 //Initialize the db
-utility.initializeDB().then( () => {
+dbstructure.initializeDB().then( () => {
   //activate the server
   app.listen(port, () => {
     console.log(`Server listening at http://localhost:${port}`);

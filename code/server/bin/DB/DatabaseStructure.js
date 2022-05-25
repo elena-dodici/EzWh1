@@ -1,5 +1,9 @@
 const sqlite = require("sqlite3");
 
+
+const UserManager = require("../controller/UserManager");
+const PersistentManager = require("../DB/PersistentManager");
+
 const sqlUser = `
         CREATE TABLE IF NOT EXISTS "User" (
             "id"	INTEGER NOT NULL UNIQUE,
@@ -400,3 +404,41 @@ exports.createTRTable = function () {
 		db.close();
 	});
 };
+
+exports.initializeDB = async function() {
+    await exports.createUserTable();
+    await exports.createPositionTable();
+    await exports.createTNTable();
+    await exports.createSKUTable();
+    await exports.createTDTable();
+    await exports.createItemTable();
+    await exports.createROTable();
+    await exports.createReOTable();
+    await exports.createIOTable();
+    await exports.createPOTable();
+    await exports.createIOPTable();
+    await exports.createSKUItemTable();
+    await exports.createTRTable();
+    //Delete data from tables
+    await PersistentManager.deleteAll('InternalOrder');
+    await PersistentManager.deleteAll('InternalOrderProduct');
+    await PersistentManager.deleteAll('Item');
+    await PersistentManager.deleteAll('Position');
+    await PersistentManager.deleteAll('ProductOrder');
+    await PersistentManager.deleteAll('RestockOrder');
+    await PersistentManager.deleteAll('ReturnOrder');
+    await PersistentManager.deleteAll('SKU');
+    await PersistentManager.deleteAll('SKUItem');
+    await PersistentManager.deleteAll('TestDescriptor');
+    await PersistentManager.deleteAll('TestResult');
+    await PersistentManager.deleteAll('TransportNote');
+    await PersistentManager.deleteAll('User');
+    //create users
+    UserManager.defineUser('John','Smith','testpassword', 'user1@ezwh.com', 'customer');;
+    UserManager.defineUser('John','Smith','testpassword', 'qualityEmployee1@ezwh.com', 'qualityEmployee');
+    UserManager.defineUser('John','Smith','testpassword', 'clerk1@ezwh.com', 'clerk');
+    UserManager.defineUser('John','Smith','testpassword', 'deliveryEmployee1@ezwh.com', 'deliveryEmployee');
+    UserManager.defineUser('John','Smith','testpassword', 'supplier1@ezwh.com', 'supplier');
+    UserManager.defineUser('John','Smith','testpassword', 'manager1@ezwh.com', 'manager');
+}
+
