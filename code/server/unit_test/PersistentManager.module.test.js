@@ -218,6 +218,10 @@ let T8 = {
             }
         });
 
+        afterEach(() => {
+            PersistentManager.deleteAll("RestockOrder");
+        })
+
         describe("test Valid Delete", () => {
             test("ValidDelete", async () => {
                 await PersistentManager.delete(ValidList[0].attr, ValidList[0].val, ValidList[0].table);
@@ -281,6 +285,9 @@ describe("test Valid Update", () => {
 
             }
         });
+        afterEach(() => {
+            PersistentManager.deleteAll("RestockOrder");
+        })
 
 
         test("ValidUpdate", async () => {
@@ -434,6 +441,9 @@ describe("test Invalid Update", () => {
                 RoId = await PersistentManager.store(table, RO2);
             }
         });
+        afterEach(() => {
+            PersistentManager.deleteAll("RestockOrder");
+        })
 
 
         test("InValidUpdate", async () => {
