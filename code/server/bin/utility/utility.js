@@ -37,7 +37,19 @@ exports.deleteDatabase = async function() {
     await PersistentManager.deleteAll('User');
 }
 exports.initializeDB = async function() {
-    deleteDatabase();
+    await PersistentManager.deleteAll('InternalOrder');
+    await PersistentManager.deleteAll('InternalOrderProduct');
+    await PersistentManager.deleteAll('Item');
+    await PersistentManager.deleteAll('Position');
+    await PersistentManager.deleteAll('ProductOrder');
+    await PersistentManager.deleteAll('RestockOrder');
+    await PersistentManager.deleteAll('ReturnOrder');
+    await PersistentManager.deleteAll('SKU');
+    await PersistentManager.deleteAll('SKUItem');
+    await PersistentManager.deleteAll('TestDescriptor');
+    await PersistentManager.deleteAll('TestResult');
+    await PersistentManager.deleteAll('TransportNote');
+    await PersistentManager.deleteAll('User');
     UserManager.defineUser('John','Smith','testpassword', 'user1@ezwh.com', 'customer');;
     UserManager.defineUser('John','Smith','testpassword', 'qualityEmployee1@ezwh.com', 'qualityEmployee');
     UserManager.defineUser('John','Smith','testpassword', 'clerk1@ezwh.com', 'clerk');
