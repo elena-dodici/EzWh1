@@ -1,5 +1,6 @@
 const PersistentManager = require('../bin/DB/PersistentManager');
 const RestockOrderManager = require('../bin/controller/RestockOrderManager');
+const utility = require('../bin/utility/utility');
 const TransportNote = require('../bin/model/TransportNote');
 const Item = require("../bin/model/Item");
 const SKU = require("../bin/model/SKU")
@@ -26,6 +27,10 @@ describe('RestockOrder tests', () => {
         await PersistentManager.deleteAll('TransportNote');
         await PersistentManager.deleteAll('User');
             
+        })
+
+        afterEach( async () => {
+            await utility.deleteDatabase();
         })
 
         test('define restockOrder', async () => {
@@ -76,7 +81,7 @@ describe('RestockOrder tests', () => {
                            ],
                 supplier_id : supplier_id
             }
-            expect(RestockOrderManager.defineRestockOrder("2022-20-20", input.products, input.supplier_id)).rejects.toEqual("404 no sku Id found");
+            return expect(RestockOrderManager.defineRestockOrder("2022-20-20", input.products, input.supplier_id)).rejects.toEqual("404 no sku Id found");
             
         })
 
@@ -87,7 +92,7 @@ describe('RestockOrder tests', () => {
             const user = new User("user1@ezwh.com", "testpassword", "John", "Snow", "supplier");          
             //supplier_id = await PersistentManager.store("User",user);
             //let roId =  await RestockOrderManager.defineRestockOrder("2022-20-20", [], 0);   
-            expect(RestockOrderManager.defineRestockOrder("2022-20-20", [], 0)).rejects.toEqual("404 no supplier Id found");
+            return expect(RestockOrderManager.defineRestockOrder("2022-20-20", [], 0)).rejects.toEqual("404 no supplier Id found");
         })
 
         test('load All restockOrder', async()=> {
@@ -326,7 +331,7 @@ describe('RestockOrder tests', () => {
         }
  */
      
-            expect(RestockOrderManager.getRestockOrderByID(0)) .rejects.toEqual("404 No RestockOrder Found");
+            return expect(RestockOrderManager.getRestockOrderByID(0)) .rejects.toEqual("404 No RestockOrder Found");
             
         })
     })

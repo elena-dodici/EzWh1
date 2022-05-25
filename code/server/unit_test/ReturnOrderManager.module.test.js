@@ -33,6 +33,11 @@ describe('RestockOrder tests', () => {
             await PersistentManager.store("SKUItem",s);*/
         })
 
+        afterEach(async () => {
+            await utility.deleteDatabase();
+
+        })
+
         
         
         test('define returnOrder', async () => {
@@ -72,7 +77,7 @@ describe('RestockOrder tests', () => {
 
 
         test('define invalid return ', async () => {              
-           expect(ReturnOrderManager.defineReturnOrder("2022-20-20", [], 0)).rejects.toEqual("404 not found restockOrderId");
+           return expect(ReturnOrderManager.defineReturnOrder("2022-20-20", [], 0)).rejects.toEqual("404 not found restockOrderId");
         })
 
         test('load All returnOrder', async()=> {

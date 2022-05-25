@@ -1,6 +1,7 @@
 
 const QualityTestManager = require('../bin/controller/QualityTestManager');
 const PersistentManager = require('../bin/DB/PersistentManager');
+const utility = require("../bin/utility/utility");
 
 
     //Test defineTestDescriptor Valid
@@ -25,6 +26,9 @@ const PersistentManager = require('../bin/DB/PersistentManager');
     await PersistentManager.deleteAll('TransportNote');
     await PersistentManager.deleteAll('User');
         });
+        afterEach( async () => {
+            await utility.deleteDatabase();
+        })
        
         test('define testDescriptor valid', async () => {
             //save the related sku_id
@@ -76,6 +80,9 @@ const PersistentManager = require('../bin/DB/PersistentManager');
     await PersistentManager.deleteAll('User');
         });
     
+        afterEach( async () => {
+            await utility.deleteDatabase();
+        })
         test('get all testDescriptors', async () => {
             
             let testDescriptors_1 = {
@@ -126,6 +133,9 @@ const PersistentManager = require('../bin/DB/PersistentManager');
     await PersistentManager.deleteAll('User');
         });
     
+        afterEach( async () => {
+            await utility.deleteDatabase();
+        })
         test('modify testDescriptor', async () => {
             const sku = {description: "description",
                 weight: 10,
@@ -184,6 +194,9 @@ const PersistentManager = require('../bin/DB/PersistentManager');
             await PersistentManager.deleteAll('User');
            
         });
+        afterEach( async () => {
+            await utility.deleteDatabase();
+        })
        
         test('define testResult valid', async () => {
             const sku = {description: "description",
@@ -310,6 +323,9 @@ const PersistentManager = require('../bin/DB/PersistentManager');
     await PersistentManager.deleteAll('User');
         });
     
+        afterEach( async () => {
+            await utility.deleteDatabase();
+        })
         test('modify testResult', async () => {
             const sku = {
                 description: "des",

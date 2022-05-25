@@ -3,6 +3,7 @@ const PersistentManager = require('../bin/DB/PersistentManager');
 const PositionManager = require('../bin/controller/PositionManager');
 const SKUManager = require('../bin/controller/SKUManager');
 
+const utility = require("../bin/utility/utility");
 
 describe('Position tests', () => {
 
@@ -19,6 +20,9 @@ describe('Position tests', () => {
         beforeEach(async () => {
             await PersistentManager.deleteAll("Position");
 
+        })
+        afterEach( async () => {
+            await utility.deleteDatabase();
         })
 
         test('define position', async () => {
