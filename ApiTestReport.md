@@ -129,7 +129,6 @@ In the dependency graph we grouped the model classes in one block to avoid confu
 |             NFR2               |     All      |
 | NFR3 | adding a new user |
 | NFR4 | adding a new position|
-| NFR5 | adding a new SKU |
 |  NFR6  |  stock skuItems  | 
 | NFR9 |  addingRO1 | 
 

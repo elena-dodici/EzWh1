@@ -55,9 +55,9 @@ class InternalOrderManager{
             for(let product of ProductList){
                 let curProRFID=product.RFID;
                 let curSkuID =product.SkuID;
-                //not requested?
+                
                 await PersistentManager.update(SKUItem.tableName,{"Available":0},"RFID",curProRFID)
-                               
+                /*        
                 let curSKU =  await PersistentManager.loadOneByAttribute("id",SKU.tableName,curSkuID)
                 let curSKUqty = curSKU.availableQuantity;  
                            
@@ -67,7 +67,7 @@ class InternalOrderManager{
                 else{                          
                     let resultqty = curSKUqty-1;                     
                     await PersistentManager.update(SKU.tableName, {"availableQuantity":resultqty},"id",curSkuID );                                        
-                    }              
+                    }        */      
             }
         }   
         return PersistentManager.update(InternalOrder.tableName,{"state":newState},"id",rowID)
