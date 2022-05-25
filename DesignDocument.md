@@ -51,14 +51,14 @@ To better visualize the diagram we split it in 2 parts
 
 ## Full class diagram
 
-![class_diagram](./Images/design/classDiagram.jpg)
+![class_diagram](./Images/design/classDiagramNew.png)
 
 ## Model classes
-![model_diagram](./Images/design/entity.drawio.png)
+![model_diagram](./Images/design/modelNew.jpg)
 
 ## Controller classes
 
-![controller_diagram](./Images/design/managersPersistence.png)
+![controller_diagram](./Images/design/controllerNew.jpg)
 
 
 

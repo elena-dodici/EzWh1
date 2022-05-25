@@ -55,11 +55,6 @@ The output, if everything goes well, is the last inserted ID.
 
 In this case there is no boundary case.
 
-| Criteria | Boundary values |
-| -------- | --------------- |
-|          |                 |
-|          |                 |
-
 
 
 **Combination of predicates**:
@@ -235,11 +230,6 @@ PersistentManager.delete(attribute_name ,id, tableName) delete the  rows which a
 
 ### Test cases definition
     
-    
-    <Report here all the created Jest test cases, and the units/classes under test >
-    <For traceability write the class and method name that contains the test case>
-
-
 | Unit name | Jest test case |
 |--|--|
 |PersistentManager.js|PersistentManager.module.test.js|
@@ -255,15 +245,6 @@ PersistentManager.delete(attribute_name ,id, tableName) delete the  rows which a
 
 
 ### Loop coverage analysis
-
-    <Identify significant loops in the units and reports the test cases
-    developed to cover zero, one or multiple iterations >
-
-|Unit name | Loop rows | Number of iterations | Jest test case |
-|---|---|---|---|
-|||||
-|||||
-||||||
 
 Analyzing the files of our project, we observed that no significant loops are present. However, according to the code coverage report, we tried to test some specific methods with different 'if' statements to increase the branch coverage percentage, including the tests performed for the PersistentManager.js file.
 

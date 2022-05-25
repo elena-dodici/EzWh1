@@ -28,11 +28,6 @@ In the dependency graph we grouped the model classes in one block to avoid confu
      
 # Integration approach
 
-    <Write here the integration sequence you adopted, in general terms (top down, bottom up, mixed) and as sequence
-    (ex: step1: class A, step 2: class A+B, step 3: class A+B+C, etc)> 
-    <Some steps may  correspond to unit testing (ex step1 in ex above), presented in other document UnitTestReport.md>
-    <One step will  correspond to API testing>
-
     The sequence we followed to test is bottom up. In fact we firstly tested the PersistentManager methods as unit tests.
     Then we tested the Manager classes using the already tested PersistentManager methods.
     Then we procedeed to test the APIs.
@@ -45,7 +40,6 @@ In the dependency graph we grouped the model classes in one block to avoid confu
 ## Step 1
 | Classes  | mock up used |Jest test cases |
 |--|--|--|
-
 |PersistentManager| | PersistentManager.module.test.js |
 
 ## Step 2
