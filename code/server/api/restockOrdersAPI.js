@@ -109,10 +109,10 @@ exports.deleteRestockOrder = function(req,res) {
             return res.status(200).json();
         },
         error => {
-            console.log(error);
             switch(error){
+                /* Not requested by api
                 case "404 RestockOrderid cannot found":
-                    return res.status(404).json({error: "404 RestockOrderid cannot found"})
+                    return res.status(404).json({error: "404 RestockOrderid cannot found"})*/
                 default:
                     return res.status(503).json({error: 'generic error'})
             }

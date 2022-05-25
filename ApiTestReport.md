@@ -1,8 +1,8 @@
 # Integration and API Test Report
 
-Date:
-
-Version:
+Date: 2022-05-04
+ 
+Version: 0.1
 
 # Contents
 
@@ -41,9 +41,6 @@ In the dependency graph we grouped the model classes in one block to avoid confu
 
 
 #  Integration Tests
-
-   <define below a table for each integration step. For each integration step report the group of classes under test, and the names of
-     Jest test cases applied to them, and the mock ups used, if any> Jest test cases should be here code/server/unit_test
 
 ## Step 1
 | Classes  | mock up used |Jest test cases |
@@ -85,11 +82,6 @@ In the dependency graph we grouped the model classes in one block to avoid confu
 # API testing - Scenarios
 
 # Coverage of Scenarios and FR
-
-
-<Report in the following table the coverage of  scenarios (from official requirements and from above) vs FR. 
-Report also for each of the scenarios the (one or more) API Mocha tests that cover it. >  Mocha test cases should be here code/server/test
-
 
 
 
@@ -136,10 +128,7 @@ Report also for each of the scenarios the (one or more) API Mocha tests that cov
 # Coverage of Non Functional Requirements
 
 
-<Report in the following table the coverage of the Non Functional Requirements of the application - only those that can be tested with automated testing frameworks.>
 
-
-### 
 
 | Non Functional Requirement | Test name |
 | -------------------------- | --------- |

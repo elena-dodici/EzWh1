@@ -46,7 +46,7 @@ async function testStoreValid(tableName, object) {
         })
     
         afterEach(() => {
-            PersistentManager.delete('id', insertedId, "User");
+            await PersistentManager.delete('id', insertedId, "User");
         })
     })
     
