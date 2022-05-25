@@ -181,7 +181,7 @@ describe('RestockOrder tests', () => {
             const newState = "DELIVERED";
             // return type change if state change into delivered
             let roId =  await RestockOrderManager.defineRestockOrder(input.issue_date, input.products, input.supplier_id);                     
-            expect( RestockOrderManager.modifyState(0,newState)).rejects.toEqual("404 RestockOrderid cannot found");
+            return expect( RestockOrderManager.modifyState(0,newState)).rejects.toEqual("404 RestockOrderid cannot found");
      
             
     
@@ -245,7 +245,7 @@ describe('RestockOrder tests', () => {
             let roId =  await RestockOrderManager.defineRestockOrder(input.issue_date, input.products, input.supplier_id);
             
             await RestockOrderManager.modifyState(roId,"TESTED");
-           expect( RestockOrderManager.getAllIssuedOrder()).rejects.toEqual("404 No IssuedOrders Found");
+           return expect( RestockOrderManager.getAllIssuedOrder()).rejects.toEqual("404 No IssuedOrders Found");
 
         })
         

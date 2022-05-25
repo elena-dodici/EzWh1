@@ -21,6 +21,7 @@ class RestockOrderManager {
 			["id", "type"],
 			[supplierId, "supplier"]
 		);
+		
 
 		
 		if (suppExists.length === 0) {
@@ -130,7 +131,7 @@ class RestockOrderManager {
 			"ISSUED"
 		);
 
-		if (!issueOrders) {
+		if (issueOrders.length === 0) {
 			return Promise.reject("404 No IssuedOrders Found");
 		}
 

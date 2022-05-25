@@ -1,7 +1,7 @@
 const Position = require('../bin/model/Position.js');
 
 
-async function testIsIdValid(positionID, aisleID, row, col) {
+function testIsIdValid(positionID, aisleID, row, col) {
     describe('test IsIdValid valid', () => {
         test('test IsIdValid valid', async () => {
             let p = new Position(positionID, aisleID, row, col, 10, 10);
@@ -10,8 +10,7 @@ async function testIsIdValid(positionID, aisleID, row, col) {
         })
     })
 }
-
-async function testIsIdInvalid(positionID, aisleID, row, col) {
+function testIsIdInvalid(positionID, aisleID, row, col) {
     describe('test IsIdValid invalid', () => {
         test('test IsIdValid invalid',  async () => {
             let p = new Position(positionID, aisleID, row, col, 10, 10);

@@ -197,7 +197,7 @@ describe('modifySku', ()=> {
             price: 1,
             notes: "notes",
             availableQuantity: 2,
-            position: 123412341234,
+            position: "123412341234",
             testDescriptors: []
         }
         const sku_to_expect = await SKUManager.getSKUByID(skuid);

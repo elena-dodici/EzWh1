@@ -1,7 +1,7 @@
 const PersistentManager = require('../bin/DB/PersistentManager');
 
 
-async function testExistsTrue(tableName, parameter_name, value) {
+function testExistsTrue(tableName, parameter_name, value) {
     describe('store user', () => {
 
         beforeEach(async () =>{
@@ -26,7 +26,7 @@ async function testExistsTrue(tableName, parameter_name, value) {
     
 }
 
-async function testExistsFalse(tableName, parameter_name, value) {
+function testExistsFalse(tableName, parameter_name, value) {
     describe('store user', () => {
 
         beforeEach(async () =>  {
@@ -50,7 +50,7 @@ async function testExistsFalse(tableName, parameter_name, value) {
     })
     
 }
-async function testExistsInvalid(tableName, parameter_name,value) {
+function testExistsInvalid(tableName, parameter_name,value) {
     test('test exists invalid', async () => {
         return expect(PersistentManager.exists(tableName, parameter_name,value)).rejects.toThrow();
 

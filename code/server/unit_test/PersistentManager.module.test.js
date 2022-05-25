@@ -1,5 +1,6 @@
 const PersistentManager = require('../bin/DB/PersistentManager');
 const RestockOrder = require('../bin/model/RestockOrder')
+const utility = require('../bin/utility/utility');
 
 //STORE OBJECTS
 const user = {
@@ -39,15 +40,16 @@ let insertedId;
 async function testStoreValid(tableName, object) {
     describe('store user', () => {
 
+        beforeEach( async () => {
+            await utility.deleteDatabase();
+        })
+
         test('test store valid', async () => {
             const lastID = await PersistentManager.store(tableName, object);
             expect(lastID).toEqual(expect.any(Number));
             insertedId = lastID
         })
-    
-        afterEach(() => {
-            await PersistentManager.delete('id', insertedId, "User");
-        })
+
     })
     
 }
@@ -218,20 +220,20 @@ let T8 = {
             }
         });
 
-        afterEach(() => {
-            PersistentManager.deleteAll("RestockOrder");
+        afterEach(async () => {
+            await PersistentManager.deleteAll("RestockOrder");
         })
 
         describe("test Valid Delete", () => {
             test("ValidDelete", async () => {
                 await PersistentManager.delete(ValidList[0].attr, ValidList[0].val, ValidList[0].table);
-                var res = await PersistentManager.loadAllRows(table);
+                let res = await PersistentManager.loadAllRows(table);
                 expect(res.length).toStrictEqual(NumInput2);
             });
 
             test("ValidDeleteNull", async () => {
                 await PersistentManager.delete(ValidList[1].attr, ValidList[1].val, ValidList[1].table);
-                var res = await PersistentManager.loadAllRows(table);
+                let res = await PersistentManager.loadAllRows(table);
                 //return the same length as before
                 expect(res.length).toStrictEqual(NumInput1 + NumInput2);
             });
@@ -244,7 +246,7 @@ let T8 = {
                     // await expect(async () => {
                     //     await PersistentManager.delete(T.attr,T.val,T.table);
                     //   }).rejects.toThrow();    
-                    await expect(PersistentManager.delete(T.attr, T.val, T.table)).rejects.toThrow();
+                    return expect(PersistentManager.delete(T.attr, T.val, T.table)).rejects.toThrow();
                 }
 
             });
@@ -285,8 +287,8 @@ describe("test Valid Update", () => {
 
             }
         });
-        afterEach(() => {
-            PersistentManager.deleteAll("RestockOrder");
+        afterEach(async () => {
+            await PersistentManager.deleteAll("RestockOrder");
         })
 
 
@@ -441,8 +443,8 @@ describe("test Invalid Update", () => {
                 RoId = await PersistentManager.store(table, RO2);
             }
         });
-        afterEach(() => {
-            PersistentManager.deleteAll("RestockOrder");
+        afterEach(async () => {
+            await PersistentManager.deleteAll("RestockOrder");
         })
 
 
