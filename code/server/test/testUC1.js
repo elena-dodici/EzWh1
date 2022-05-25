@@ -54,7 +54,7 @@ function newSKU(expectedHTTPStatus, description, weight, volume, notes, price, a
 }
 
 //Scenario 1-2
-async function modifyPositionOfSku(expectedHTTPStatus) {
+ function modifyPositionOfSku(expectedHTTPStatus) {
     it('modifying sku position', function (done) {
         agent.get('/api/skus').then(
             function (res) {
@@ -82,7 +82,7 @@ async function modifyPositionOfSku(expectedHTTPStatus) {
 }
 
 //Scenario 1-3 
-async function modifyWeightVolume(expectedHTTPStatus, weight, volume) {
+ function modifyWeightVolume(expectedHTTPStatus, weight, volume) {
     it('modifying sku weight and volume', function (done) {
         agent.get('/api/skus').then(
             function (res) {

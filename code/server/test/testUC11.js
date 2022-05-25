@@ -75,7 +75,7 @@ function newItem(expectedHTTPStatus,id, description, price, SKUId, supplierId) {
 }
 
 //Scenario 11-2
-async function modifyItem(expectedHTTPStatus, id, newDescription, newPrice) {
+ function modifyItem(expectedHTTPStatus, id, newDescription, newPrice) {
     it('modifying Item by Id' , function (done) {
 
         const newItem = {newDescription: newDescription, newPrice: newPrice};

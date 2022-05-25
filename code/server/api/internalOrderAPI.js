@@ -203,12 +203,11 @@ exports.putInternalOrdersSchema = {
                 }
             },
         
+    }
     },
     products: {
         optional: true
     },
-    
-    }
 }
 
 exports.changeInternalOrder = function(req,res) {  

@@ -37,7 +37,7 @@ const wrongKeysWrongNumber = {
 
 let insertedId;
 
-async function testStoreValid(tableName, object) {
+ function testStoreValid(tableName, object) {
     describe('store user', () => {
 
         beforeEach( async () => {
@@ -54,7 +54,7 @@ async function testStoreValid(tableName, object) {
     
 }
 
-async function testStoreInvalid(tableName, object) {
+ function testStoreInvalid(tableName, object) {
     test('test store invalid', async () => {
         return expect(PersistentManager.store(tableName, object)).rejects.toThrow();
 
@@ -80,7 +80,7 @@ testStoreInvalid("wrong table", wrongKeysWrongNumber);
 
 //LOAD ALL ROWS
 
-async function testLoadValid(tableName, numberOfCalls) {
+ function testLoadValid(tableName, numberOfCalls) {
 
     describe('load all rows of a table', () => {
 
@@ -104,7 +104,7 @@ async function testLoadValid(tableName, numberOfCalls) {
 
 }
 
-async function testLoadInvalid(tableName, numberOfCalls) {
+ function testLoadInvalid(tableName, numberOfCalls) {
 
     describe('load all rows of a table invalid', () => {
 

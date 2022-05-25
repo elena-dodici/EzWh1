@@ -7,7 +7,7 @@ const utility = require("../bin/utility/utility");
     //Test defineTestDescriptor Valid
     testDefineTestDescriptorValid("test name","procedure description");
 
-    async function testDefineTestDescriptorValid(name,procedureDescription) {
+    function testDefineTestDescriptorValid(name,procedureDescription) {
     describe('define testDescriptor', () => {
  
         beforeEach(async () => {
@@ -60,7 +60,7 @@ const utility = require("../bin/utility/utility");
     //Test gelAllTestDescriptors
     testgetAllTestDescriptors();
 
-    async function testgetAllTestDescriptors() {
+    function testgetAllTestDescriptors() {
         describe('Test get all testDescriptors', () => { 
 
         beforeEach(async () => {
@@ -171,7 +171,7 @@ const utility = require("../bin/utility/utility");
     //Test defineTestResult Valid
     testDefineTestResultValid("12341234123412341234123412341234","2022-01-01",1);
 
-    async function testDefineTestResultValid(rfid,Date,Result) {
+   function testDefineTestResultValid(rfid,Date,Result) {
         describe('define testResult', () => {
 
             let testDescriptor_id = null;
@@ -301,7 +301,7 @@ const utility = require("../bin/utility/utility");
     //Test modifyTestResult
     testmodifyTestResult("12341234123412341234123412341234","2022-02-02",0);
 
-    async function testmodifyTestResult(rfid, newDate, newResult) {
+    function testmodifyTestResult(rfid, newDate, newResult) {
         describe('Test modify testResult', () => { 
             let s = null;
             let testDescriptor_id = null;

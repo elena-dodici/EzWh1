@@ -60,7 +60,7 @@ function newTestDescriptor(expectedHTTPStatus, name, procedureDescription, idSKU
 }
 
 //Scenario 12-2
-async function modifyTestDescription(expectedHTTPStatus, id, newProcedureDescription) {
+ function modifyTestDescription(expectedHTTPStatus, id, newProcedureDescription) {
     it('modifying Test Descriptor by Id' , function (done) {
         if(id == 1){
             id = test_id;
@@ -80,7 +80,7 @@ async function modifyTestDescription(expectedHTTPStatus, id, newProcedureDescrip
 }
 
 //Scenario 12-3
-async function deleteTestDescriptor(expectedHTTPStatus, id) {
+ function deleteTestDescriptor(expectedHTTPStatus, id) {
     it('delete Test Descriptor', function(done) {
         if(id == 1){
             id = test_id;

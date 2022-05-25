@@ -4,7 +4,7 @@ const PersistentManager = require('../bin/DB/PersistentManager');
 const utility = require('../bin/utility/utility');
 
 //Assuming data validation done at a higher level
-async function testDefineSKU() {
+function testDefineSKU() {
 describe('define sku', () => {
 
     beforeEach( async () => {
