@@ -87,8 +87,14 @@ class QualityTestManager {
         }
     }
 
-    async getAllTestResultsByRFID(rfid) {     
+    async getAllTestResultsByRFID(rfid) {    
+        const exists = await PersistentManager.exists(SKUItem.tableName, 'rfid', rfid);
+        if (!exists) {
+            return Promise.reject("404");
+        }
+        
         const testResults = await PersistentManager.loadAllRows(TestResult.tableName, 'rfid', rfid);
+        
         const testsAPI = testResults.map(
             (t) => {
                 return {

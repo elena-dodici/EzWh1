@@ -9,14 +9,23 @@ const SKU = require('../bin/model/SKU');
 const possibleStates = ['ISSUED', 'DELIVERY', 'DELIVERED', 'TESTED', 'COMPLETEDRETURN', 'COMPLETED'];
 
 const dateValidation = function(date) {
+    console.log(date);
     const yyyymmddRegex = new RegExp(/^\d{4}\/(0[1-9]|1[0-2])\/(0[1-9]|[12][0-9]|3[01])$/);
-    const withHours = new RegExp(/^\d{4}\/[0-1][0-2]\/[0-3]\d\s([0-1][0-9]|2[0-3]):[0-5]\d$/);
+    const withHours = new RegExp(/^\d{4}\/(0[1-9]|1[0-2])\/(0[1-9]|[12][0-9]|3[01])\s([0-1][0-9]|2[0-3]):[0-5]\d$/);
     if(yyyymmddRegex.exec(date) || withHours.exec(date)) {
         return true;
     }
     return false;
 }
 
+/*let myproducts = [];
+//skuid description price qty
+    myproducts[0] = restockorders.newProduct(0, "descr1", 8.99, 30);
+    myproducts[1] = restockorders.newProduct(1, "descr2", 6.99, 20);
+
+    let myrestocks = [];
+    myrestocks[0] = restockorders.newRestockOrder("2022/05/16 09:33", myproducts, 0); 
+    myrestocks[1] = restockorders.newRestockOrder("2022/05/17 19:00", myproducts, 1);  */
 
 
 exports.postRestockOrderSchema = {
@@ -56,6 +65,8 @@ exports.postRestockOrder = function(req,res) {
 
     const errors = validationResult(req);
 
+    
+
     if (!errors.isEmpty()) {
         return res.status(422).json({
             //errors: errors.array()
@@ -67,7 +78,9 @@ exports.postRestockOrder = function(req,res) {
     let supplierId = req.body.supplierId;
     let productsList = req.body.products;
 
+    
     if (!dateValidation(issue_date)) {
+        console.log("QUI3");
         return res.status(422).json({error: "validation of request body failed"});
     }
   

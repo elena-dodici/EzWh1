@@ -12,14 +12,14 @@ exports.postSchema = {
     
     weight: {
         notEmpty: true,
-        isFloat: {
+        isInt: {
             options: { min: 0}
         },
         errorMessage: "weight value incorrect"
     },
     volume: {
         notEmpty: true,
-        isFloat: {
+        isInt: {
             options: { min: 0}
         },
         errorMessage: "volume value incorrect"
@@ -131,14 +131,14 @@ exports.modifySKUByIdSchema = {
     
     newWeight: {
         notEmpty: true,
-        isFloat: {
+        isInt: {
             options: { min: 0}
         },
         errorMessage: "weight value incorrect"
     },
     newVolume: {
         notEmpty: true,
-        isFloat: {
+        isInt: {
             options: { min: 0}
         },
         errorMessage: "volume value incorrect"
@@ -160,6 +160,12 @@ exports.modifySKUByIdSchema = {
             options: { min: 0}
         },
         errorMessage: "available quantity value incorrect"
+    },
+    id: {
+        notEmpty: true,
+        isNumeric: {
+            options: {min: 0}
+        }
     }
 }
 
@@ -251,7 +257,7 @@ exports.putPositionToSku = function(req,res) {
 exports.deleteSKUSchema = {
     id: {
         notEmpty: true,
-        isInt: {options: {min:0}}
+        isNumeric: {options: {min:0}}
     }
 }
 
@@ -271,9 +277,9 @@ exports.deleteSKU = function (req,res) {
             return res.status(204).end();
         },
         error => {
+            console.log(error);
             switch (error) {
-                case "422 availabiliy not 0":
-                    return res.status(503).json({error: "generic error"})
+                
                 default: 
                     return res.status(503).json({error: "generic error"})
                 

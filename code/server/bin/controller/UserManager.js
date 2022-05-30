@@ -91,7 +91,13 @@ class UserManager {
     async deleteUser(username, type) {
         const user = await PersistentManager.loadByMoreAttributes(User.tableName, ['username', 'type'], [username, type]);
         const u = user[0];
-        const id = u.id;
+        let id;
+        if (u) {
+            id = u.id;
+        }
+        else {
+            id = null;
+        }
         return PersistentManager.delete('id', id, User.tableName);
     }
 

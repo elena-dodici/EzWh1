@@ -63,7 +63,7 @@ class RestockOrderManager {
 				["SKUId", "supplierId"],
 				[newSkuid, supplierId]
 			);
-			
+			/*
 			if (existsItem.length === 0) {
 				
 				PersistentManager.delete(
@@ -72,9 +72,9 @@ class RestockOrderManager {
 					RestockOrder.tableName
 				);
 				return Promise.reject("404 item");
-			}
+			}*/
 
-			const item = existsItem[0];
+			//const item = existsItem[0];
 
 			//define a object and insert into DB
 
@@ -82,7 +82,8 @@ class RestockOrderManager {
 				null,
 				newqty,
 				newRestockOrderId,
-				item.id
+				//item.id
+				newSkuid
 			);
 			products.push(newProductOrder);
 		}
@@ -235,11 +236,20 @@ class RestockOrderManager {
 		let products = [];
 	
 		for (const product of productOrdersRows) {
+			/*
 			let item = await PersistentManager.loadOneByAttribute(
 				"id",
 				Item.tableName,
 				product.item_id
+			);*/
+
+			
+			let item = await PersistentManager.loadOneByAttribute(
+				"id",
+				SKU.tableName,
+				product.item_id
 			);
+
 			
 			const skuInfo = {
 				SKUId: item.SKUId,

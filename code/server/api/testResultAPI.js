@@ -98,18 +98,21 @@ exports.getTestResults = function(req,res) {
                 error: "Validation of rfid failed"
             });
         }
+
+        
     
         QualityTestManager.getAllTestResultsByRFID(rfid).then(
             result => {
-                if (result.length == 0) {
-                    return res.status(404).json({error: "no sku item associated to rfid"});
-                }
-                else if (result) {
                     return res.status(200).json(result);
-                }
+                
             },
             error => {
-                return res.status(500).json({error: 'generic error'});
+                switch (error) {
+                    case "404": 
+                        return res.status(404).json({error: "no sku item associated to rfid"});
+                    default:
+                        return res.status(500).json({error: 'generic error'});
+                }
             }
         )
 }

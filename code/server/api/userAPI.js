@@ -58,12 +58,10 @@ const possiblePostTypes = [
 
 exports.postUserSchema = {
 	name: {
-		notEmpty: true,
-		isAlpha: true,
+		notEmpty: true
 	},
 	surname: {
-		notEmpty: true,
-		isAlpha: true,
+		notEmpty: true
 	},
 	password: {
 		notEmpty: true,
@@ -330,10 +328,11 @@ exports.deleteUser = function(req,res) {
 
     UserManager.deleteUser(username, type).then(
         result => {
+
             return res.status(204).end();
         },
         error => {
-            console.log(error);
+            
             return res.status(503).json({error: "generic error"});
         }
     )

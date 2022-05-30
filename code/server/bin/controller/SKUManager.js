@@ -133,12 +133,12 @@ class SKUManager{
     }
 
     async deleteSKU(SKUId) {
-        let loadedSKU = await this.getSKUByID(SKUId);
+        let loadedSKU = await PersistentManager.loadOneByAttribute('id', SKU.tableName, SKUId);
         
+        /*
         if (loadedSKU.availableQuantity) {
             return Promise.reject("422 availabiliy not 0");
-        }
-
+        }*/
         return PersistentManager.delete('id', SKUId, SKU.tableName);
 
     }
