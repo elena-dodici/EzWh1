@@ -80,7 +80,7 @@ exports.postRestockOrder = function(req,res) {
 
     
     if (!dateValidation(issue_date)) {
-        console.log("QUI3");
+    
         return res.status(422).json({error: "validation of request body failed"});
     }
   
@@ -91,6 +91,7 @@ exports.postRestockOrder = function(req,res) {
             return res.status(201).end();
         },
         error => {
+            console.log("QUI5");
             console.log(error);
             return res.status(503).json({error: 'generic error'})
         }
@@ -289,8 +290,7 @@ exports.putTransportNoteSchema = {
         notEmpty: true,
     },
     'transportNote.deliveryDate': {
-        notEmpty: true,
-        isDate: true
+        notEmpty: true
     },
     id: {
         isInt: {options: {min: 0}}
@@ -302,6 +302,7 @@ exports.putTransportNoteSchema = {
 exports.addTransportNode = function(req,res) {
     
     const errors = validationResult(req);
+    
     if (!errors.isEmpty()) {
         return res.status(422).json({
             
@@ -310,6 +311,11 @@ exports.addTransportNode = function(req,res) {
     }
     let id= req.params.id;
     let newTN = req.body.transportNote;
+
+    if (!dateValidation(newTN.deliveryDate)) {
+    
+        return res.status(422).json({error: "validation of request body failed"});
+    }
     
 
     let result = RestockOrderManager.updateTransportNote(id, newTN);
@@ -370,7 +376,9 @@ exports.updateSKUItems = function(req,res) {
         },
         error => {
             switch(error){
-                case "404 RestockOrderid cannot found":
+                
+
+                case "404 RestockOrderid not found":
                     return res.status(404).json({error: "no restock order associated to id"})
             
                 

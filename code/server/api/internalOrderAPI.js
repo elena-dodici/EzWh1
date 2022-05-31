@@ -3,8 +3,9 @@ const InternalOrderManager = require('../bin/controller/InternalOrderManager.js'
 const { validationResult } = require('express-validator');
 
 const dateValidation = function(date) {
+    console.log(date);
     const yyyymmddRegex = new RegExp(/^\d{4}\/(0[1-9]|1[0-2])\/(0[1-9]|[12][0-9]|3[01])$/);
-    const withHours = new RegExp(/^\d{4}\/[0-1][0-2]\/[0-3]\d\s([0-1][0-9]|2[0-3]):[0-5]\d$/);
+    const withHours = new RegExp(/^\d{4}\/(0[1-9]|1[0-2])\/(0[1-9]|[12][0-9]|3[01])\s([0-1][0-9]|2[0-3]|[0-9]):[0-5]\d$/);
     if(yyyymmddRegex.exec(date) || withHours.exec(date)) {
         return true;
     }
@@ -50,6 +51,7 @@ exports.postInternalOrder = function(req,res){
 
     const errors = validationResult(req);
 
+    
     if (!errors.isEmpty()) {
         return res.status(422).json({
             error: "Validation of request body failed"
@@ -64,6 +66,9 @@ exports.postInternalOrder = function(req,res){
 
     //Date validation
     if (!dateValidation(issue_date)) {
+        console.log("QUI6");
+        console.log(issue_date);
+    
         return res.status(422).json({error: "Validation of request body failed"});
     }
     

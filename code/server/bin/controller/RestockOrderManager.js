@@ -93,7 +93,9 @@ class RestockOrderManager {
 					return result;
 				},
 				(error) => {
+					console.log(error);
 					return Promise.reject(
+						
 						"503 Fail to store in Product Order table"
 					);
 				}
@@ -379,7 +381,7 @@ class RestockOrderManager {
 			id
 		);
 		
-		if(restockOrderRow.state!=="DELIVERED"||restockOrderRow.issue_date > newTN.deliveryDate ){			
+		if(restockOrderRow.state!=="DELIVERY"||restockOrderRow.issue_date > newTN.deliveryDate ){			
 			return Promise.reject("422 Unprocessable Entity")
 		}
 

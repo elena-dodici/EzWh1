@@ -95,6 +95,7 @@ const sqlIO = `
             PRIMARY KEY("id" AUTOINCREMENT)
         );`;
 
+		//FOREIGN KEY("item_id") REFERENCES "Item"("id") ON DELETE CASCADE ON UPDATE CASCADE,
 const sqlPO = `
         CREATE TABLE IF NOT EXISTS "ProductOrder" (
             "id"	INTEGER NOT NULL UNIQUE,
@@ -102,7 +103,7 @@ const sqlPO = `
             "restockOrder_id"	INTEGER,
             "item_id"	TEXT,
             FOREIGN KEY("restockOrder_id") REFERENCES "RestockOrder"("id") ON DELETE CASCADE ON UPDATE CASCADE,
-            FOREIGN KEY("item_id") REFERENCES "Item"("id") ON DELETE CASCADE ON UPDATE CASCADE,
+            FOREIGN KEY("item_id") REFERENCES "SKU"("id") ON DELETE CASCADE ON UPDATE CASCADE,
             PRIMARY KEY("id" AUTOINCREMENT)
         );`;
 
