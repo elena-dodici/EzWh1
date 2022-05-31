@@ -52,7 +52,7 @@ class SKUManager{
     }
 
     async modifySKU(id, newDescription, newWeight, newVolume, newPrice, newNotes, newQuantity) {
-        let loadedSKU = await this.getSKUByID(id);
+        let loadedSKU = await PersistentManager.loadOneByAttribute('id', SKU.tableName, id);
         if (loadedSKU) {
             //There is a position to handle
             if (loadedSKU.position != null) {
@@ -103,7 +103,7 @@ class SKUManager{
         if (!existsSKU) {
             return Promise.reject("404 SKU");
         }
-        let loadedSKU = await this.getSKUByID(SKUId);
+        let loadedSKU = await PersistentManager.loadOneByAttribute('id', SKU.tableName, SKUId);
         const sku_weight = loadedSKU.weight;
         const sku_volume = loadedSKU.volume;
         const sku_quantity = loadedSKU.availableQuantity;
@@ -133,12 +133,13 @@ class SKUManager{
     }
 
     async deleteSKU(SKUId) {
-        //let loadedSKU = await PersistentManager.loadOneByAttribute('id', SKU.tableName, SKUId);
+        let loadedSKU = await PersistentManager.loadOneByAttribute('id', SKU.tableName, SKUId);
         
-        /*
-        if (loadedSKU.availableQuantity) {
-            return Promise.reject("422 availabiliy not 0");
-        }*/
+        
+        if (loadedSKU) {
+            console.log(SKUId);
+            console.log("SKU NOT FOUND");
+        }
         return PersistentManager.delete('id', SKUId, SKU.tableName);
 
     }

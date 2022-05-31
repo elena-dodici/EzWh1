@@ -64,6 +64,7 @@ exports.postSKU = function(req,res) {
 
     SKUManager.defineSKU(description, weight, volume, price, notes, availableQuantity).then( 
         result => {
+            console.log(result);
             return res.status(201).end();
         },
         error => {
@@ -277,9 +278,9 @@ exports.deleteSKU = function (req,res) {
             return res.status(204).end();
         },
         error => {
+
             console.log(error);
             switch (error) {
-                
                 default: 
                     return res.status(503).json({error: "generic error"})
                 

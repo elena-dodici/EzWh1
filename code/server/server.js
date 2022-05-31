@@ -229,6 +229,7 @@ app.put('/api/item/:id',checkSchema(item.modifyItemByIdSchema), item.modifyItemB
 //DELETE /api/items/:id
 app.delete('/api/items/:id', checkSchema(item.deleteItemSchema) ,item.deleteItem);
 
+
 //Initialize the db
 dbstructure.initializeDB().then( () => {
   //activate the server
@@ -237,9 +238,6 @@ dbstructure.initializeDB().then( () => {
   });
   
 });
-
-
-
 
 
 

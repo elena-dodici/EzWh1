@@ -5,7 +5,7 @@ const bcrypt = require('bcrypt');
 class UserManager {
     constructor(){}
 
-    getAllSuppliers() {
+    async getAllSuppliers() {
         return PersistentManager.loadFilterByAttribute(User.tableName, 'type', 'supplier');
 
     }
