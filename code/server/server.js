@@ -230,15 +230,11 @@ app.put('/api/item/:id',checkSchema(item.modifyItemByIdSchema), item.modifyItemB
 app.delete('/api/items/:id', checkSchema(item.deleteItemSchema) ,item.deleteItem);
 
 
-//Initialize the db
-dbstructure.initializeDB().then( () => {
-  //activate the server
-  app.listen(port, () => {
-    console.log(`Server listening at http://localhost:${port}`);
-  });
-  
-});
 
+//activate the server
+app.listen(port, () => {
+  console.log(`Server listening at http://localhost:${port}`);
+});
 
 
 

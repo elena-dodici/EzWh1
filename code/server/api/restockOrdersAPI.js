@@ -9,7 +9,6 @@ const SKU = require('../bin/model/SKU');
 const possibleStates = ['ISSUED', 'DELIVERY', 'DELIVERED', 'TESTED', 'COMPLETEDRETURN', 'COMPLETED'];
 
 const dateValidation = function(date) {
-    console.log(date);
     const yyyymmddRegex = new RegExp(/^\d{4}\/(0[1-9]|1[0-2])\/(0[1-9]|[12][0-9]|3[01])$/);
     const withHours = new RegExp(/^\d{4}\/(0[1-9]|1[0-2])\/(0[1-9]|[12][0-9]|3[01])\s([0-1][0-9]|2[0-3]):[0-5]\d$/);
     if(yyyymmddRegex.exec(date) || withHours.exec(date)) {
@@ -91,8 +90,6 @@ exports.postRestockOrder = function(req,res) {
             return res.status(201).end();
         },
         error => {
-            console.log("QUI5");
-            console.log(error);
             return res.status(503).json({error: 'generic error'})
         }
     )
@@ -120,7 +117,7 @@ exports.deleteRestockOrder = function(req,res) {
     let result = RestockOrderManager.deleteRestockOrder(roID);  
     result.then( 
         result => {
-            return res.status(200).json();
+            return res.status(204).end();
         },
         error => {
             switch(error){
@@ -324,7 +321,6 @@ exports.addTransportNode = function(req,res) {
             return res.status(200).json();
         },
         error => {
-            console.log(error)
             switch(error){
                 case "404 RestockOrderid not found":
                     return res.status(404).json({error: "no restock order associated to id"})

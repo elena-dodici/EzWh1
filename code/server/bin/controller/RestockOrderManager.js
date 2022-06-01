@@ -93,7 +93,6 @@ class RestockOrderManager {
 					return result;
 				},
 				(error) => {
-					console.log(error);
 					return Promise.reject(
 						
 						"503 Fail to store in Product Order table"
@@ -101,7 +100,6 @@ class RestockOrderManager {
 				}
 			);
 		}
-		//console.log(newRestockOrderId);
 		return newRestockOrderId;
 	}
 

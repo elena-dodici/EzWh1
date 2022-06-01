@@ -64,7 +64,6 @@ exports.postSKU = function(req,res) {
 
     SKUManager.defineSKU(description, weight, volume, price, notes, availableQuantity).then( 
         result => {
-            console.log(result);
             return res.status(201).end();
         },
         error => {
@@ -95,6 +94,7 @@ exports.getSKUByIDSchema = {
 
 exports.getSKUByID = function(req,res) {
     let id = req.params.id;
+    
 
     const errors = validationResult(req);
 
@@ -103,14 +103,13 @@ exports.getSKUByID = function(req,res) {
             error: "validation of id failed"
         });
     }
-    
     SKUManager.getSKUByID(id).then(
         result => {
+            
                 return res.status(200).json(result);
 
         },
         error => {
-            console.log(error);
             switch (error) {
                 
                 case "404 sku": 
@@ -173,6 +172,7 @@ exports.modifySKUByIdSchema = {
 exports.modifySKUById = function(req,res) {
     
     const errors = validationResult(req);
+   
 
     if (!errors.isEmpty()) {
         return res.status(422).json({
@@ -263,7 +263,7 @@ exports.deleteSKUSchema = {
 }
 
 exports.deleteSKU = function (req,res) {
-    const id = req.params.id;
+    
 
     const errors = validationResult(req);
 
@@ -273,18 +273,16 @@ exports.deleteSKU = function (req,res) {
         });
     }
 
-    SKUManager.deleteSKU(id).then(
+    const skuid = req.params.id;
+
+    SKUManager.deleteSKU(skuid).then(
         result => {
+
             return res.status(204).end();
         },
         error => {
-
-            console.log(error);
-            switch (error) {
-                default: 
-                    return res.status(503).json({error: "generic error"})
-                
-            }
+            
+            return res.status(503).json({error: "generic error"});
         }
     )
 }

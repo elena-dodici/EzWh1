@@ -3,7 +3,6 @@ const InternalOrderManager = require('../bin/controller/InternalOrderManager.js'
 const { validationResult } = require('express-validator');
 
 const dateValidation = function(date) {
-    console.log(date);
     const yyyymmddRegex = new RegExp(/^\d{4}\/(0[1-9]|1[0-2])\/(0[1-9]|[12][0-9]|3[01])$/);
     const withHours = new RegExp(/^\d{4}\/(0[1-9]|1[0-2])\/(0[1-9]|[12][0-9]|3[01])\s([0-1][0-9]|2[0-3]|[0-9]):[0-5]\d$/);
     if(yyyymmddRegex.exec(date) || withHours.exec(date)) {
@@ -66,8 +65,7 @@ exports.postInternalOrder = function(req,res){
 
     //Date validation
     if (!dateValidation(issue_date)) {
-        console.log("QUI6");
-        console.log(issue_date);
+       
     
         return res.status(422).json({error: "Validation of request body failed"});
     }
@@ -123,7 +121,6 @@ exports.getAllInternalOrder = function(req,res) {
              return res.status(200).json(result);
         },
         error => {
-            console.log(error)
             return res.status(500).json({error:"generic error"});
         }
     )
@@ -182,7 +179,6 @@ exports.getinternalOrderById = function(req,res) {
             return res.status(200).json(result);
         },
         error => {
-            console.log(error)
             switch(error){
                 case "404 InternalOrderId cannot found":
                     return res.status(404).json({error: "no internal order associated to id"})
@@ -251,7 +247,6 @@ exports.changeInternalOrder = function(req,res) {
                     return res.status(422).json({error: "generic error"})*/
 
                 default:     
-                    console.log(error)
                     return res.status(503).json({error: "generic error"});
             }
         }

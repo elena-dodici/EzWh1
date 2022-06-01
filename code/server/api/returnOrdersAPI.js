@@ -129,7 +129,6 @@ exports.postReturnOrder=function(req,res){
             
                 
                 default:     
-                    console.log(error)
                     return res.status(503).json({error: "generic error"});
             }
         }

@@ -13,7 +13,7 @@ class UserManager {
     async getAllUsers() {
         
         const users = await PersistentManager.loadAllRows(User.tableName);
-        const usersAPI = users.map((u) => ({
+        const usersAPI = users.filter((u) => u.type != "manager" ).map((u) => ({
             id: u.id,
             name: u.name,
             surname: u.surname,

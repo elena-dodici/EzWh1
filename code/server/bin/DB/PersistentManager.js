@@ -71,13 +71,15 @@ class PersistentManager {
 	}
 
 
-    async delete(attribute_name ,id, tableName) {
+   	async delete(attribute_name ,id, tableName) {
         return new Promise ((resolve, reject) => {
             const sql = "DELETE FROM " + tableName + " WHERE "+ attribute_name + "= ?";
             const db = new sqlite.Database(this.dbName, (err) => {if (err) reject(err) });
 			db.get("PRAGMA foreign_keys = ON");
-            db.run(sql, id, (err) => {if (err) reject(err); resolve(); } )
-            db.close();
+			
+			db.run(sql, id, (err) => {if (err) reject(err); resolve(); } )
+			db.close();
+			
         })
     }
 
@@ -123,7 +125,7 @@ class PersistentManager {
 				
                 resolve();
             });
-            
+            db.close();
         }) 
     }
 
@@ -186,7 +188,7 @@ class PersistentManager {
             db.run(sql, (err) => {if (err) {
 			
 				reject(err);} resolve()} )
-            
+            db.close();
 		})
 	}
 

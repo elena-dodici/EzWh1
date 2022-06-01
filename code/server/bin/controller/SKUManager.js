@@ -23,7 +23,7 @@ class SKUManager{
         for (let i = 0; i < result.length; i++) {
             let currentSKU = result[i];
             currentSKU.testDescriptors = [];
-            let res = await this._loadTests(currentSKU.id);
+            let res = await PersistentManager.loadFilterByAttribute(TestDescriptor.tableName, 'idSKU', currentSKU.id);
             for (const test of res) {
                currentSKU.testDescriptors.push(test.id);
             }  
@@ -43,7 +43,7 @@ class SKUManager{
         let currentSKU = await PersistentManager.loadOneByAttribute('id', SKU.tableName, id);
         currentSKU.testDescriptors = [];
         
-        let res = await this._loadTests(id);
+        let res = await PersistentManager.loadFilterByAttribute(TestDescriptor.tableName, 'idSKU', currentSKU.id);
             for (const test of res) {
                currentSKU.testDescriptors.push(test.id);
             }  
@@ -52,7 +52,9 @@ class SKUManager{
     }
 
     async modifySKU(id, newDescription, newWeight, newVolume, newPrice, newNotes, newQuantity) {
+       
         let loadedSKU = await PersistentManager.loadOneByAttribute('id', SKU.tableName, id);
+        
         if (loadedSKU) {
             //There is a position to handle
             if (loadedSKU.position != null) {
@@ -133,27 +135,14 @@ class SKUManager{
     }
 
     async deleteSKU(SKUId) {
-        let loadedSKU = await PersistentManager.loadOneByAttribute('id', SKU.tableName, SKUId);
-        
-        
-        if (loadedSKU) {
-            console.log(SKUId);
-            console.log("SKU NOT FOUND");
-        }
+    
         return PersistentManager.delete('id', SKUId, SKU.tableName);
-
+        
     }
 
     async _loadTests(id) {
         let tests;
-        await PersistentManager.loadFilterByAttribute(TestDescriptor.tableName, 'idSKU', id).then(
-            result => {
-                tests = result;
-            },
-            error => {
-                console.log(error);
-            }  
-        );
+        tests = await PersistentManager.loadFilterByAttribute(TestDescriptor.tableName, 'idSKU', id);
         return tests;
 
     }
