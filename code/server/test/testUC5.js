@@ -235,15 +235,15 @@ function stockSKUItems(expectedHTTPStatus,id, rfids) {
             "newAvailableQuantity" : sku.availableQuantity + rfids.length
         }
         const newState = {newState: "COMPLETED"}  
-        agent.put(`/api/position/${pos_id}`)
+        await agent.put(`/api/position/${pos_id}`)
             .send(newPos)
-            .then(function (res) {
-                res.should.have.status(expectedHTTPStatus);
-                agent.put(`/api/sku/${sku_id}`)
+            .then(async function (res) {
+                res.should.have.status(200);
+                await agent.put(`/api/sku/${sku_id}`)
                 .send(newSku)
-                    .then(function (res) {
-                        res.should.have.status(expectedHTTPStatus);
-                        agent.put(`/api/restockOrder/${ro_id}`).send(newState).then(
+                    .then(async function (res) {
+                        res.should.have.status(200);
+                        await agent.put(`/api/restockOrder/${ro_id}`).send(newState).then(
                             
                             function (res) {
                                 res.should.have.status(expectedHTTPStatus);
@@ -279,7 +279,7 @@ function StockZeroItem(expectedHTTPStatus, id) {
             }
             if(test_neg.Result==0){
             const newState = {newState: "COMPLETEDRETURN"}       
-            agent.put(`/api/restockOrder/${ro_id}`).send(newState).then(
+            await agent.put(`/api/restockOrder/${ro_id}`).send(newState).then(
                 function (res) {
                 res.should.have.status(expectedHTTPStatus);
                 

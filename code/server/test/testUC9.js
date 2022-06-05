@@ -14,45 +14,45 @@ let IoId=null;
 
 
 describe("test scenario 9-1 9-2 9-3", ()=>{
-
     
-    before(async ()=>{
+    
+    beforeEach(async ()=>{
         await utility.deleteDatabase();
-        const supp = await UserManager.defineUser('name','surname','pass','user@user.com','customer');
         
-        IoId = await InternalOrderManager.defineInternalOrder("2021/11/29 09:33",
-                                                            [{"SKUId":12,"description":"a product","price":10.99,"qty":3},
-                                                            {"SKUId":180,"description":"another product","price":11.99,"qty":3}],
-                                                            supp)
     })
 
 
 
 
 
-modifyIOState(200,IoId,"ACCEPTED")
-modifyIOState(200,IoId,"CANCELLED")
-modifyIOState(200,IoId,"REFUSED")
+modifyIOState(200,"ACCEPTED")
+modifyIOState(200,"CANCELED")
+modifyIOState(200,"REFUSED")
 
 
 
 
 //set availablity of skuitem to 0
-    function modifyIOState(expectedHTTPStatus,id,newState){
-        it('modifyIOState', async ()=>{ 
-            //check sku item descrease correct qty in sku table and position? 
-            
-            
+    function modifyIOState(expectedHTTPStatus,newState){
+        it('modifyIOState', async function () { 
+            const supp = await UserManager.defineUser('name','surname','pass','user@user.com','customer');
+        
+        id = await InternalOrderManager.defineInternalOrder("2021/11/29 09:33",
+                                                            [{"SKUId":12,"description":"a product","price":10.99,"qty":3},
+                                                            {"SKUId":180,"description":"another product","price":11.99,"qty":3}],
+                                                            supp)
+            const b = {
+                newState: newState
+            } 
             agent.put(`/api/internalOrders/${id}`)
-            .send(newState)
-            .then(function(res){
+            .send(b)
+            .then( async function(res){
                     res.should.have.status(expectedHTTPStatus);                 
-                    agent.get(`/api/skus/${id}`)
-                    .send()
-                    .then(function(res){
-                        res.should.have.status(expectedHTTPStatus);
+                    await agent.get(`/api/skus/${id}`)
+                    .then(function(res2){
+                        res2.should.have.status(expectedHTTPStatus);
                         
-                    })
+                    });
                 }
             ); 
 

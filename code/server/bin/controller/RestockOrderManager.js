@@ -252,7 +252,7 @@ class RestockOrderManager {
 
 			
 			const skuInfo = {
-				SKUId: item.SKUId,
+				SKUId: item.id,
 				description: item.description,
 				price: item.price,
 				qty: product.quantity,

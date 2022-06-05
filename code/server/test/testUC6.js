@@ -34,10 +34,10 @@ describe('test scenarios 6-1 6-2', () => {
             }
             agent.post('/api/restockOrder')
             .send(ro)
-            .then(function (res) {
+            .then(async function (res) {
                 res.should.have.status(expectedHTTPStatus);
                 for(let p of req.body.products){
-                    agent.get(`/api/skuitems/${p.RFID}`)
+                    await agent.get(`/api/skuitems/${p.RFID}`)
                     .send(p.RFID)
                     .then(function(res){
                         res.should.have.status(expectedHTTPStatus);
@@ -70,10 +70,10 @@ describe('test scenarios 6-1 6-2', () => {
             }
             agent.post('/api/restockOrder')
             .send(ro)
-            .then(function (res) {
+            .then(async function (res) {
                 res.should.have.status(expectedHTTPStatus);
                 for(let p of req.body.products){
-                    agent.get(`/api/skuitems/${p.RFID}`)
+                    await agent.get(`/api/skuitems/${p.RFID}`)
                     .send(p.RFID)
                     .then(function(res){
                         res.should.have.status(expectedHTTPStatus);
