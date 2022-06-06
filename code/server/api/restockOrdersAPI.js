@@ -60,7 +60,7 @@ exports.postRestockOrderSchema = {
 }
 
 //POST /api/restockOrders
-exports.postRestockOrder = function(req,res) {
+exports.postRestockOrder = async function(req,res) {
 
     const errors = validationResult(req);
 
@@ -83,9 +83,8 @@ exports.postRestockOrder = function(req,res) {
         return res.status(422).json({error: "validation of request body failed"});
     }
   
-    let result = RestockOrderManager.defineRestockOrder(issue_date, productsList,supplierId);
     
-    result.then(
+    await RestockOrderManager.defineRestockOrder(issue_date, productsList,supplierId).then(
         result => {
             return res.status(201).end();
         },
@@ -103,7 +102,8 @@ exports.deleteRestockOrderSchema = {
     }
 }
 
-exports.deleteRestockOrder = function(req,res) {
+exports.deleteRestockOrder = 
+async function(req,res) {
     
     const errors = validationResult(req);
 
@@ -114,8 +114,7 @@ exports.deleteRestockOrder = function(req,res) {
     }
 
     let roID = req.params.id;     
-    let result = RestockOrderManager.deleteRestockOrder(roID);  
-    result.then( 
+    await  RestockOrderManager.deleteRestockOrder(roID).then( 
         result => {
             return res.status(204).end();
         },
@@ -134,9 +133,8 @@ exports.deleteRestockOrder = function(req,res) {
 }
 
 //get All orders
-exports.getRestockOrder = function(req,res) {
-    let result =  RestockOrderManager.getAllRestockOrder();
-    result.then(
+exports.getRestockOrder = async function(req,res) {
+    await RestockOrderManager.getAllRestockOrder().then(
         result => {
             return res.status(200).json(result);
         },
@@ -148,9 +146,8 @@ exports.getRestockOrder = function(req,res) {
 }
 
 
-exports.getRestockIssuedOrder = function(req,res) {
-    let result = RestockOrderManager.getAllIssuedOrder();
-    result.then(
+exports.getRestockIssuedOrder = async function(req,res) {
+    await RestockOrderManager.getAllIssuedOrder().then(
         result => {
             return res.status(200).json(result);
         },
@@ -169,7 +166,7 @@ exports.getRestockOrderByIDSchema = {
     }
 }
 
-exports.getRestockOrderById = function(req,res) {
+exports.getRestockOrderById = async function(req,res) {
     let id = req.params.id;
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
@@ -177,8 +174,7 @@ exports.getRestockOrderById = function(req,res) {
             error: "Validation of id failed"
         });
     }  
-    let result = RestockOrderManager.getRestockOrderByID(id);
-    result.then(
+    await RestockOrderManager.getRestockOrderByID(id).then(
         result => {
             return res.status(200).json(result);
         },
@@ -212,10 +208,9 @@ exports.getItemsById = async function(req,res) {
             error: "validation of id failed or restock order state != COMPLETEDRETURN"
         });
     }  
-    let result = RestockOrderManager.getItemsById(id);
 
 
-    result.then(
+    await RestockOrderManager.getItemsById(id).then(
         result => {
             return res.status(200).json(result);
         },
@@ -253,7 +248,7 @@ exports.putStateSchema = {
 
 
 
-exports.updateState = function(req,res) { 
+exports.updateState = async function(req,res) { 
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
         return res.status(422).json({
@@ -263,8 +258,7 @@ exports.updateState = function(req,res) {
     }  
     let rowID= req.params.id;
     let newState = req.body.newState;
-    let result = RestockOrderManager.modifyState(rowID, newState);
-    result.then( 
+    await RestockOrderManager.modifyState(rowID, newState).then( 
         result => {
             return res.status(200).json();
         },
@@ -296,7 +290,7 @@ exports.putTransportNoteSchema = {
 }
 
 //validation of request body or of id failed or order state != DELIVERY or deliveryDate is before issueDate
-exports.addTransportNode = function(req,res) {
+exports.addTransportNode = async function(req,res) {
     
     const errors = validationResult(req);
     
@@ -315,8 +309,7 @@ exports.addTransportNode = function(req,res) {
     }
     
 
-    let result = RestockOrderManager.updateTransportNote(id, newTN);
-    result.then(
+    await RestockOrderManager.updateTransportNote(id, newTN).then(
         result => {
             return res.status(200).json();
         },
@@ -355,7 +348,7 @@ exports.putSKUItemsSchema = {
     }
     
 }
-exports.updateSKUItems = function(req,res) {
+exports.updateSKUItems = async function(req,res) {
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
         return res.status(422).json({
@@ -365,8 +358,7 @@ exports.updateSKUItems = function(req,res) {
     let id= req.params.id;
     let newSkuitemsinfo = req.body.skuItems;
     
-    let result = RestockOrderManager.putSKUItems(id, newSkuitemsinfo);
-    result.then(
+    await RestockOrderManager.putSKUItems(id, newSkuitemsinfo).then(
         result => {
             return res.status(200).end();
         },

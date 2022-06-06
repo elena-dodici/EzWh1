@@ -36,7 +36,7 @@ exports.postItemSchema = {
     }
 }
 
-exports.postItem = function(req,res) {
+exports.postItem = async function(req,res) {
     const errors = validationResult(req);
     
 
@@ -53,7 +53,7 @@ exports.postItem = function(req,res) {
     let supplierId= req.body.supplierId;
 
 
-    ItemManager.defineItem(id, description,price,SKUId,supplierId).then( 
+    await ItemManager.defineItem(id, description,price,SKUId,supplierId).then( 
         result => {
             return res.status(201).json();
         },
@@ -79,9 +79,9 @@ exports.postItem = function(req,res) {
     );
 }
 
-exports.getItems = function(req,res) {
+exports.getItems = async function(req,res) {
     
-        ItemManager.getAllItems().then(
+        await ItemManager.getAllItems().then(
             result => {
                 return res.status(200).json(result);
             },
@@ -98,7 +98,7 @@ exports.getItems = function(req,res) {
      }
  }
     
-exports.getItemByID = function(req,res) {
+exports.getItemByID = async function(req,res) {
         let id = req.params.id;
 
         const errors = validationResult(req);
@@ -110,7 +110,7 @@ exports.getItemByID = function(req,res) {
             });
         }
         
-        ItemManager.getItemByID(id).then(
+        await ItemManager.getItemByID(id).then(
             result => {
                 if (result) {
                     return res.status(200).json(result);
@@ -144,7 +144,7 @@ exports.modifyItemByIdSchema = {
     }
 }
     
-exports.modifyItemById = function(req,res) {
+exports.modifyItemById = async function(req,res) {
     const errors = validationResult(req);
 
     if (!errors.isEmpty()) {
@@ -156,7 +156,7 @@ exports.modifyItemById = function(req,res) {
         const newDescription = req.body.newDescription;
         const newPrice = req.body.newPrice;
     
-        ItemManager.modifyItem(id, newDescription, newPrice).then(
+        await ItemManager.modifyItem(id, newDescription, newPrice).then(
             result => {
                     return res.status(200).json(result);
             },
@@ -178,7 +178,7 @@ exports.deleteItemSchema = {
         isInt: {options: {min: 0}}
     }
 }
-exports.deleteItem = function (req,res) {
+exports.deleteItem = async function (req,res) {
         const id = req.params.id;
 
         const errors = validationResult(req);
@@ -189,7 +189,7 @@ exports.deleteItem = function (req,res) {
             });
         }
   
-        ItemManager.deleteItem(id).then(
+        await ItemManager.deleteItem(id).then(
             result => {
                 return res.status(204).json();
             },

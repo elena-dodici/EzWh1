@@ -46,7 +46,7 @@ exports.postInternalOrderSchema = {
     },
 }
 //post
-exports.postInternalOrder = function(req,res){
+exports.postInternalOrder = async function(req,res){
 
     const errors = validationResult(req);
 
@@ -70,10 +70,9 @@ exports.postInternalOrder = function(req,res){
         return res.status(422).json({error: "Validation of request body failed"});
     }
     
-    let result =  InternalOrderManager.defineInternalOrder(issue_date,productlist,customerId);
    
     // let products
-    result.then(
+    await InternalOrderManager.defineInternalOrder(issue_date,productlist,customerId).then(
         result=>{
             return res.status(201).end();
         },
@@ -90,7 +89,7 @@ exports.deleteInternalOrderSchema = {
         isInt: {options: {min:0}}
     }
 }
-exports.deleteInternalOrder = function(req,res) {
+exports.deleteInternalOrder = async function(req,res) {
 
     const errors = validationResult(req);
 
@@ -101,8 +100,7 @@ exports.deleteInternalOrder = function(req,res) {
     }
    
     let roID = req.params.id;     
-    let result = InternalOrderManager.deleteIO(roID);  
-    result.then( 
+    await InternalOrderManager.deleteIO(roID).then( 
         result => {
             return res.status(204).end();
         },
@@ -114,9 +112,8 @@ exports.deleteInternalOrder = function(req,res) {
 }
 
 
-exports.getAllInternalOrder = function(req,res) {   
-    let result = InternalOrderManager.listAllInternalOrder();
-    result.then(
+exports.getAllInternalOrder = async function(req,res) {   
+    await InternalOrderManager.listAllInternalOrder().then(
         result => {
              return res.status(200).json(result);
         },
@@ -128,9 +125,8 @@ exports.getAllInternalOrder = function(req,res) {
 }
 
 
-exports.getInternalOrderIssued = function(req,res) {
-    let result = InternalOrderManager.listIssuedIO();
-    result.then(
+exports.getInternalOrderIssued = async function(req,res) {
+    await InternalOrderManager.listIssuedIO().then(
         result => {
              return res.status(200).json(result);
         },
@@ -141,9 +137,8 @@ exports.getInternalOrderIssued = function(req,res) {
     
 }
 
-exports.getinternalOrdersAccepted = function(req,res) {
-    let result = InternalOrderManager.listAcceptedIO();
-    result.then(
+exports.getinternalOrdersAccepted = async function(req,res) {
+    await InternalOrderManager.listAcceptedIO().then(
         result => {
             return res.status(200).json(result);
         },
@@ -162,7 +157,7 @@ exports.getinternalOrderByIdSchema = {
 }
 
 
-exports.getinternalOrderById = function(req,res) {
+exports.getinternalOrderById = async function(req,res) {
 
     const errors = validationResult(req);
 
@@ -173,8 +168,7 @@ exports.getinternalOrderById = function(req,res) {
     }
  
     let id = req.params.id;
-    let result = InternalOrderManager.listIOByID(id);
-    result.then(
+    await InternalOrderManager.listIOByID(id).then(
         result => {
             return res.status(200).json(result);
         },
@@ -214,7 +208,7 @@ exports.putInternalOrdersSchema = {
     }
 }
 
-exports.changeInternalOrder = function(req,res) {  
+exports.changeInternalOrder = async function(req,res) {  
     
     const errors = validationResult(req);
 
@@ -231,9 +225,7 @@ exports.changeInternalOrder = function(req,res) {
         ProductList = req.body.products;
        
     }   
-    
-    let result = InternalOrderManager.modifyState(rowID, newState,ProductList);
-    result.then( 
+    await InternalOrderManager.modifyState(rowID, newState,ProductList).then( 
         result => {
             return res.status(200).end();
         },

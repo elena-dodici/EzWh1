@@ -68,7 +68,7 @@ Server listening at http://localhost:3001
     ✔ addingRO2
 
   test scenarios 4-1 4-2 4-3 
-    ✔ adding a new user (228ms)
+    ✔ adding a new user (224ms)
     ✔ adding a new user
     ✔ adding a new user
     ✔ adding a new user
@@ -114,7 +114,7 @@ Server listening at http://localhost:3001
 
   test scenario 9-1 9-2 9-3
     ✔ modifyIOState (223ms)
-    ✔ modifyIOState (225ms)
+    ✔ modifyIOState (223ms)
     ✔ modifyIOState (224ms)
 
 

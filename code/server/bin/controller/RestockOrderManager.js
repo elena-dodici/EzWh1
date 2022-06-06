@@ -321,7 +321,7 @@ class RestockOrderManager {
 		if (!exists) {
 			return Promise.reject("404 RestockOrderid cannot found");
 		}
-		return await PersistentManager.update(
+		return PersistentManager.update(
 			RestockOrder.tableName,
 			{ state: newState },
 			"id",

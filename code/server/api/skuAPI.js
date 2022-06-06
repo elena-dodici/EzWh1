@@ -44,7 +44,7 @@ exports.postSchema = {
     }
 }
 
-exports.postSKU = function(req,res) {
+exports.postSKU = async function(req,res) {
     const errors = validationResult(req);
 
 
@@ -62,7 +62,7 @@ exports.postSKU = function(req,res) {
     let availableQuantity = req.body.availableQuantity;
 
 
-    SKUManager.defineSKU(description, weight, volume, price, notes, availableQuantity).then( 
+    await SKUManager.defineSKU(description, weight, volume, price, notes, availableQuantity).then( 
         result => {
             return res.status(201).end();
         },
@@ -72,9 +72,9 @@ exports.postSKU = function(req,res) {
     );
 }
 
-exports.getSKUS = function(req,res) {
+exports.getSKUS = async function(req,res) {
     
-    SKUManager.listAllSKUs().then(
+    await SKUManager.listAllSKUs().then(
         result => {
             return res.status(200).json(result);
         },
@@ -92,7 +92,7 @@ exports.getSKUByIDSchema = {
 }
 
 
-exports.getSKUByID = function(req,res) {
+exports.getSKUByID = async function(req,res) {
     let id = req.params.id;
     
 
@@ -103,7 +103,7 @@ exports.getSKUByID = function(req,res) {
             error: "validation of id failed"
         });
     }
-    SKUManager.getSKUByID(id).then(
+    await SKUManager.getSKUByID(id).then(
         result => {
             
                 return res.status(200).json(result);
@@ -169,7 +169,7 @@ exports.modifySKUByIdSchema = {
     }
 }
 
-exports.modifySKUById = function(req,res) {
+exports.modifySKUById = async function(req,res) {
     
     const errors = validationResult(req);
    
@@ -189,7 +189,7 @@ exports.modifySKUById = function(req,res) {
     const newNotes = req.body.newNotes;
     const newQuantity = req.body.newAvailableQuantity;
 
-    SKUManager.modifySKU(id, newDescription, newWeight, newVolume, newPrice, newNotes, newQuantity).then(
+    await SKUManager.modifySKU(id, newDescription, newWeight, newVolume, newPrice, newNotes, newQuantity).then(
         result => {
             return res.status(200).end();
             
@@ -219,7 +219,7 @@ exports.putPositionToSkuSchema = {
     }
 }
 
-exports.putPositionToSku = function(req,res) {
+exports.putPositionToSku = async function(req,res) {
     const id = req.params.id;
     const position = req.body.position;
 
@@ -232,7 +232,7 @@ exports.putPositionToSku = function(req,res) {
     }
 
     
-    SKUManager.setPosition(id, position).then(
+    await SKUManager.setPosition(id, position).then(
         result => {
             return res.status(200).end();
         },
@@ -262,7 +262,7 @@ exports.deleteSKUSchema = {
     }
 }
 
-exports.deleteSKU = function (req,res) {
+exports.deleteSKU =  async function (req,res) {
     
 
     const errors = validationResult(req);
@@ -275,9 +275,8 @@ exports.deleteSKU = function (req,res) {
 
     const skuid = req.params.id;
 
-    SKUManager.deleteSKU(skuid).then(
+    await SKUManager.deleteSKU(skuid).then(
         result => {
-
             return res.status(204).end();
         },
         error => {

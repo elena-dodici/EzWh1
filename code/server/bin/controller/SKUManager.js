@@ -8,7 +8,7 @@ const Position = require('../model/Position');
 class SKUManager{
     constructor() {}
 
-    defineSKU(description, weight, volume, price, notes, availableQuantity) {
+    async defineSKU(description, weight, volume, price, notes, availableQuantity) {
         //Converting it to be saved in the db
         //Delete sku.id because it is autoincremented
         const sku = new SKU(null, description, weight, volume, price, notes, availableQuantity, null);

@@ -8,9 +8,8 @@ const { checkSchema } = require('express-validator');
 
 
 //getall
-exports.getAllReturnOrders= function(req,res){
-    let result = ReturnOrderManager.listAllReturnOrders();
-    result.then(
+exports.getAllReturnOrders= async function(req,res){
+    await  ReturnOrderManager.listAllReturnOrders().then(
         result=>{
             return res.status(200).json(result);
         },
@@ -29,7 +28,7 @@ exports.getAllReturnOrderByIdSchema = {
 }
 
 //getbyid
-exports.getAllReturnOrderById = function(req,res){
+exports.getAllReturnOrderById = async function(req,res){
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
         return res.status(422).json({
@@ -38,8 +37,7 @@ exports.getAllReturnOrderById = function(req,res){
     }
     let returnOId = req.params.id;
     
-    let result =  ReturnOrderManager.getReturnOrderByID(returnOId);
-    result.then(
+    await ReturnOrderManager.getReturnOrderByID(returnOId).then(
         result=>{
             return res.status(200).json(result);
         },
@@ -102,7 +100,7 @@ exports.postReturnOrderSchema = {
     }
 }
 //post
-exports.postReturnOrder=function(req,res){
+exports.postReturnOrder=async function(req,res){
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
         return res.status(422).json({
@@ -117,8 +115,7 @@ exports.postReturnOrder=function(req,res){
         return res.status(422).json({error: "Validation of request body failed"});
     }
 
-    let result = ReturnOrderManager.defineReturnOrder( date,productsList,roId);
-    result.then(
+    await ReturnOrderManager.defineReturnOrder( date,productsList,roId).then(
         result=>{
             return res.status(201).json();
         },
@@ -146,7 +143,7 @@ exports.deleteReturnOrderSchema = {
 }
 
 //delete
-exports.deleteReturnOrder=function(req,res){
+exports.deleteReturnOrder= async function(req,res){
     
     let returnOID= req.params.id;
     const errors = validationResult(req);
@@ -156,8 +153,7 @@ exports.deleteReturnOrder=function(req,res){
             error: "Validation of id failed"
         });
     }  
-    let result = ReturnOrderManager.deleteReturnOrder(returnOID);
-    result.then(
+    await ReturnOrderManager.deleteReturnOrder(returnOID).then(
         result=>{          
             return res.status(204).end();
         }, 
