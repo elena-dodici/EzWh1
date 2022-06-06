@@ -115,7 +115,7 @@ Server listening at http://localhost:3001
   test scenario 9-1 9-2 9-3
     ✔ modifyIOState (223ms)
     ✔ modifyIOState (223ms)
-    ✔ modifyIOState (224ms)
+    ✔ modifyIOState (223ms)
 
 
   88 passing (5s)
