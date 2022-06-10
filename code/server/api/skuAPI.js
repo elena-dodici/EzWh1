@@ -12,14 +12,14 @@ exports.postSchema = {
     
     weight: {
         notEmpty: true,
-        isFloat: {
+        isInt: {
             options: { min: 0}
         },
         errorMessage: "weight value incorrect"
     },
     volume: {
         notEmpty: true,
-        isFloat: {
+        isInt: {
             options: { min: 0}
         },
         errorMessage: "volume value incorrect"
@@ -44,7 +44,7 @@ exports.postSchema = {
     }
 }
 
-exports.postSKU = function(req,res) {
+exports.postSKU = async function(req,res) {
     const errors = validationResult(req);
 
 
@@ -62,7 +62,7 @@ exports.postSKU = function(req,res) {
     let availableQuantity = req.body.availableQuantity;
 
 
-    SKUManager.defineSKU(description, weight, volume, price, notes, availableQuantity).then( 
+    await SKUManager.defineSKU(description, weight, volume, price, notes, availableQuantity).then( 
         result => {
             return res.status(201).end();
         },
@@ -72,9 +72,9 @@ exports.postSKU = function(req,res) {
     );
 }
 
-exports.getSKUS = function(req,res) {
+exports.getSKUS = async function(req,res) {
     
-    SKUManager.listAllSKUs().then(
+    await SKUManager.listAllSKUs().then(
         result => {
             return res.status(200).json(result);
         },
@@ -92,8 +92,9 @@ exports.getSKUByIDSchema = {
 }
 
 
-exports.getSKUByID = function(req,res) {
+exports.getSKUByID = async function(req,res) {
     let id = req.params.id;
+    
 
     const errors = validationResult(req);
 
@@ -102,14 +103,13 @@ exports.getSKUByID = function(req,res) {
             error: "validation of id failed"
         });
     }
-    
-    SKUManager.getSKUByID(id).then(
+    await SKUManager.getSKUByID(id).then(
         result => {
+            
                 return res.status(200).json(result);
 
         },
         error => {
-            console.log(error);
             switch (error) {
                 
                 case "404 sku": 
@@ -131,14 +131,14 @@ exports.modifySKUByIdSchema = {
     
     newWeight: {
         notEmpty: true,
-        isFloat: {
+        isInt: {
             options: { min: 0}
         },
         errorMessage: "weight value incorrect"
     },
     newVolume: {
         notEmpty: true,
-        isFloat: {
+        isInt: {
             options: { min: 0}
         },
         errorMessage: "volume value incorrect"
@@ -160,12 +160,19 @@ exports.modifySKUByIdSchema = {
             options: { min: 0}
         },
         errorMessage: "available quantity value incorrect"
+    },
+    id: {
+        notEmpty: true,
+        isNumeric: {
+            options: {min: 0}
+        }
     }
 }
 
-exports.modifySKUById = function(req,res) {
+exports.modifySKUById = async function(req,res) {
     
     const errors = validationResult(req);
+   
 
     if (!errors.isEmpty()) {
         return res.status(422).json({
@@ -182,7 +189,7 @@ exports.modifySKUById = function(req,res) {
     const newNotes = req.body.newNotes;
     const newQuantity = req.body.newAvailableQuantity;
 
-    SKUManager.modifySKU(id, newDescription, newWeight, newVolume, newPrice, newNotes, newQuantity).then(
+    await SKUManager.modifySKU(id, newDescription, newWeight, newVolume, newPrice, newNotes, newQuantity).then(
         result => {
             return res.status(200).end();
             
@@ -212,7 +219,7 @@ exports.putPositionToSkuSchema = {
     }
 }
 
-exports.putPositionToSku = function(req,res) {
+exports.putPositionToSku = async function(req,res) {
     const id = req.params.id;
     const position = req.body.position;
 
@@ -225,7 +232,7 @@ exports.putPositionToSku = function(req,res) {
     }
 
     
-    SKUManager.setPosition(id, position).then(
+    await SKUManager.setPosition(id, position).then(
         result => {
             return res.status(200).end();
         },
@@ -251,12 +258,12 @@ exports.putPositionToSku = function(req,res) {
 exports.deleteSKUSchema = {
     id: {
         notEmpty: true,
-        isInt: {options: {min:0}}
+        isNumeric: {options: {min:0}}
     }
 }
 
-exports.deleteSKU = function (req,res) {
-    const id = req.params.id;
+exports.deleteSKU =  async function (req,res) {
+    
 
     const errors = validationResult(req);
 
@@ -266,18 +273,15 @@ exports.deleteSKU = function (req,res) {
         });
     }
 
-    SKUManager.deleteSKU(id).then(
+    const skuid = req.params.id;
+
+    await SKUManager.deleteSKU(skuid).then(
         result => {
             return res.status(204).end();
         },
         error => {
-            switch (error) {
-                case "422 availabiliy not 0":
-                    return res.status(503).json({error: "generic error"})
-                default: 
-                    return res.status(503).json({error: "generic error"})
-                
-            }
+            
+            return res.status(503).json({error: "generic error"});
         }
     )
 }

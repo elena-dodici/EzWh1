@@ -63,7 +63,7 @@ class RestockOrderManager {
 				["SKUId", "supplierId"],
 				[newSkuid, supplierId]
 			);
-			
+			/*
 			if (existsItem.length === 0) {
 				
 				PersistentManager.delete(
@@ -72,9 +72,9 @@ class RestockOrderManager {
 					RestockOrder.tableName
 				);
 				return Promise.reject("404 item");
-			}
+			}*/
 
-			const item = existsItem[0];
+			//const item = existsItem[0];
 
 			//define a object and insert into DB
 
@@ -82,7 +82,8 @@ class RestockOrderManager {
 				null,
 				newqty,
 				newRestockOrderId,
-				item.id
+				//item.id
+				newSkuid
 			);
 			products.push(newProductOrder);
 		}
@@ -93,12 +94,12 @@ class RestockOrderManager {
 				},
 				(error) => {
 					return Promise.reject(
+						
 						"503 Fail to store in Product Order table"
 					);
 				}
 			);
 		}
-		//console.log(newRestockOrderId);
 		return newRestockOrderId;
 	}
 
@@ -235,14 +236,23 @@ class RestockOrderManager {
 		let products = [];
 	
 		for (const product of productOrdersRows) {
+			/*
 			let item = await PersistentManager.loadOneByAttribute(
 				"id",
 				Item.tableName,
 				product.item_id
+			);*/
+
+			
+			let item = await PersistentManager.loadOneByAttribute(
+				"id",
+				SKU.tableName,
+				product.item_id
 			);
+
 			
 			const skuInfo = {
-				SKUId: item.SKUId,
+				SKUId: item.id,
 				description: item.description,
 				price: item.price,
 				qty: product.quantity,
@@ -311,7 +321,7 @@ class RestockOrderManager {
 		if (!exists) {
 			return Promise.reject("404 RestockOrderid cannot found");
 		}
-		return await PersistentManager.update(
+		return PersistentManager.update(
 			RestockOrder.tableName,
 			{ state: newState },
 			"id",
@@ -369,7 +379,7 @@ class RestockOrderManager {
 			id
 		);
 		
-		if(restockOrderRow.state!=="DELIVERED"||restockOrderRow.issue_date > newTN.deliveryDate ){			
+		if(restockOrderRow.state!=="DELIVERY"||restockOrderRow.issue_date > newTN.deliveryDate ){			
 			return Promise.reject("422 Unprocessable Entity")
 		}
 

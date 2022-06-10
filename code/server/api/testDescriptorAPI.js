@@ -22,7 +22,7 @@ exports.postTestDescriptorSchema = {
     }
 }
 
-exports.postTestDescriptor = function(req,res) {
+exports.postTestDescriptor = async function(req,res) {
     const errors = validationResult(req);
     
     if (!errors.isEmpty()) {
@@ -36,7 +36,7 @@ exports.postTestDescriptor = function(req,res) {
     let idSKU= req.body.idSKU;
 
 
-    QualityTestManager.defineTestDescriptor(name, procedureDescription, idSKU).then( 
+    await QualityTestManager.defineTestDescriptor(name, procedureDescription, idSKU).then( 
         result => {
             return res.status(201).json();
         },
@@ -51,9 +51,9 @@ exports.postTestDescriptor = function(req,res) {
     );
 }
 
-exports.getTestDescriptors = function(req,res) {
+exports.getTestDescriptors = async function(req,res) {
     
-        QualityTestManager.getAllTestDescriptors().then(
+        await QualityTestManager.getAllTestDescriptors().then(
             result => {
                 return res.status(200).json(result);
             },
@@ -72,7 +72,7 @@ exports.getTestDescriptors = function(req,res) {
      }
  }
     
-exports.getTestDescriptorByID = function(req,res) {
+exports.getTestDescriptorByID = async function(req,res) {
         let id = req.params.id;
         const errors = validationResult(req);
 
@@ -83,7 +83,7 @@ exports.getTestDescriptorByID = function(req,res) {
         }
     
         
-        QualityTestManager.getTestDescriptorByID(id).then(
+        await QualityTestManager.getTestDescriptorByID(id).then(
             result => {
                 if (result) {
                     return res.status(200).json(result);
@@ -123,7 +123,7 @@ exports.modifyTestDescriptorByIdSchema = {
     }
 }
     
-exports.modifyTestDescriptorById = function(req,res) {
+exports.modifyTestDescriptorById = async function(req,res) {
     const errors = validationResult(req);
 
     if (!errors.isEmpty()) {
@@ -136,7 +136,7 @@ exports.modifyTestDescriptorById = function(req,res) {
         const newProcedureDescription = req.body.newProcedureDescription;
         const newIdSKU = req.body.newIdSKU;
     
-        QualityTestManager.modifyTestDescriptor(id, newName, newProcedureDescription, newIdSKU).then(
+        await QualityTestManager.modifyTestDescriptor(id, newName, newProcedureDescription, newIdSKU).then(
             result => {
                 return res.status(200).json();
             },
@@ -166,7 +166,7 @@ exports.modifyTestDescriptorById = function(req,res) {
 }
     
     
-exports.deleteTestDescriptor = function (req,res) {
+exports.deleteTestDescriptor = async function (req,res) {
         const id = req.params.id;
 
         const errors = validationResult(req);
@@ -178,7 +178,7 @@ exports.deleteTestDescriptor = function (req,res) {
         }
     
   
-        QualityTestManager.deleteTestDescriptor(id).then(
+        await QualityTestManager.deleteTestDescriptor(id).then(
             result => {
                 return res.status(204).end();
             },

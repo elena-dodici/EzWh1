@@ -6,7 +6,7 @@ const { validationResult } = require('express-validator');
 
 const dateValidation = function(date) {
     const yyyymmddRegex = new RegExp(/^\d{4}\/(0[1-9]|1[0-2])\/(0[1-9]|[12][0-9]|3[01])$/);
-    const withHours = new RegExp(/^\d{4}\/[0-1][0-2]\/[0-3]\d\s([0-1][0-9]|2[0-3]):[0-5]\d$/);
+    const withHours = new RegExp(/^\d{4}\/(0[1-9]|1[0-2])\/(0[1-9]|[12][0-9]|3[01])\s([0-1][0-9]|2[0-3]):[0-5]\d$/);
     if(yyyymmddRegex.exec(date) || withHours.exec(date)) {
         return true;
     }
@@ -31,7 +31,7 @@ exports.postSkuItemSchema = {
         notEmpty: true,
     }
 }
-exports.postSkuItem = function(req,res) {
+exports.postSkuItem = async function(req,res) {
 
     const errors = validationResult(req);
 
@@ -51,7 +51,7 @@ exports.postSkuItem = function(req,res) {
     }
 
 
-    SKUItemManager.defineSKUItem(rfid, SKUId, dateOfStock).then(
+    await SKUItemManager.defineSKUItem(rfid, SKUId, dateOfStock).then(
         result => {
             return res.status(201).end();
         },
@@ -72,8 +72,8 @@ exports.postSkuItem = function(req,res) {
 
 
 
-exports.getSKuItems = function (req,res) {
-    let result = SKUItemManager.listAllSKUItems().then(
+exports.getSKuItems = async function (req,res) {
+    await SKUItemManager.listAllSKUItems().then(
         result => {
             //Remove the unnecessary fields for the apis
             result.forEach(skuitem => {
@@ -99,7 +99,7 @@ exports.getSKUItemBySKUSchema = {
     }
 }
 
-exports.getSkuItemsBySKU = function (req,res) {
+exports.getSkuItemsBySKU = async function (req,res) {
 
     const errors = validationResult(req);
 
@@ -110,7 +110,7 @@ exports.getSkuItemsBySKU = function (req,res) {
     }
 
     let skuId = req.params.id;
-    SKUItemManager.listForSKU(skuId).then(
+    await SKUItemManager.listForSKU(skuId).then(
         result => {
             //Remove the unnecessary fields for the apis
             result.forEach(skuitem => {
@@ -143,7 +143,7 @@ exports.getSKUItemByRfidSchema = {
     }
 }
 
-exports.getSKUItemByRfid = function (req,res) {
+exports.getSKUItemByRfid = async function (req,res) {
     let rfid = req.params.rfid;
 
     const errors = validationResult(req);
@@ -154,7 +154,7 @@ exports.getSKUItemByRfid = function (req,res) {
         });
     }
 
-    SKUItemManager.searchByRFID(rfid).then(
+    await SKUItemManager.searchByRFID(rfid).then(
         result => {
             return res.status(200).json(result);
         },
@@ -198,7 +198,7 @@ exports.putSkuItemSchema = {
     }
 }
 
-exports.putSkuItem = function (req,res) {
+exports.putSkuItem = async function (req,res) {
 
     const errors = validationResult(req);
 
@@ -219,7 +219,7 @@ exports.putSkuItem = function (req,res) {
     }
 
 
-    SKUItemManager.modifySKUItem(rfid, newRFID, newAvailable, newDateOfStock).then(
+    await SKUItemManager.modifySKUItem(rfid, newRFID, newAvailable, newDateOfStock).then(
         result => {
             return res.status(200).end()
         },
@@ -245,7 +245,7 @@ exports.deleteSKUItemSchema = {
     }
 }
 
-exports.deleteSkuItem = function (req,res) {
+exports.deleteSkuItem =  async function (req,res) {
 
     const errors = validationResult(req);
 
@@ -257,7 +257,7 @@ exports.deleteSkuItem = function (req,res) {
 
     let rfid = req.params.rfid;
 
-    SKUItemManager.deleteSKUItem(rfid).then(
+    await SKUItemManager.deleteSKUItem(rfid).then(
         result => {
             return res.status(204).end();
         },

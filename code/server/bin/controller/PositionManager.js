@@ -10,7 +10,7 @@ class PositionManager {
 
     constructor() {}
 
-    definePosition(positionID, aisleID, row, col, maxWeight, maxVolume) {
+    async definePosition(positionID, aisleID, row, col, maxWeight, maxVolume) {
         
         
         let p = new Position(positionID, aisleID, row, col, maxWeight, maxVolume, 0, 0);
@@ -77,7 +77,7 @@ class PositionManager {
             row: row,
             col: col
         }
-        let oldPosition = await this.loadPositionById(oldID);
+        //let oldPosition = await this.loadPositionById(oldID);
         
 
         return PersistentManager.update(Position.tableName, p, 'id', oldID);

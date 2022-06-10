@@ -12,13 +12,13 @@ const types = [
 
 const { validationResult } = require("express-validator");
 
-exports.getUserInfo = function (req, res) {
+exports.getUserInfo = async function (req, res) {
 	//returns current user information
 	return res.status(200).json();
 };
 
-exports.getSuppliers = function (req, res) {
-	UserManager.getAllSuppliers().then(
+exports.getSuppliers = async function (req, res) {
+	await UserManager.getAllSuppliers().then(
 		(suppliers) => {
 			const suppAPI = suppliers.map((s) => ({
 				id: s.id,
@@ -34,8 +34,8 @@ exports.getSuppliers = function (req, res) {
 	);
 };
 
-exports.getUsers = function (req, res) {
-	UserManager.getAllUsers().then(
+exports.getUsers = async function (req, res) {
+	await UserManager.getAllUsers().then(
 		(users) => {
 			
 			return res.status(200).json(users);
@@ -58,12 +58,10 @@ const possiblePostTypes = [
 
 exports.postUserSchema = {
 	name: {
-		notEmpty: true,
-		isAlpha: true,
+		notEmpty: true
 	},
 	surname: {
-		notEmpty: true,
-		isAlpha: true,
+		notEmpty: true
 	},
 	password: {
 		notEmpty: true,
@@ -89,7 +87,7 @@ exports.postUserSchema = {
 	},
 };
 
-exports.postUser = function (req, res) {
+exports.postUser = async function (req, res) {
 	const name = req.body.name;
 	const surname = req.body.surname;
 	const password = req.body.password;
@@ -106,7 +104,7 @@ exports.postUser = function (req, res) {
 	}
 
 	//Controlla che l'username non sia già stato preso!!!
-	UserManager.defineUser(name, surname, password, username, type).then(
+	await UserManager.defineUser(name, surname, password, username, type).then(
 		(result) => {
 			return res.status(201).end();
 		},
@@ -139,10 +137,10 @@ exports.loginSchema = {
     }
 }*/
 
-exports.managerSessions = function (req, res) {
+exports.managerSessions = async function (req, res) {
 	const username = req.body.username;
 	const password = req.body.password;
-	const user = UserManager.login(username, password, "manager").then(
+	const user = await UserManager.login(username, password, "manager").then(
 		(result) => {
 			return res.status(200).json(result);
 		},
@@ -152,24 +150,10 @@ exports.managerSessions = function (req, res) {
 	);
 };
 
-exports.customerSessions = function (req, res) {
+exports.customerSessions = async function (req, res) {
 	const username = req.body.username;
 	const password = req.body.password;
-	const user = UserManager.login(username, password, "customer").then(
-		(result) => {
-			return res.status(200).json(result);
-		},
-		(error) => {
-			console.log(error);
-			return res.status(500).json({ error: "generic error" });
-		}
-	);
-};
-
-exports.supplierSessions = function (req, res) {
-	const username = req.body.username;
-	const password = req.body.password;
-	const user = UserManager.login(username, password, "supplier").then(
+	const user = await UserManager.login(username, password, "customer").then(
 		(result) => {
 			return res.status(200).json(result);
 		},
@@ -179,10 +163,10 @@ exports.supplierSessions = function (req, res) {
 	);
 };
 
-exports.clerkSessions = function (req, res) {
+exports.supplierSessions = async function (req, res) {
 	const username = req.body.username;
 	const password = req.body.password;
-	const user = UserManager.login(username, password, "clerk").then(
+	const user = await UserManager.login(username, password, "supplier").then(
 		(result) => {
 			return res.status(200).json(result);
 		},
@@ -192,10 +176,10 @@ exports.clerkSessions = function (req, res) {
 	);
 };
 
-exports.qualityEmployeeSessions = function (req, res) {
+exports.clerkSessions = async function (req, res) {
 	const username = req.body.username;
 	const password = req.body.password;
-	const user = UserManager.login(username, password, "qualityEmployee").then(
+	const user = await UserManager.login(username, password, "clerk").then(
 		(result) => {
 			return res.status(200).json(result);
 		},
@@ -205,10 +189,23 @@ exports.qualityEmployeeSessions = function (req, res) {
 	);
 };
 
-exports.deliveryEmployeeSessions = function (req, res) {
+exports.qualityEmployeeSessions = async function (req, res) {
 	const username = req.body.username;
 	const password = req.body.password;
-	const user = UserManager.login(
+	const user = await UserManager.login(username, password, "qualityEmployee").then(
+		(result) => {
+			return res.status(200).json(result);
+		},
+		(error) => {
+			return res.status(500).json({ error: "generic error" });
+		}
+	);
+};
+
+exports.deliveryEmployeeSessions = async function (req, res) {
+	const username = req.body.username;
+	const password = req.body.password;
+	const user = await UserManager.login(
 		username,
 		password,
 		"deliveryEmployee"
@@ -222,8 +219,8 @@ exports.deliveryEmployeeSessions = function (req, res) {
 	);
 };
 
-exports.logout = function (req, res) {
-	UserManager.logout().then(
+exports.logout = async function (req, res) {
+	await UserManager.logout().then(
 		(result) => {
 			return res.status(200).end();
 		},
@@ -265,7 +262,7 @@ exports.putUserSchema = {
     }
 }
 
-exports.putUser = function (req, res) {
+exports.putUser = async function (req, res) {
 
     const errors = validationResult(req);
 
@@ -280,7 +277,7 @@ exports.putUser = function (req, res) {
 	const oldType = req.body.oldType;
 	const newType = req.body.newType;
 
-	UserManager.modifyUser(username, oldType, newType).then(
+	await UserManager.modifyUser(username, oldType, newType).then(
 		(result) => {
 			return res.status(200).end();
 		},
@@ -315,7 +312,7 @@ exports.deleteUserSchema = {
 	},
 }
 
-exports.deleteUser = function(req,res) {
+exports.deleteUser = async function(req,res) {
     const username = req.params.username;
     const type = req.params.type;
 
@@ -328,12 +325,13 @@ exports.deleteUser = function(req,res) {
 		});
 	}
 
-    UserManager.deleteUser(username, type).then(
+    await UserManager.deleteUser(username, type).then(
         result => {
+
             return res.status(204).end();
         },
         error => {
-            console.log(error);
+            
             return res.status(503).json({error: "generic error"});
         }
     )

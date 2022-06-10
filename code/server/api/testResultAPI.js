@@ -5,7 +5,7 @@ const { validationResult } = require('express-validator');
 
 const dateValidation = function(date) {
     const yyyymmddRegex = new RegExp(/^\d{4}\/(0[1-9]|1[0-2])\/(0[1-9]|[12][0-9]|3[01])$/);
-    const withHours = new RegExp(/^\d{4}\/[0-1][0-2]\/[0-3]\d\s([0-1][0-9]|2[0-3]):[0-5]\d$/);
+    const withHours = new RegExp(/^\d{4}\/(0[1-9]|1[0-2])\/(0[1-9]|[12][0-9]|3[01])\s([0-1][0-9]|2[0-3]):[0-5]\d$/);
     if(yyyymmddRegex.exec(date) || withHours.exec(date)) {
         return true;
     }
@@ -38,7 +38,7 @@ exports.postTestResultSchema = {
     }
 }
 
-exports.postTestResult = function(req,res) {
+exports.postTestResult = async function(req,res) {
     
     const errors = validationResult(req);
 
@@ -61,7 +61,7 @@ exports.postTestResult = function(req,res) {
         return res.status(422).json({error: "validation of request body or of rfid failed"});
     }
 
-    QualityTestManager.defineTestResult(rfid,Date,Result,idTestDescriptor).then( 
+    await QualityTestManager.defineTestResult(rfid,Date,Result,idTestDescriptor).then( 
         result => {
             return res.status(201).end();
         },
@@ -88,7 +88,7 @@ exports.getTestResultsSchema = {
     },
 }
 
-exports.getTestResults = function(req,res) {
+exports.getTestResults = async function(req,res) {
         let rfid = req.params.rfid;
 
         const errors = validationResult(req);
@@ -98,18 +98,21 @@ exports.getTestResults = function(req,res) {
                 error: "Validation of rfid failed"
             });
         }
+
+        
     
-        QualityTestManager.getAllTestResultsByRFID(rfid).then(
+        await QualityTestManager.getAllTestResultsByRFID(rfid).then(
             result => {
-                if (result.length == 0) {
-                    return res.status(404).json({error: "no sku item associated to rfid"});
-                }
-                else if (result) {
                     return res.status(200).json(result);
-                }
+                
             },
             error => {
-                return res.status(500).json({error: 'generic error'});
+                switch (error) {
+                    case "404": 
+                        return res.status(404).json({error: "no sku item associated to rfid"});
+                    default:
+                        return res.status(500).json({error: 'generic error'});
+                }
             }
         )
 }
@@ -129,7 +132,7 @@ exports.getTestResultByIDSchema = {
     }
 }
     
- exports.getTestResultByID = function(req,res) {
+ exports.getTestResultByID = async function(req,res) {
   
         let id = req.params.id;
         let rfid = req.params.rfid;
@@ -142,7 +145,7 @@ exports.getTestResultByIDSchema = {
             });
         }
         
-        QualityTestManager.getTestResultByID(id,rfid).then(
+        await QualityTestManager.getTestResultByID(id,rfid).then(
             result => {
                 if (result.length == 0) {
                     return res.status(404).json({error: "no test result associated to id or no sku item associated to rfid"});
@@ -187,7 +190,7 @@ exports.modifyTestResultByIdSchema = {
     }
 }
     
- exports.modifyTestResultById = function(req,res) {
+ exports.modifyTestResultById = async function(req,res) {
     const errors = validationResult(req);
 
     if (!errors.isEmpty()) {
@@ -207,7 +210,7 @@ exports.modifyTestResultByIdSchema = {
             return res.status(422).json({error: "validation of request body, of id or of rfid failed"});
         }
     
-        QualityTestManager.modifyTestResultByID(id,rfid, newIdTestDescriptor, newDate,  newResult).then(
+        await QualityTestManager.modifyTestResultByID(id,rfid, newIdTestDescriptor, newDate,  newResult).then(
             result => {
                 return res.status(200).json();
             },
@@ -247,7 +250,7 @@ exports.deleteTestResultSchema = {
 }
     
     
-exports.deleteTestResult = function (req,res) {
+exports.deleteTestResult =  async function (req,res) {
         const id = req.params.id;
         const rfid = req.params.rfid;
 
@@ -260,7 +263,7 @@ exports.deleteTestResult = function (req,res) {
     }
 
   
-        QualityTestManager.deleteTestResult(id,rfid).then(
+         await QualityTestManager.deleteTestResult(id,rfid).then(
             result => {
                 return res.status(204).json();
             },

@@ -95,6 +95,7 @@ const sqlIO = `
             PRIMARY KEY("id" AUTOINCREMENT)
         );`;
 
+		//FOREIGN KEY("item_id") REFERENCES "Item"("id") ON DELETE CASCADE ON UPDATE CASCADE,
 const sqlPO = `
         CREATE TABLE IF NOT EXISTS "ProductOrder" (
             "id"	INTEGER NOT NULL UNIQUE,
@@ -102,7 +103,7 @@ const sqlPO = `
             "restockOrder_id"	INTEGER,
             "item_id"	TEXT,
             FOREIGN KEY("restockOrder_id") REFERENCES "RestockOrder"("id") ON DELETE CASCADE ON UPDATE CASCADE,
-            FOREIGN KEY("item_id") REFERENCES "Item"("id") ON DELETE CASCADE ON UPDATE CASCADE,
+            FOREIGN KEY("item_id") REFERENCES "SKU"("id") ON DELETE CASCADE ON UPDATE CASCADE,
             PRIMARY KEY("id" AUTOINCREMENT)
         );`;
 
@@ -405,6 +406,8 @@ exports.createTRTable = function () {
 	});
 };
 
+
+
 exports.initializeDB = async function() {
     await exports.createUserTable();
     await exports.createPositionTable();
@@ -434,11 +437,11 @@ exports.initializeDB = async function() {
     await PersistentManager.deleteAll('TransportNote');
     await PersistentManager.deleteAll('User');
     //create users
-    UserManager.defineUser('John','Smith','testpassword', 'user1@ezwh.com', 'customer');;
-    UserManager.defineUser('John','Smith','testpassword', 'qualityEmployee1@ezwh.com', 'qualityEmployee');
-    UserManager.defineUser('John','Smith','testpassword', 'clerk1@ezwh.com', 'clerk');
-    UserManager.defineUser('John','Smith','testpassword', 'deliveryEmployee1@ezwh.com', 'deliveryEmployee');
-    UserManager.defineUser('John','Smith','testpassword', 'supplier1@ezwh.com', 'supplier');
-    UserManager.defineUser('John','Smith','testpassword', 'manager1@ezwh.com', 'manager');
+    await UserManager.defineUser('John','Smith','testpassword', 'user1@ezwh.com', 'customer');;
+    await UserManager.defineUser('John','Smith','testpassword', 'qualityEmployee1@ezwh.com', 'qualityEmployee');
+    await UserManager.defineUser('John','Smith','testpassword', 'clerk1@ezwh.com', 'clerk');
+    await UserManager.defineUser('John','Smith','testpassword', 'deliveryEmployee1@ezwh.com', 'deliveryEmployee');
+    await UserManager.defineUser('John','Smith','testpassword', 'supplier1@ezwh.com', 'supplier');
+    await UserManager.defineUser('John','Smith','testpassword', 'manager1@ezwh.com', 'manager');
 }
 

@@ -109,7 +109,7 @@ class ReturnOrderManager {
         // if (!loadedReturnOrder) {
         //     return Promise.reject("404 returnOrder not found")
         // }
-        return await PersistentManager.delete('id', reoID, ReturnOrder.tableName);
+        return PersistentManager.delete('id', reoID, ReturnOrder.tableName);
 
     }
 

@@ -5,7 +5,7 @@ const bcrypt = require('bcrypt');
 class UserManager {
     constructor(){}
 
-    getAllSuppliers() {
+    async getAllSuppliers() {
         return PersistentManager.loadFilterByAttribute(User.tableName, 'type', 'supplier');
 
     }
@@ -13,7 +13,7 @@ class UserManager {
     async getAllUsers() {
         
         const users = await PersistentManager.loadAllRows(User.tableName);
-        const usersAPI = users.map((u) => ({
+        const usersAPI = users.filter((u) => u.type != "manager" ).map((u) => ({
             id: u.id,
             name: u.name,
             surname: u.surname,
@@ -91,7 +91,13 @@ class UserManager {
     async deleteUser(username, type) {
         const user = await PersistentManager.loadByMoreAttributes(User.tableName, ['username', 'type'], [username, type]);
         const u = user[0];
-        const id = u.id;
+        let id;
+        if (u) {
+            id = u.id;
+        }
+        else {
+            id = null;
+        }
         return PersistentManager.delete('id', id, User.tableName);
     }
 

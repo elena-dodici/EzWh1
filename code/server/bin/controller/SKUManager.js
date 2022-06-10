@@ -8,7 +8,7 @@ const Position = require('../model/Position');
 class SKUManager{
     constructor() {}
 
-    defineSKU(description, weight, volume, price, notes, availableQuantity) {
+    async defineSKU(description, weight, volume, price, notes, availableQuantity) {
         //Converting it to be saved in the db
         //Delete sku.id because it is autoincremented
         const sku = new SKU(null, description, weight, volume, price, notes, availableQuantity, null);
@@ -23,7 +23,7 @@ class SKUManager{
         for (let i = 0; i < result.length; i++) {
             let currentSKU = result[i];
             currentSKU.testDescriptors = [];
-            let res = await this._loadTests(currentSKU.id);
+            let res = await PersistentManager.loadFilterByAttribute(TestDescriptor.tableName, 'idSKU', currentSKU.id);
             for (const test of res) {
                currentSKU.testDescriptors.push(test.id);
             }  
@@ -43,7 +43,7 @@ class SKUManager{
         let currentSKU = await PersistentManager.loadOneByAttribute('id', SKU.tableName, id);
         currentSKU.testDescriptors = [];
         
-        let res = await this._loadTests(id);
+        let res = await PersistentManager.loadFilterByAttribute(TestDescriptor.tableName, 'idSKU', currentSKU.id);
             for (const test of res) {
                currentSKU.testDescriptors.push(test.id);
             }  
@@ -52,7 +52,9 @@ class SKUManager{
     }
 
     async modifySKU(id, newDescription, newWeight, newVolume, newPrice, newNotes, newQuantity) {
-        let loadedSKU = await this.getSKUByID(id);
+       
+        let loadedSKU = await PersistentManager.loadOneByAttribute('id', SKU.tableName, id);
+        
         if (loadedSKU) {
             //There is a position to handle
             if (loadedSKU.position != null) {
@@ -103,7 +105,7 @@ class SKUManager{
         if (!existsSKU) {
             return Promise.reject("404 SKU");
         }
-        let loadedSKU = await this.getSKUByID(SKUId);
+        let loadedSKU = await PersistentManager.loadOneByAttribute('id', SKU.tableName, SKUId);
         const sku_weight = loadedSKU.weight;
         const sku_volume = loadedSKU.volume;
         const sku_quantity = loadedSKU.availableQuantity;
@@ -133,26 +135,14 @@ class SKUManager{
     }
 
     async deleteSKU(SKUId) {
-        let loadedSKU = await this.getSKUByID(SKUId);
-        
-        if (loadedSKU.availableQuantity) {
-            return Promise.reject("422 availabiliy not 0");
-        }
-
+    
         return PersistentManager.delete('id', SKUId, SKU.tableName);
-
+        
     }
 
     async _loadTests(id) {
         let tests;
-        await PersistentManager.loadFilterByAttribute(TestDescriptor.tableName, 'idSKU', id).then(
-            result => {
-                tests = result;
-            },
-            error => {
-                console.log(error);
-            }  
-        );
+        tests = await PersistentManager.loadFilterByAttribute(TestDescriptor.tableName, 'idSKU', id);
         return tests;
 
     }

@@ -48,7 +48,7 @@ exports.postPositionSchema = {
 }
 
 //POST /api/position
-exports.postPosition = function(req,res) {
+exports.postPosition = async function(req,res) {
     
     const errors = validationResult(req);
 
@@ -73,9 +73,9 @@ exports.postPosition = function(req,res) {
         return res.status(422).json({error: 'validation of request body failed'});
     }
     
-    let result = PositionManager.definePosition(positionID, aisleID, row, col, maxWeight, maxVolume)
+
     
-    result.then(
+    await PositionManager.definePosition(positionID, aisleID, row, col, maxWeight, maxVolume).then(
         result => {
             return res.status(201).end();
         },
@@ -88,8 +88,8 @@ exports.postPosition = function(req,res) {
 
 
 
-exports.getPositions = function(req,res) {
-    PositionManager.listAllPositions().then(
+exports.getPositions = async function(req,res) {
+    await PositionManager.listAllPositions().then(
         result => {
             result.forEach((p) => {
                 delete p.sku_id
@@ -188,8 +188,7 @@ exports.updatePosition = async function(req,res) {
         return res.status(422).json({error: 'validation of request body or of positionID failed'});
     }
 
-    let result = PositionManager.modifyPosition(id, aisle, row, col, max_weight, max_volume, occupied_weight, occupied_volume);
-    result.then( 
+    await PositionManager.modifyPosition(id, aisle, row, col, max_weight, max_volume, occupied_weight, occupied_volume).then( 
         result => {
             return res.status(200).json();
         },
@@ -225,7 +224,7 @@ exports.changePositionIDSchema = {
     }
 }
 
-exports.changePositionID = function(req,res) {
+exports.changePositionID = async function(req,res) {
     let id= req.params.positionID;
     let newID = req.body.newPositionID;
 
@@ -238,8 +237,7 @@ exports.changePositionID = function(req,res) {
     }
     
 
-    let result = PositionManager.changePositionID(id, newID);
-    result.then(
+    await PositionManager.changePositionID(id, newID).then(
         result => {
             return res.status(200).json();
         },
@@ -265,7 +263,7 @@ exports.deletePositionSchema = {
     },
 }
 
-exports.deletePosition = function(req,res) {
+exports.deletePosition = async function(req,res) {
     let id= req.params.positionID;
 
     const errors = validationResult(req);
@@ -276,9 +274,7 @@ exports.deletePosition = function(req,res) {
         });
     }
     
-
-    let result = PositionManager.deletePosition(id);
-    result.then(
+    await PositionManager.deletePosition(id).then(
         result => {
             return res.status(204).end();
         },

@@ -47,7 +47,7 @@ describe('RestockOrder tests', () => {
         
             input ={
                 issue_date : "2021/11/29 09:33",
-                products : [{"SKUId":SkuId,"description":"a new item","price":10.99,"qty":30},
+                products : [{"SKUId":SkuId,"description":"product","price":10.99,"qty":30},
                            ],
                 supplier_id : supplier_id
             }
@@ -77,14 +77,14 @@ describe('RestockOrder tests', () => {
             let itemId = await PersistentManager.store("Item",item);
             input ={
                 issue_date : "2021/11/29 09:33",
-                products : [{"SKUId":0,"description":"a new item","price":10.99,"qty":30},
+                products : [{"SKUId":0,"description":"product","price":10.99,"qty":30},
                            ],
                 supplier_id : supplier_id
             }
             return expect(RestockOrderManager.defineRestockOrder("2022-20-20", input.products, input.supplier_id)).rejects.toEqual("404 no sku Id found");
             
         })
-
+/*
         test('define restockOrder no itemid', async () => {
             const user = new User("user1@ezwh.com", "testpassword", "John", "Snow", "supplier");          
             supplier_id = await PersistentManager.store("User",user);
@@ -99,13 +99,13 @@ describe('RestockOrder tests', () => {
         
             input ={
                 issue_date : "2021/11/29 09:33",
-                products : [{"SKUId":SkuId,"description":"a new item","price":10.99,"qty":30},
+                products : [{"SKUId":SkuId,"description":"product","price":10.99,"qty":30},
                            ],
                 supplier_id : supplier_id
             }
             return expect( RestockOrderManager.defineRestockOrder(input.issue_date, input.products, input.supplier_id)).rejects.toEqual("404 item");        
            
-        })
+        })*/
 
 
 
@@ -130,7 +130,7 @@ describe('RestockOrder tests', () => {
         
             input ={
                 issue_date : "2021/11/29 09:33",
-                products : [{"SKUId":SkuId,"description":"a new item","price":10.99,"qty":30},
+                products : [{"SKUId":SkuId,"description":"product","price":10.99,"qty":30},
                            ],
                 supplier_id : supplier_id
             }
@@ -164,7 +164,7 @@ describe('RestockOrder tests', () => {
         
             input ={
                 issue_date : "2021/11/29 09:33",
-                products : [{"SKUId":SkuId,"description":"a new item","price":10.99,"qty":30},
+                products : [{"SKUId":SkuId,"description":"product","price":10.99,"qty":30},
                            ],
                 supplier_id : supplier_id
             }
@@ -191,7 +191,7 @@ describe('RestockOrder tests', () => {
         
             input ={
                 issue_date : "2021/11/29 09:33",
-                products : [{"SKUId":SkuId,"description":"a new item","price":10.99,"qty":30},
+                products : [{"SKUId":SkuId,"description":"product","price":10.99,"qty":30},
                            ],
                 supplier_id : supplier_id
             }
@@ -221,12 +221,12 @@ describe('RestockOrder tests', () => {
             delete Sku.testDescriptors;
             let SkuId = await PersistentManager.store("SKU",Sku);
             //itemid must be exist
-            let item = new Item(null,"a new item",10.99,SkuId,supplier_id);
+            let item = new Item(null,"product",10.99,SkuId,supplier_id);
             let itemId = await PersistentManager.store("Item",item);
         
             input ={
                 issue_date : "2021/11/29 09:33",
-                products : [{"SKUId":SkuId,"description":"a new item","price":10.99,"qty":30},
+                products : [{"SKUId":SkuId,"description":"product","price":10.99,"qty":30},
                            ],
                 supplier_id : supplier_id
             }
@@ -251,12 +251,12 @@ describe('RestockOrder tests', () => {
             delete Sku.testDescriptors;
             let SkuId = await PersistentManager.store("SKU",Sku);
             //itemid must be exist
-            let item = new Item(null,"a new item",10.99,SkuId,supplier_id);
+            let item = new Item(null,"product",10.99,SkuId,supplier_id);
             let itemId = await PersistentManager.store("Item",item);
         
             input ={
                 issue_date : "2021/11/29 09:33",
-                products : [{"SKUId":SkuId,"description":"a new item","price":10.99,"qty":30},
+                products : [{"SKUId":SkuId,"description":"product","price":10.99,"qty":30},
                            ],
                 supplier_id : supplier_id
             }
@@ -266,7 +266,7 @@ describe('RestockOrder tests', () => {
                     id: roId,
                     issueDate: input.issue_date,
                     state: "ISSUED",
-                    products: [{"SKUId":SkuId,"description":"a new item","price":10.99,"qty":30},],
+                    products: [{"SKUId":SkuId,"description":"product","price":10.99,"qty":30},],
                     supplierId: input.supplier_id,
                     skuItems: []
                 }
@@ -285,12 +285,12 @@ describe('RestockOrder tests', () => {
             delete Sku.testDescriptors;
             let SkuId = await PersistentManager.store("SKU",Sku);
             //itemid must be exist
-            let item = new Item(null,"a new item",10.99,SkuId,supplier_id);
+            let item = new Item(null,"product",10.99,SkuId,supplier_id);
             let itemId = await PersistentManager.store("Item",item);
         
             input ={
                 issue_date : "2021/11/29 09:33",
-                products : [{"SKUId":SkuId,"description":"a new item","price":10.99,"qty":30},
+                products : [{"SKUId":SkuId,"description":"product","price":10.99,"qty":30},
                            ],
                 supplier_id : supplier_id
             }
@@ -311,12 +311,12 @@ describe('RestockOrder tests', () => {
             delete Sku.testDescriptors;
             let SkuId = await PersistentManager.store("SKU",Sku);
             //itemid must be exist
-            let item = new Item(null,"a new item",10.99,SkuId,supplier_id);
+            let item = new Item(null,"product",10.99,SkuId,supplier_id);
             let itemId = await PersistentManager.store("Item",item);
         
             input ={
                 issue_date : "2021/11/29 09:33",
-                products : [{"SKUId":SkuId,"description":"a new item","price":10.99,"qty":30},
+                products : [{"SKUId":SkuId,description:"product","price":10.99,"qty":30},
                            ],
                 supplier_id : supplier_id
             }
@@ -360,7 +360,7 @@ describe('RestockOrder tests', () => {
         
             input ={
                 issue_date : "2021/11/29 09:33",
-                products : [{"SKUId":SkuId,"description":"a new item","price":10.99,"qty":30},
+                products : [{"SKUId":SkuId,"description":"product","price":10.99,"qty":30},
                            ],
                 supplier_id : supplier_id
             }
@@ -396,7 +396,7 @@ describe('RestockOrder tests', () => {
         
             input ={
                 issue_date : "2021/11/29 09:33",
-                products : [{"SKUId":SkuId,"description":"a new item","price":10.99,"qty":30},
+                products : [{"SKUId":SkuId,"description":"product","price":10.99,"qty":30},
                            ],
                 supplier_id : supplier_id
             }
@@ -420,7 +420,7 @@ describe('RestockOrder tests', () => {
         
             input ={
                 issue_date : "2021/11/29 09:33",
-                products : [{"SKUId":SkuId,"description":"a new item","price":10.99,"qty":30},
+                products : [{"SKUId":SkuId,"description":"product","price":10.99,"qty":30},
                            ],
                 supplier_id : supplier_id
             }

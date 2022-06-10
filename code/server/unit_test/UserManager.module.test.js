@@ -50,12 +50,14 @@ describe('user tests',  () => {
         test('define user',async () => {
             ids = [];
             for (const type of types) {
+                if (type == "manager") continue;
                 const id = await UserManager.defineUser(name, surname, password, username, type);
                 ids.push(id);
             }
             let users = await UserManager.getAllUsers();
+
             users = new Set(users);
-            let expectedUsers = types.map( (t, i) => {return {
+            let expectedUsers = types.filter((t) => t!= "manager").map( (t, i) => {return {
                 id: ids[i],
                 name: "John",
                 surname: "Smith",

@@ -226,7 +226,7 @@ class InternalOrderManager{
         //     }
         // }
 
-        PersistentManager.delete('id',roId,InternalOrder.tableName)
+        return PersistentManager.delete('id',roId,InternalOrder.tableName)
     }
 
 

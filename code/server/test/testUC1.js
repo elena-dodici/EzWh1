@@ -54,7 +54,7 @@ function newSKU(expectedHTTPStatus, description, weight, volume, notes, price, a
 
 //Scenario 1-2
  function modifyPositionOfSku(expectedHTTPStatus) {
-    it('modifying sku position', async function () {
+    it('modifying sku position', function (done) {
         agent.get('/api/skus').then(
             function (res) {
                 let skuid = res.body[0].id;
@@ -68,7 +68,7 @@ function newSKU(expectedHTTPStatus, description, weight, volume, notes, price, a
                                 agent.put(`/api/sku/${skuid}/position`).send(positionObj).then(
                                     function (res) {
                                         res.should.have.status(expectedHTTPStatus);
-                                        
+                                        done();
                                     }
                                 )
                             }
@@ -82,7 +82,7 @@ function newSKU(expectedHTTPStatus, description, weight, volume, notes, price, a
 
 //Scenario 1-3 
  function modifyWeightVolume(expectedHTTPStatus, weight, volume) {
-    it('modifying sku weight and volume', async function () {
+    it('modifying sku weight and volume', function (done) {
         agent.get('/api/skus').then(
             function (res) {
                 let skuid = res.body[0].id;
@@ -100,7 +100,7 @@ function newSKU(expectedHTTPStatus, description, weight, volume, notes, price, a
                         agent.put(`/api/sku/${skuid}`).send(modifiedSKU).then(
                             function (res) {
                                 res.should.have.status(expectedHTTPStatus);
-                                
+                                done();
                             }
                         )
                     }

@@ -37,7 +37,9 @@ class PersistentManager {
 					return;
 				}
 			});
-			//db.get("PRAGMA foreign_keys = ON");
+			db.get("PRAGMA foreign_keys = ON");
+			db.get("PRAGMA busy_timeout = 10000");
+
 			db.run(sql, attributesValue, function(err) {
 				if (err) {
 					reject(err);
@@ -58,7 +60,9 @@ class PersistentManager {
 					return;
 				}
 			});
-			//db.get("PRAGMA foreign_keys = ON");
+			db.get("PRAGMA foreign_keys = ON");
+			db.get("PRAGMA busy_timeout = 10000");
+
 			db.all(sql, (err, rows) => {
 				if (err) {
 					reject(err);
@@ -71,13 +75,17 @@ class PersistentManager {
 	}
 
 
-    async delete(attribute_name ,id, tableName) {
+   	async delete(attribute_name ,id, tableName) {
         return new Promise ((resolve, reject) => {
             const sql = "DELETE FROM " + tableName + " WHERE "+ attribute_name + "= ?";
             const db = new sqlite.Database(this.dbName, (err) => {if (err) reject(err) });
-			//db.get("PRAGMA foreign_keys = ON");
-            db.run(sql, id, (err) => {if (err) reject(err); resolve(); } )
-            db.close();
+			db.get("PRAGMA foreign_keys = ON");
+			db.get("PRAGMA busy_timeout = 10000");
+
+			
+			db.run(sql, id, (err) => {if (err) reject(err); resolve(); } )
+			db.close();
+			
         })
     }
 
@@ -85,7 +93,9 @@ class PersistentManager {
         return new Promise ((resolve, reject) => {
             const sql = "SELECT * FROM " + tableName + " WHERE " + parameter_name + "= ?";
             const db = new sqlite.Database(this.dbName, (err) => {if (err) reject(err) });
-			//db.get("PRAGMA foreign_keys = ON");
+			db.get("PRAGMA foreign_keys = ON");
+			db.get("PRAGMA busy_timeout = 10000");
+
             db.get(sql, value, (err, row) => {if (err) reject(err); resolve(row); } )
             db.close();
         })
@@ -115,7 +125,9 @@ class PersistentManager {
 		
 
             const db = new sqlite.Database(this.dbName, (err) => {if (err) reject(err) });
-			//db.get("PRAGMA foreign_keys = ON");
+			db.get("PRAGMA foreign_keys = ON");
+			db.get("PRAGMA busy_timeout = 10000");
+
             db.run(sql, [...attributesValue, id], (err) => {
                 if (err) 
 					reject(err);
@@ -123,7 +135,7 @@ class PersistentManager {
 				
                 resolve();
             });
-            
+            db.close();
         }) 
     }
 
@@ -132,7 +144,9 @@ class PersistentManager {
         return new Promise ((resolve, reject) => {
             const sql = "SELECT * FROM " + tableName + " WHERE " + parameterName + "= ?";
             const db = new sqlite.Database(this.dbName, (err) => {if (err) reject(err) });
-			//db.get("PRAGMA foreign_keys = ON");
+			db.get("PRAGMA foreign_keys = ON");
+			db.get("PRAGMA busy_timeout = 10000");
+
             db.all(sql, value, (err,rows) => {if (err) reject(err); resolve(rows); } )
             db.close();
         })
@@ -145,7 +159,9 @@ class PersistentManager {
 			})
 			const sql = "SELECT * FROM " + tableName + " WHERE " + placeHolders.join(' AND ');
 			const db = new sqlite.Database(this.dbName, (err) => {if (err) reject(err) });
-			//db.get("PRAGMA foreign_keys = ON");
+			db.get("PRAGMA foreign_keys = ON");
+			db.get("PRAGMA busy_timeout = 10000");
+
 			db.all(sql, values, (err,rows) => {if (err) reject(err); resolve(rows); } );
 			db.close();
 		})
@@ -157,7 +173,9 @@ class PersistentManager {
 			const selectedAttributes = selectedNames.join(',');
 			const sql = "SELECT " + selectedAttributes + " FROM " + tableName + " WHERE " + parameter_name + "= ?";
             const db = new sqlite.Database(this.dbName, (err) => {if (err) reject(err) });
-			//db.get("PRAGMA foreign_keys = ON");
+			db.get("PRAGMA foreign_keys = ON");
+			db.get("PRAGMA busy_timeout = 10000");
+
             db.get(sql, value, (err, row) => {if (err) reject(err); resolve(row); } )
             db.close();
 		})
@@ -182,11 +200,13 @@ class PersistentManager {
 		return new Promise ((resolve, reject) => {
 			const sql = "DELETE FROM " + tableName;
             const db = new sqlite.Database(this.dbName, (err) => {if (err) reject(err) });
-			//db.get("PRAGMA foreign_keys = ON");
+			db.get("PRAGMA foreign_keys = ON");
+			db.get("PRAGMA busy_timeout = 10000");
+
             db.run(sql, (err) => {if (err) {
 			
 				reject(err);} resolve()} )
-            
+            db.close();
 		})
 	}
 
