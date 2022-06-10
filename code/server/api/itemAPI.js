@@ -72,6 +72,7 @@ exports.postItem = async function(req,res) {
                     return res.status(422).json({error: "validation of request body failed or this supplier already sells an item with the same SKUId or supplier already sells an Item with the same ID"});
                     break;
                 default:
+                    console.log(error);
                     return res.status(503).json({error: "generic error"});
                     break;
             }

@@ -99,6 +99,7 @@ describe('Test modify Item', () => {
         let sku_id = await PersistentManager.store("SKU",sku);
         let supplier_id = await PersistentManager.store("User",user);
         const item = {
+            id: 1,
             description: "description",
             price: '2022-01-01',
             SKUId: sku_id,
@@ -146,6 +147,7 @@ describe('delete item',  () => {
         let sku_id = await PersistentManager.store("SKU",sku);
         let supplier_id = await PersistentManager.store("User",user);
         const item = {
+            id: 1,
             description: "description",
             price: '2022-01-01',
             SKUId: sku_id,

@@ -46,6 +46,12 @@ exports.postRestockOrderSchema = {
             options: {min: 0}
         }
     },
+    'products.*.itemId': {
+        notEmpty: true, 
+        isNumeric: {
+            options: {min: 0}
+        }
+    },
     'products.*.description': {
         notEmpty: true
     },
@@ -69,7 +75,7 @@ exports.postRestockOrder = async function(req,res) {
     if (!errors.isEmpty()) {
         return res.status(422).json({
             //errors: errors.array()
-            error: "validation of request body failed"
+            error: "validation of request body failed, supplier doesn't sell a product with a certain itemId or supplier itemId doesn't correspond to SKUId"
         });
     }
 
@@ -79,8 +85,8 @@ exports.postRestockOrder = async function(req,res) {
 
     
     if (!dateValidation(issue_date)) {
-    
-        return res.status(422).json({error: "validation of request body failed"});
+        
+        return res.status(422).json({error: "validation of request body failed, supplier doesn't sell a product with a certain itemId or supplier itemId doesn't correspond to SKUId"});
     }
   
     
@@ -89,7 +95,13 @@ exports.postRestockOrder = async function(req,res) {
             return res.status(201).end();
         },
         error => {
-            return res.status(503).json({error: 'generic error'})
+            switch (error) {
+                case "422 supplier doesn't sell a product with a certain itemId or supplier itemId doesn't correspond to SKUId":
+                    return res.status(422).json({error: "validation of request body failed, supplier doesn't sell a product with a certain itemId or supplier itemId doesn't correspond to SKUId"});
+                default:
+                    console.log(error);
+                    return res.status(503).json({error: 'generic error'});
+            }
         }
     )
 
