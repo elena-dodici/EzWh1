@@ -78,6 +78,12 @@ exports.postReturnOrderSchema = {
             options: {min: 0}
         }
     },
+    'products.*.itemId': {
+        notEmpty: true, 
+        isNumeric: {
+            options: {min: 0}
+        }
+    },
     'products.*.description': {
         notEmpty: true
     },

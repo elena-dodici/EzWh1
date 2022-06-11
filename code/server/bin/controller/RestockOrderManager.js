@@ -21,8 +21,6 @@ class RestockOrderManager {
 			[supplierId, "supplier"]
 		);
 		
-
-		
 		if (suppExists.length === 0) {
 			return Promise.reject("404 no supplier Id found");
 		}
@@ -139,11 +137,8 @@ class RestockOrderManager {
 		// let eachOrderInfo = {};
 		for (const order of restockOrders) {
 			let eachOrderInfo = await this.addOneOrderInfo(order);
-			if (eachOrderInfo.state === "ISSUED") {
-				eachOrderInfo.transportNote = [];
-				if (eachOrderInfo.state === "DELIVERY") {
-					eachOrderInfo.skuItems = [];
-				}
+			if (eachOrderInfo.state === "DELIVERY" || eachOrderInfo.state === "ISSUED") {
+				eachOrderInfo.skuItems = [];
 			}
 			finalRes.push(eachOrderInfo);
 		}
@@ -158,9 +153,6 @@ class RestockOrderManager {
 			"ISSUED"
 		);
 
-		if (issueOrders.length === 0) {
-			return Promise.reject("404 No IssuedOrders Found");
-		}
 
 		let finalRes = [];
 		// let eachOrderInfo = {};
@@ -253,30 +245,32 @@ class RestockOrderManager {
 	async addOneOrderInfo(order) {
 		let curOrderid = order.id;
 		//gets all the rows in ProductOrder where restockOrder_id == curOrderid
-		//{ id: 16, quantity: 30, restockOrder_id: 28, item_id: '1' }
+		//"products": [{"SKUId":12, "itemId":10,"description":"a product","price":10.99,"qty":30},
 		let productOrdersRows = await PersistentManager.loadFilterByAttribute(
 			ProductOrder.tableName,
 			"restockOrder_id",
 			curOrderid
 		);
 		let products = [];
+		let suppId = order.supplier_id;
 
 		for (const product of productOrdersRows) {
-			/*
+			
 			let item = await PersistentManager.loadOneByAttribute(
 				"id",
 				Item.tableName,
 				product.item_id
-			);*/
-
+			);
+				/*
 			let item = await PersistentManager.loadOneByAttribute(
 				"id",
 				SKU.tableName,
 				product.item_id
-			);
+			);*/
 
 			const skuInfo = {
-				SKUId: item.id,
+				SKUId: item.SKUId,
+				ItemId: item.id,
 				description: item.description,
 				price: item.price,
 				qty: product.quantity,
@@ -304,12 +298,17 @@ class RestockOrderManager {
 			curOrderid
 		);
 		//use map to sort only rfid + skuid and add to skuitem in res
-		let skuItems = skuItemsRow.map((item) => {
-			return {
-				SKUId: item.SKUId,
-				RFID: item.RFID,
-			};
-		});
+		let skuItems = [];
+		for (let j= 0; j<skuItemsRow.length; j++) {
+			let item = await PersistentManager.loadByMoreAttributes(Item.tableName, ['SKUId', 'supplierId'],[skuItemsRow[j].SKUId, suppId]);
+			let itemid = item[0].id;
+			let productSkuItem = {
+				SKUId: skuItemsRow[j].SKUId,
+				itemId: itemid,
+				RFID: skuItemsRow[j].RFID
+			}
+			skuItems.push(productSkuItem);
+		}
 
 		let o;
 

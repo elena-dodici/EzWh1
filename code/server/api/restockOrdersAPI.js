@@ -164,7 +164,6 @@ exports.getRestockIssuedOrder = async function(req,res) {
             return res.status(200).json(result);
         },
         error => {
-            
             return res.status(500).json({error:"generic error"});
         }
     )
@@ -357,6 +356,10 @@ exports.putSKUItemsSchema = {
         notEmpty: true,
         isNumeric: true,
         isLength: {options: {min:32, max: 32}}
+    },
+    'skuItems.*.itemId': {
+        notEmpty: true,
+        isNumeric: {options: {min:0}}
     }
     
 }

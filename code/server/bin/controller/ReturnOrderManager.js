@@ -92,8 +92,10 @@ class ReturnOrderManager {
         for (const sku of skuItemList) {
 
             let result = await PersistentManager.loadFilterByAttribute(Sku.tableName, "id", sku.SKUId);
+            let productOrder = await PersistentManager.loadFilterByAttribute(ProductOrder.tableName, "restockOrder_id", sku.restockOrder_id);
             let item = {
             "SKUId": sku.SKUId,
+            "itemId": productOrder[0].item_id,
             "description": result[0].description,
             "price": result[0].price,
             "RFID": sku.RFID                    
