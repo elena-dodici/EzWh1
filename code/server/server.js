@@ -220,14 +220,14 @@ app.post('/api/item',checkSchema(item.postItemSchema), item.postItem);
 //GET /api/items
 app.get('/api/items',  item.getItems);
 
-//GET /api/items/:id
-app.get('/api/items/:id',  checkSchema(item.getItemByIDSchema),item.getItemByID);
+//GET /api/items/:id/:supplierId
+app.get('/api/items/:id/:supplierId',  checkSchema(item.getItemByIDSchema),item.getItemByID);
 
-//PUT /api/item/:id
-app.put('/api/item/:id',checkSchema(item.modifyItemByIdSchema), item.modifyItemById);
+//PUT /api/item/:id/:supplierId
+app.put('/api/item/:id/:supplierId',checkSchema(item.modifyItemByIdSchema), item.modifyItemById);
 
-//DELETE /api/items/:id
-app.delete('/api/items/:id', checkSchema(item.deleteItemSchema) ,item.deleteItem);
+//DELETE /api/items/:id/:supplierId
+app.delete('/api/items/:id/:supplierId', checkSchema(item.deleteItemSchema) ,item.deleteItem);
 
 
 

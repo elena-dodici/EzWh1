@@ -43,18 +43,24 @@ class ItemManager {
         return items;
     }
 
-    async getItemByID(ItemId) {
-        return PersistentManager.loadOneByAttribute('id', Item.tableName, ItemId);
+    async getItemByID(ItemId, supplierId) {
+        let i = await PersistentManager.loadByMoreAttributes(Item.tableName, ['id', 'supplierId'], [ItemId, supplierId]);
+        
+        return i[0];
     }
 
-    async modifyItem(ItemId, newDescription, newPrice) {
-        const exists = await PersistentManager.exists(Item.tableName, 'id', ItemId);
+    async modifyItem(ItemId, supplierId, newDescription, newPrice) {
+        let exists = true;
+        const items = await PersistentManager.loadByMoreAttributes(Item.tableName, ['id', 'supplierId'], [ItemId, supplierId]);
+        if (items.length != 1) {
+            exists = false;
+        }
         if (exists) {
             let itemToUpdate = {
                 description: newDescription,
                 price: newPrice,
             }
-            return PersistentManager.update(Item.tableName, itemToUpdate, 'id', ItemId);
+            return PersistentManager.updateByTwoAttributes(Item.tableName, itemToUpdate, ['id', 'supplierId'], [ItemId, supplierId]);
         }
         else {
             return Promise.reject("404")
@@ -62,13 +68,8 @@ class ItemManager {
     }
 
     
-    async deleteItem(ItemId) {
-        const exists = await PersistentManager.exists(Item.tableName, 'id', ItemId);
-        /*
-        if (!exists){
-            return Promise.reject("404");
-        }*/
-        return PersistentManager.delete('id', ItemId, Item.tableName);
+    async deleteItem(ItemId, supplierId) {
+        return PersistentManager.deleteByTwoAttrs(['id','supplierId'], [ItemId, supplierId], Item.tableName);
         
     }
 
