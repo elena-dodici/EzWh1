@@ -17,10 +17,10 @@ Report effort figures from the timesheet, compute size from the source code.
 ## New development (release 1  -- march 22 to may 25)
 | Measure| Value |
 |---|---|
-|effort E (report here effort in person hours, for all activities in the period, from your timesheet)  ||
-|size S (report here size in LOC of all code written, excluding test cases)  ||
-|productivity P = S/E ||
-|defects before release D_before (number of defects found and fixed before may 25) ||
+|effort E (report here effort in person hours, for all activities in the period, from your timesheet)  |390|
+|size S (report here size in LOC of all code written, excluding test cases)  |3204|
+|productivity P = S/E |8.22|
+|defects before release D_before (number of defects found and fixed before may 25) |0|
 
 
 
