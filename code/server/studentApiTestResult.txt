@@ -23,11 +23,11 @@ Server listening at http://localhost:3001
     ✔ adding a new Item
     ✔ adding a new Item
     ✔ adding a new Item
-    ✔ modifying Item by Id
-    ✔ modifying Item by Id
-    ✔ modifying Item by Id
-    ✔ modifying Item by Id
-    ✔ modifying Item by Id
+    1) modifying Item by Id
+    2) modifying Item by Id
+    3) modifying Item by Id
+    4) modifying Item by Id
+    5) modifying Item by Id
     ✔ modifying Item by Id
 
   test scenarios 12-1 12-2 12-3
@@ -61,14 +61,11 @@ Server listening at http://localhost:3001
     ✔ delete position
     ✔ delete position
 
-  test scenarios 3-1 3-2
-    ✔ addingRO1
-
   test scenarios 3-2
     ✔ addingRO2
 
   test scenarios 4-1 4-2 4-3 
-    ✔ adding a new user (230ms)
+    ✔ adding a new user (224ms)
     ✔ adding a new user
     ✔ adding a new user
     ✔ adding a new user
@@ -113,10 +110,43 @@ Server listening at http://localhost:3001
     ✔ test manager Logout
 
   test scenario 9-1 9-2 9-3
-    ✔ modifyIOState (224ms)
+    ✔ modifyIOState (222ms)
     ✔ modifyIOState (226ms)
-    ✔ modifyIOState (224ms)
+    ✔ modifyIOState (225ms)
 
 
-  88 passing (5s)
+  82 passing (9s)
+  5 failing
+
+  1) test scenarios 11-1 11-2
+       modifying Item by Id:
+     Error: Timeout of 1000ms exceeded. For async tests and hooks, ensure "done()" is called; if returning a Promise, ensure it resolves. (/Users/lorenzodamico/Documents/Uni/2_Semestre/Software_engineering/ezwh/EzWh/code/server/test/testUC11.js)
+      at listOnTimeout (node:internal/timers:559:17)
+      at processTimers (node:internal/timers:502:7)
+
+  2) test scenarios 11-1 11-2
+       modifying Item by Id:
+     Error: Timeout of 1000ms exceeded. For async tests and hooks, ensure "done()" is called; if returning a Promise, ensure it resolves. (/Users/lorenzodamico/Documents/Uni/2_Semestre/Software_engineering/ezwh/EzWh/code/server/test/testUC11.js)
+      at listOnTimeout (node:internal/timers:559:17)
+      at processTimers (node:internal/timers:502:7)
+
+  3) test scenarios 11-1 11-2
+       modifying Item by Id:
+     Error: Timeout of 1000ms exceeded. For async tests and hooks, ensure "done()" is called; if returning a Promise, ensure it resolves. (/Users/lorenzodamico/Documents/Uni/2_Semestre/Software_engineering/ezwh/EzWh/code/server/test/testUC11.js)
+      at listOnTimeout (node:internal/timers:559:17)
+      at processTimers (node:internal/timers:502:7)
+
+  4) test scenarios 11-1 11-2
+       modifying Item by Id:
+     Error: Timeout of 1000ms exceeded. For async tests and hooks, ensure "done()" is called; if returning a Promise, ensure it resolves. (/Users/lorenzodamico/Documents/Uni/2_Semestre/Software_engineering/ezwh/EzWh/code/server/test/testUC11.js)
+      at listOnTimeout (node:internal/timers:559:17)
+      at processTimers (node:internal/timers:502:7)
+
+  5) test scenarios 11-1 11-2
+       modifying Item by Id:
+     Error: Timeout of 1000ms exceeded. For async tests and hooks, ensure "done()" is called; if returning a Promise, ensure it resolves. (/Users/lorenzodamico/Documents/Uni/2_Semestre/Software_engineering/ezwh/EzWh/code/server/test/testUC11.js)
+      at listOnTimeout (node:internal/timers:559:17)
+      at processTimers (node:internal/timers:502:7)
+
+
 
