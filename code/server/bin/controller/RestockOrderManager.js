@@ -255,12 +255,8 @@ class RestockOrderManager {
 		let suppId = order.supplier_id;
 
 		for (const product of productOrdersRows) {
-			
-			let item = await PersistentManager.loadOneByAttribute(
-				"id",
-				Item.tableName,
-				product.item_id
-			);
+			let items = await PersistentManager.loadByMoreAttributes(Item.tableName, ['id','supplierId'], [product.item_id, suppId]);
+			let item = items[0];
 				/*
 			let item = await PersistentManager.loadOneByAttribute(
 				"id",
@@ -270,7 +266,7 @@ class RestockOrderManager {
 
 			const skuInfo = {
 				SKUId: item.SKUId,
-				ItemId: item.id,
+				itemId: item.id,
 				description: item.description,
 				price: item.price,
 				qty: product.quantity,
@@ -336,6 +332,7 @@ class RestockOrderManager {
 	}
 
 	async modifyState(roID, newState) {
+		
 		const exists = await PersistentManager.exists(
 			RestockOrder.tableName,
 			"id",
@@ -344,6 +341,7 @@ class RestockOrderManager {
 		if (!exists) {
 			return Promise.reject("404 RestockOrderid cannot found");
 		}
+		
 		return PersistentManager.update(
 			RestockOrder.tableName,
 			{ state: newState },

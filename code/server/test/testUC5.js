@@ -35,7 +35,7 @@ describe('test scenario 5-1-1', () => {
         skuid = await SKUManager.defineSKU("des",1,1,1,"notes",1);
         supplierid = await UserManager.defineUser("john", "jo", "password", "supp@supp.it", "supplier");
         item = await ItemManager.defineItem(1,"des", 1, skuid, supplierid);
-        products = [{"SKUId":skuid,"description":"a product","price":10.99,"qty":1}]
+        products = [{"SKUId":skuid,"itemId":1, "description":"a product","price":10.99,"qty":1}]
         date = "2021/11/29 09:33";
         roid = await RestockOrderManager.defineRestockOrder(date, products, supplierid);
         await RestockOrderManager.modifyState(roid, "DELIVERY");
@@ -114,7 +114,7 @@ describe('test scenario 5-2-1 5-2-2 5-2-3', () => {
         skuid = await SKUManager.defineSKU("des",1,1,1,"notes",1);
         supplierid = await UserManager.defineUser("john", "jo", "password", "supp@supp.it", "supplier");
         item = await ItemManager.defineItem(1,"des", 1, skuid, supplierid);
-        products = [{"SKUId":skuid,"description":"a product","price":10.99,"qty":1}]
+        products = [{"SKUId":skuid,"itemId":1,"description":"a product","price":10.99,"qty":1}]
         date = "2021/11/29 09:33";
         roid = await RestockOrderManager.defineRestockOrder(date, products, supplierid);
         await RestockOrderManager.modifyState(roid, "DELIVERED");
@@ -177,7 +177,7 @@ describe('test scenarios 5.3', () => {
         rfids = ["12341234123412341234123412341234","12341234123412341234123412341235"];
         await SKUItemManager.defineSKUItem(rfids[0],sku_id,"2021/11/29");
         await SKUItemManager.defineSKUItem(rfids[1],sku_id,"2021/11/29");
-        products = [{"SKUId":sku_id,"description":"a product","price":10.99,"qty":2}]
+        products = [{"SKUId":sku_id,"itemId":2,"description":"a product","price":10.99,"qty":2}]
         supp = await UserManager.defineUser('j','j','pass','user@user.com','supplier');
         await ItemManager.defineItem(2,"des",10, sku_id,supp);
         
@@ -198,8 +198,8 @@ describe('test scenarios 5.3', () => {
     stockSKUItems(422, -1, rfids[0]);
     stockSKUItems(404, "positive not existent", rfids[0]);
     StockZeroItem(200, 1);
-StockZeroItem(422, -1);
-StockZeroItem(404, "positive not existing");
+    StockZeroItem(422, -1);
+    StockZeroItem(404, "positive not existing");
 
     
 
