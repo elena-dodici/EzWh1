@@ -106,9 +106,10 @@ describe('Test modify Item', () => {
             supplierId: supplier_id
         }
         let item_id = await PersistentManager.store("Item",item);
-        await ItemManager.modifyItem(item_id, newDescription, newPrice);
-        const Item = await PersistentManager.loadOneByAttribute('id', "Item", item_id);
-        const expected = {
+        await ItemManager.modifyItem(item_id, supplier_id, newDescription, newPrice);
+        const Item = await PersistentManager.loadByMoreAttributes("Item", ['id', 'supplierId'], [item_id, supplier_id]);
+        let expected = [];
+        expected[0] = {
             id: item_id,
             description: newDescription,
             price: newPrice,
@@ -154,7 +155,7 @@ describe('delete item',  () => {
             supplierId: supplier_id
         }
         let item_id = await PersistentManager.store("Item",item);
-        await ItemManager.deleteItem(item_id);
+        await ItemManager.deleteItem(item_id,supplier_id);
     })
 
 
@@ -190,9 +191,8 @@ describe('get item', () => {
     const item_id = 1;
     await ItemManager.defineItem(item_id, description, price, id_sku,supplier_id);
     let res = await ItemManager.getAllItems();
-    const Item = await PersistentManager.loadOneByAttribute('id', "Item", item_id);
-
-    expect(res[0]).toEqual(Item);
+    const Item = await PersistentManager.loadByMoreAttributes("Item", ['id', 'supplierId'], [item_id, supplier_id]);
+    expect(res[0]).toEqual(Item[0]);
 
     
     });
@@ -217,10 +217,10 @@ describe('get item', () => {
         let supplier_id = await PersistentManager.store("User",user);
         const item_id = 1;
         await ItemManager.defineItem(item_id, description, price, id_sku,supplier_id);
-        let res = await ItemManager.getItemByID(item_id);
-        const Item = await PersistentManager.loadOneByAttribute('id', "Item", item_id);
+        let res = await ItemManager.getItemByID(item_id, supplier_id);
+        const Item = await PersistentManager.loadByMoreAttributes("Item", ['id', 'supplierId'], [item_id, supplier_id]);
     
-        expect(res).toEqual(Item);
+        expect(res).toEqual(Item[0]);
     
         
     });
