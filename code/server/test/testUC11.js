@@ -39,12 +39,12 @@ describe('test scenarios 11-1 11-2', () => {
     newItem(404, 10,"description", 12.14, 100000, 1);
     newItem(404, 11,"description", 12.14, 1, 100000);
 
-    modifyItem(200, 1, "new description", 10.11);
-    modifyItem(422, 1, "new description", "invalid new price");
-    modifyItem(422, "invalid id", "new description", 10.11);
-    modifyItem(422, -1, "new description", 10.11);
-    modifyItem(422, 1, "new description", -10.11);
-    modifyItem(404, 1000, "new description", 10.11);
+    modifyItem(200, 1, 1, "new description", 10.11);
+    modifyItem(422, 1, 1, "new description", "invalid new price");
+    modifyItem(422, "invalid id", 1, "new description", 10.11);
+    modifyItem(422, -1, 1, "new description", 10.11);
+    modifyItem(422, 1, 1, "new description", -10.11);
+    modifyItem(404, 1000, 1, "new description", 10.11);
     
 
 });
@@ -75,11 +75,15 @@ function newItem(expectedHTTPStatus,id, description, price, SKUId, supplierId) {
 }
 
 //Scenario 11-2
- function modifyItem(expectedHTTPStatus, id, newDescription, newPrice) {
+ function modifyItem(expectedHTTPStatus, id, supplierId, newDescription, newPrice) {
     it('modifying Item by Id' , function (done) {
 
+        if(supplierId == 1){
+            supplierId = user_id;
+        }
+        
         const newItem = {newDescription: newDescription, newPrice: newPrice};
-        agent.put(`/api/item/${id}`)
+        agent.put(`/api/item/${id}/${supplierId}`)
             .send(newItem)
             .then(function (res) {
                 res.should.have.status(expectedHTTPStatus);
