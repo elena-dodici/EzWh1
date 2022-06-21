@@ -89,7 +89,6 @@ In the dependency graph we grouped the model classes in one block to avoid confu
 | 2-3         |     FR3                            |        modifying weight and volume    |           
 | 2-4         |    FR3                             |      modifying aisle,row,col      |  
 | 2-5         |    FR3                             |          delete position   |    
-| 3-1         |     FR5                            |        addingRO1     | 
 | 3-2         |   FR5                              |       addingRO2      | 
 | 4-1         |   FR1                              |       adding a new user      | 
 | 4-2         |     FR1                            |      modifying a user       | 
