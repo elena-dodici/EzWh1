@@ -1,8 +1,8 @@
 # Integration and API Test Report
 
-Date: 2022-05-04
+Date: 2022-06-21
  
-Version: 0.1
+Version: 0.2
 
 # Contents
 
@@ -129,5 +129,5 @@ In the dependency graph we grouped the model classes in one block to avoid confu
 | NFR3 | adding a new user |
 | NFR4 | adding a new position|
 |  NFR6  |  stock skuItems  | 
-| NFR9 |  addingRO1 | 
+
 
