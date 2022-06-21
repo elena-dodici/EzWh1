@@ -44,11 +44,11 @@ modifyIOState(200,"REFUSED")
             const b = {
                 newState: newState
             } 
-            agent.put(`/api/internalOrders/${id}`)
+            await agent.put(`/api/internalOrders/${id}`)
             .send(b)
-            .then( async function(res){
+            .then(  async function(res){
                     res.should.have.status(expectedHTTPStatus);                 
-                    await agent.get(`/api/skus/${id}`)
+                    await agent.get(`/api/internalOrders/${id}`)
                     .then(function(res2){
                         res2.should.have.status(expectedHTTPStatus);
                         
