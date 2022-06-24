@@ -51,7 +51,11 @@ To better visualize the diagram we split it in 2 parts
 
 ## Full class diagram
 
-![class_diagram](./Images/design/classDiagramNew.png)
+![class_diagram](./Images/design/classDiagramChange.jpg)
+
+## PersistentManager class
+
+![class_diagram](./Images/design/persManagerClass.jpg)
 
 ## Model classes
 ![model_diagram](./Images/design/modelNew.jpg)

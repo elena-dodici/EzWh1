@@ -72,6 +72,7 @@ exports.postItem = async function(req,res) {
                     return res.status(422).json({error: "validation of request body failed or this supplier already sells an item with the same SKUId or supplier already sells an Item with the same ID"});
                     break;
                 default:
+                    console.log(error);
                     return res.status(503).json({error: "generic error"});
                     break;
             }
@@ -95,14 +96,19 @@ exports.getItems = async function(req,res) {
      id: {
          notEmpty: true,
          isInt: {options: {min: 0}}
+     }, 
+     supplierId: {
+         notEmpty: true,
+         isInt: {options: {min: 0}}
      }
  }
     
 exports.getItemByID = async function(req,res) {
         let id = req.params.id;
+        let supplierId = req.params.supplierId;
 
         const errors = validationResult(req);
-    
+        
 
         if (!errors.isEmpty()) {
             return res.status(422).json({
@@ -110,7 +116,7 @@ exports.getItemByID = async function(req,res) {
             });
         }
         
-        await ItemManager.getItemByID(id).then(
+        await ItemManager.getItemByID(id, supplierId).then(
             result => {
                 if (result) {
                     return res.status(200).json(result);
@@ -127,6 +133,10 @@ exports.getItemByID = async function(req,res) {
 
 exports.modifyItemByIdSchema = {
     id: {
+        notEmpty: true,
+        isInt: {options: {min:0}}
+    },
+    supplierId: {
         notEmpty: true,
         isInt: {options: {min:0}}
     },
@@ -153,10 +163,11 @@ exports.modifyItemById = async function(req,res) {
         });
     }
         const id = req.params.id;
+        const supplierId = req.params.supplierId;
         const newDescription = req.body.newDescription;
         const newPrice = req.body.newPrice;
     
-        await ItemManager.modifyItem(id, newDescription, newPrice).then(
+        await ItemManager.modifyItem(id, supplierId, newDescription, newPrice).then(
             result => {
                     return res.status(200).json(result);
             },
@@ -176,11 +187,17 @@ exports.deleteItemSchema = {
     id: {
         notEmpty: true,
         isInt: {options: {min: 0}}
+    },
+    supplierId: {
+        notEmpty: true,
+        isInt: {options: {min: 0}}
     }
+
 }
 exports.deleteItem = async function (req,res) {
         const id = req.params.id;
-
+        const supplierId = req.params.supplierId;
+        
         const errors = validationResult(req);
 
         if (!errors.isEmpty()) {
@@ -189,7 +206,7 @@ exports.deleteItem = async function (req,res) {
             });
         }
   
-        await ItemManager.deleteItem(id).then(
+        await ItemManager.deleteItem(id, supplierId).then(
             result => {
                 return res.status(204).json();
             },

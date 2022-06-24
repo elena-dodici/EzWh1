@@ -10,24 +10,21 @@ const User = require("../model/User");
 const TestResult = require("../model/TestResult");
 
 class RestockOrderManager {
-
 	constructor() {}
-
 
 	async defineRestockOrder(issue_date, productsList, supplierId) {
 		//validate supplierId exists
+		
 		const suppExists = await PersistentManager.loadByMoreAttributes(
 			User.tableName,
 			["id", "type"],
 			[supplierId, "supplier"]
 		);
 		
-
-		
 		if (suppExists.length === 0) {
 			return Promise.reject("404 no supplier Id found");
 		}
-
+		
 
 		let ro = new RestockOrder(null, issue_date, "ISSUED", supplierId, null);
 		let newRestockOrderId = await PersistentManager.store(
@@ -37,32 +34,60 @@ class RestockOrderManager {
 
 		let products = [];
 		for (const product of productsList) {
+			let itemid = product.itemId;
+			
 			let newSkuid = product.SKUId;
 			// let newPrice = product.price;
 			let newqty = product.qty;
+
+			let listSameSupplierId =
+				await PersistentManager.loadFilterByAttribute(
+					Item.tableName,
+					"supplierId",
+					supplierId
+				);
+			if (listSameSupplierId) {
+				let found = false;
+				for (let i = 0; i < listSameSupplierId.length; i++) {
+					if (listSameSupplierId[i].id == itemid) {
+						if (listSameSupplierId[i].SKUId == newSkuid ){
+							found = true;
+						}
+					}
+				}
+				if (!found) {
+					PersistentManager.delete(
+						"id",
+						newRestockOrderId,
+						RestockOrder.tableName
+					);
+					return Promise.reject(
+						"422 supplier doesn't sell a product with a certain itemId or supplier itemId doesn't correspond to SKUId"
+					);
+				}
+			}
 			
+			/*
 			let exists = await PersistentManager.exists(
 				SKU.tableName,
 				"id",
 				newSkuid
 			);
-			
+
 			if (!exists) {
-				
 				PersistentManager.delete(
 					"id",
 					newRestockOrderId,
 					RestockOrder.tableName
 				);
 				return Promise.reject("404 no sku Id found");
-			}
-
-
+			}*/
+			/*
 			const existsItem = await PersistentManager.loadByMoreAttributes(
 				Item.tableName,
 				["SKUId", "supplierId"],
 				[newSkuid, supplierId]
-			);
+			);*/
 			/*
 			if (existsItem.length === 0) {
 				
@@ -77,13 +102,13 @@ class RestockOrderManager {
 			//const item = existsItem[0];
 
 			//define a object and insert into DB
-
+			
 			let newProductOrder = new ProductOrder(
 				null,
 				newqty,
 				newRestockOrderId,
-				//item.id
-				newSkuid
+				itemid
+				//newSkuid
 			);
 			products.push(newProductOrder);
 		}
@@ -94,7 +119,6 @@ class RestockOrderManager {
 				},
 				(error) => {
 					return Promise.reject(
-						
 						"503 Fail to store in Product Order table"
 					);
 				}
@@ -113,12 +137,9 @@ class RestockOrderManager {
 		// let eachOrderInfo = {};
 		for (const order of restockOrders) {
 			let eachOrderInfo = await this.addOneOrderInfo(order);
-			if(eachOrderInfo.state==="ISSUED") {
-				eachOrderInfo.transportNote=[];
-				if(eachOrderInfo.state==="DELIVERY"){
-					eachOrderInfo.skuItems =[];
-				}
-		   }
+			if (eachOrderInfo.state === "DELIVERY" || eachOrderInfo.state === "ISSUED") {
+				eachOrderInfo.skuItems = [];
+			}
 			finalRes.push(eachOrderInfo);
 		}
 
@@ -132,15 +153,12 @@ class RestockOrderManager {
 			"ISSUED"
 		);
 
-		if (issueOrders.length === 0) {
-			return Promise.reject("404 No IssuedOrders Found");
-		}
 
 		let finalRes = [];
 		// let eachOrderInfo = {};
 		for (const order of issueOrders) {
 			let result = await this.addOneOrderInfo(order);
-			result.skuItems =[];		
+			result.skuItems = [];
 			finalRes.push(result);
 		}
 		return finalRes;
@@ -167,10 +185,10 @@ class RestockOrderManager {
 			orderToReturn.transportNote = {};
 		}
 
-			if(orderToReturn.state==="DELIVERY"){
-				orderToReturn.skuItems =[];
-			}
-	   
+		if (orderToReturn.state === "DELIVERY") {
+			orderToReturn.skuItems = [];
+		}
+
 		return orderToReturn;
 	}
 
@@ -184,17 +202,20 @@ class RestockOrderManager {
 			return Promise.reject("404 RestockOrderid");
 		}
 
-		let ro = await PersistentManager.loadOneByAttribute('id', RestockOrder.tableName, id);
+		let ro = await PersistentManager.loadOneByAttribute(
+			"id",
+			RestockOrder.tableName,
+			id
+		);
 		if (ro.state !== "COMPLETEDRETURN") {
-			return Promise.reject("422 completedreturn")
+			return Promise.reject("422 completedreturn");
 		}
-        let allOrderInfo = await this.addOneOrderInfo(ro);	
+		let allOrderInfo = await this.addOneOrderInfo(ro);
 		let allSkuItems = allOrderInfo.skuItems;
 		let skuItemsToReturn = [];
-		if(ro.state==="ISSUED"){
+		if (ro.state === "ISSUED") {
 			return skuItemsToReturn;
-		}
-		else{
+		} else {
 			for (const skuItemInfo of allSkuItems) {
 				const testResult = await PersistentManager.loadOneByAttribute(
 					"rfid",
@@ -206,13 +227,10 @@ class RestockOrderManager {
 						skuItemsToReturn.push(skuItemInfo);
 					}
 				}
-			}	
+			}
 			return skuItemsToReturn;
 		}
-
 	}
-
-
 
 	/*
         {
@@ -227,32 +245,28 @@ class RestockOrderManager {
 	async addOneOrderInfo(order) {
 		let curOrderid = order.id;
 		//gets all the rows in ProductOrder where restockOrder_id == curOrderid
-		//{ id: 16, quantity: 30, restockOrder_id: 28, item_id: '1' }
+		//"products": [{"SKUId":12, "itemId":10,"description":"a product","price":10.99,"qty":30},
 		let productOrdersRows = await PersistentManager.loadFilterByAttribute(
 			ProductOrder.tableName,
 			"restockOrder_id",
 			curOrderid
 		);
 		let products = [];
-	
-		for (const product of productOrdersRows) {
-			/*
-			let item = await PersistentManager.loadOneByAttribute(
-				"id",
-				Item.tableName,
-				product.item_id
-			);*/
+		let suppId = order.supplier_id;
 
-			
+		for (const product of productOrdersRows) {
+			let items = await PersistentManager.loadByMoreAttributes(Item.tableName, ['id','supplierId'], [product.item_id, suppId]);
+			let item = items[0];
+				/*
 			let item = await PersistentManager.loadOneByAttribute(
 				"id",
 				SKU.tableName,
 				product.item_id
-			);
+			);*/
 
-			
 			const skuInfo = {
-				SKUId: item.id,
+				SKUId: item.SKUId,
+				itemId: item.id,
 				description: item.description,
 				price: item.price,
 				qty: product.quantity,
@@ -280,12 +294,17 @@ class RestockOrderManager {
 			curOrderid
 		);
 		//use map to sort only rfid + skuid and add to skuitem in res
-		let skuItems = skuItemsRow.map((item) => {
-			return {
-				SKUId: item.SKUId,
-				RFID: item.RFID,
-			};
-		});
+		let skuItems = [];
+		for (let j= 0; j<skuItemsRow.length; j++) {
+			let item = await PersistentManager.loadByMoreAttributes(Item.tableName, ['SKUId', 'supplierId'],[skuItemsRow[j].SKUId, suppId]);
+			let itemid = item[0].id;
+			let productSkuItem = {
+				SKUId: skuItemsRow[j].SKUId,
+				itemId: itemid,
+				RFID: skuItemsRow[j].RFID
+			}
+			skuItems.push(productSkuItem);
+		}
 
 		let o;
 
@@ -313,6 +332,7 @@ class RestockOrderManager {
 	}
 
 	async modifyState(roID, newState) {
+		
 		const exists = await PersistentManager.exists(
 			RestockOrder.tableName,
 			"id",
@@ -321,6 +341,7 @@ class RestockOrderManager {
 		if (!exists) {
 			return Promise.reject("404 RestockOrderid cannot found");
 		}
+		
 		return PersistentManager.update(
 			RestockOrder.tableName,
 			{ state: newState },
@@ -378,12 +399,13 @@ class RestockOrderManager {
 			RestockOrder.tableName,
 			id
 		);
-		
-		if(restockOrderRow.state!=="DELIVERY"||restockOrderRow.issue_date > newTN.deliveryDate ){			
-			return Promise.reject("422 Unprocessable Entity")
-		}
 
-		
+		if (
+			restockOrderRow.state !== "DELIVERY" ||
+			restockOrderRow.issue_date > newTN.deliveryDate
+		) {
+			return Promise.reject("422 Unprocessable Entity");
+		}
 
 		const updateResult = await PersistentManager.update(
 			RestockOrder.tableName,

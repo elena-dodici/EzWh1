@@ -163,7 +163,6 @@ exports.updatePositionSchema = {
 exports.updatePosition = async function(req,res) {
 
     const errors = validationResult(req);
-
     if (!errors.isEmpty()) {
         return res.status(422).json({
             //error: errors.array()

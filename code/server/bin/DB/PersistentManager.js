@@ -89,6 +89,21 @@ class PersistentManager {
         })
     }
 
+	async deleteByTwoAttrs(attribute_names ,values, tableName) {
+        return new Promise ((resolve, reject) => {
+			
+            const sql = "DELETE FROM " + tableName + " WHERE "+ attribute_names[0] + "= ? AND " + attribute_names[1] + "= ?" ;
+            const db = new sqlite.Database(this.dbName, (err) => {if (err) reject(err) });
+			db.get("PRAGMA foreign_keys = ON");
+			db.get("PRAGMA busy_timeout = 10000");
+
+			
+			db.run(sql, [values[0], values[1]], (err) => {if (err) reject(err); resolve(); } )
+			db.close();
+			
+        })
+    }
+
     async loadOneByAttribute(parameter_name, tableName, value ){
         return new Promise ((resolve, reject) => {
             const sql = "SELECT * FROM " + tableName + " WHERE " + parameter_name + "= ?";
@@ -129,6 +144,43 @@ class PersistentManager {
 			db.get("PRAGMA busy_timeout = 10000");
 
             db.run(sql, [...attributesValue, id], (err) => {
+                if (err) 
+					reject(err);
+				
+				
+                resolve();
+            });
+            db.close();
+        }) 
+    }
+
+	async updateByTwoAttributes(tableName, object, attribute_names, values) {
+        return new Promise ((resolve, reject) => {
+            //names of the attributes of the objects
+			let attributesName = [];
+			//Values of the attributes
+			let attributesValue = [];
+
+			//Loop through all the object attributes and push them into the arrays
+			for (var prop in object) {
+				if (Object.prototype.hasOwnProperty.call(object, prop)) {
+					attributesName.push(prop + "= ?");
+					attributesValue.push(object[prop]);
+				}
+			}
+
+
+            const sql = "UPDATE " + tableName +
+                        " SET " + attributesName.join(",") + 
+                        " WHERE " + attribute_names[0] + " = ? AND " + attribute_names[1] + " = ?";
+			
+		
+
+            const db = new sqlite.Database(this.dbName, (err) => {if (err) reject(err) });
+			db.get("PRAGMA foreign_keys = ON");
+			db.get("PRAGMA busy_timeout = 10000");
+
+            db.run(sql, [...attributesValue, values[0], values[1]], (err) => {
                 if (err) 
 					reject(err);
 				

@@ -56,14 +56,13 @@ const sqlTD = `
         );`;
 const sqlItem = `
         CREATE TABLE IF NOT EXISTS "Item" (
-            "id"	INTEGER NOT NULL UNIQUE,
+            "id" INTEGER,
             "description"	TEXT,
             "price"	REAL,
             "SKUId"	INTEGER,
             "supplierId"	INTEGER,
             FOREIGN KEY("SKUId") REFERENCES "SKU"("id") ON UPDATE CASCADE ON DELETE CASCADE,
-            FOREIGN KEY("supplierId") REFERENCES "User"("id") ON UPDATE CASCADE ON DELETE SET NULL,
-            PRIMARY KEY("id")
+            FOREIGN KEY("supplierId") REFERENCES "User"("id") ON UPDATE CASCADE ON DELETE SET NULL
         );`;
 const sqlRO = `
         CREATE TABLE IF NOT EXISTS "RestockOrder" (
@@ -95,15 +94,14 @@ const sqlIO = `
             PRIMARY KEY("id" AUTOINCREMENT)
         );`;
 
-		//FOREIGN KEY("item_id") REFERENCES "Item"("id") ON DELETE CASCADE ON UPDATE CASCADE,
+		
 const sqlPO = `
         CREATE TABLE IF NOT EXISTS "ProductOrder" (
             "id"	INTEGER NOT NULL UNIQUE,
             "quantity"	INTEGER,
             "restockOrder_id"	INTEGER,
-            "item_id"	TEXT,
+            "item_id"	INTEGER,
             FOREIGN KEY("restockOrder_id") REFERENCES "RestockOrder"("id") ON DELETE CASCADE ON UPDATE CASCADE,
-            FOREIGN KEY("item_id") REFERENCES "SKU"("id") ON DELETE CASCADE ON UPDATE CASCADE,
             PRIMARY KEY("id" AUTOINCREMENT)
         );`;
 
